@@ -558,7 +558,7 @@ function Dashboard(){
     {selApproval!==null&&<ReservationPanel approval={selApproval} onClose={()=>setSelApproval(null)}/>}
 
     {/* Welcome Banner */}
-    <div style={{background:`linear-gradient(135deg,${C.blue},${C.blueDk})`,borderRadius:16,padding:"24px 30px",color:C.w,display:"flex",justifyContent:"space-between",alignItems:"center",flexWrap:"wrap",gap:16}}>
+    <div className="pp-welcome" style={{background:`linear-gradient(135deg,${C.blue},${C.blueDk})`,borderRadius:16,padding:"24px 30px",color:C.w,display:"flex",justifyContent:"space-between",alignItems:"center",flexWrap:"wrap",gap:16}}>
       <div>
         <div style={{fontSize:20,fontWeight:800,marginBottom:6}}>Good morning, Marcus</div>
         <div style={{fontSize:13,opacity:.85,lineHeight:1.5}}>
@@ -578,15 +578,15 @@ function Dashboard(){
 
     {/* Pending Approvals Banner - prominent on dashboard */}
     {pendingApprovals.length>0&&<Card style={{border:`1px solid ${C.orange}25`,background:`linear-gradient(135deg,${C.orange}06,${C.w})`}}>
-      <div style={{display:"flex",justifyContent:"space-between",alignItems:"center",marginBottom:14}}>
+      <div className="pp-pending-header" style={{display:"flex",justifyContent:"space-between",alignItems:"center",marginBottom:14}}>
         <div style={{display:"flex",alignItems:"center",gap:10}}>
           <div style={{width:38,height:38,borderRadius:10,background:`${C.orange}15`,display:"flex",alignItems:"center",justifyContent:"center"}}><span style={{fontSize:20}}>✋</span></div>
           <div><div style={{fontSize:15,fontWeight:800,color:C.g800}}>Pending Approvals ({pendingApprovals.length})</div><div style={{fontSize:12,color:C.g500}}>Reservation requests awaiting your review</div></div>
         </div>
         <button onClick={()=>globalSetTab("Rentals")} style={{...btnO,color:C.orange,borderColor:`${C.orange}40`,fontSize:12}}>View All in Rentals</button>
       </div>
-      {pendingApprovals.map((a,i)=><div key={a.id} style={{padding:"14px 0",borderTop:i===0?`1px solid ${C.g200}`:`1px solid ${C.g100}`,display:"flex",justifyContent:"space-between",alignItems:"center",gap:12,flexWrap:"wrap"}}>
-        <div style={{display:"flex",gap:12,alignItems:"center",flex:1,minWidth:0}}>
+      {pendingApprovals.map((a,i)=><div className="pp-pending-row" key={a.id} style={{padding:"14px 0",borderTop:i===0?`1px solid ${C.g200}`:`1px solid ${C.g100}`,display:"flex",justifyContent:"space-between",alignItems:"center",gap:12,flexWrap:"wrap"}}>
+        <div className="pp-pending-info" style={{display:"flex",gap:12,alignItems:"center",flex:1,minWidth:0}}>
           <div style={{width:36,height:36,borderRadius:10,background:a.color,display:"flex",alignItems:"center",justifyContent:"center",color:C.w,fontWeight:800,fontSize:12,flexShrink:0}}>{a.photo}</div>
           <div style={{minWidth:0}}>
             <div style={{display:"flex",alignItems:"center",gap:8,flexWrap:"wrap"}}>
@@ -597,7 +597,7 @@ function Dashboard(){
             <div style={{fontSize:12,color:C.g500,marginTop:1}}>{a.bk[0].asset} - {a.bk[0].date} {a.bk[0].time}{a.bk.length>1?` + ${a.bk.length-1} more`:""}</div>
           </div>
         </div>
-        <div style={{display:"flex",alignItems:"center",gap:8,flexWrap:"wrap"}}>
+        <div className="pp-pending-actions" style={{display:"flex",alignItems:"center",gap:8,flexWrap:"wrap"}}>
           <span style={{fontSize:15,fontWeight:800,color:C.g800}}>${a.bk.reduce((s,b)=>s+b.rev,0).toLocaleString()}</span>
           <button onClick={()=>setSelApproval(a)} style={{background:C.w,color:C.blue,border:`1px solid ${C.g300}`,borderRadius:8,padding:"7px 14px",fontSize:12,fontWeight:600,cursor:"pointer",fontFamily:font}}>View Details</button>
           <button onClick={()=>triggerApproval(a.id,"approved")} style={{background:C.green,color:C.w,border:"none",borderRadius:8,padding:"7px 14px",fontSize:12,fontWeight:700,cursor:"pointer",fontFamily:font}}>Approve</button>
@@ -607,7 +607,7 @@ function Dashboard(){
     </Card>}
 
     {/* Metrics */}
-    <div style={{display:"flex",gap:12,flexWrap:"wrap"}}>
+    <div className="pp-metrics" style={{display:"flex",gap:12,flexWrap:"wrap"}}>
       <Met label="YTD Revenue" value="$61,011" change="+28%" dir="up" sub="vs last year" accent={C.green}/>
       <Met label="This Month" value="$8,761" change="+18.4%" dir="up" sub="projected $14.2k" accent={C.blue}/>
       <Met label="Reservations" value="192" change="+34" dir="up" sub="YTD" accent={C.blue}/>
@@ -648,7 +648,7 @@ function Dashboard(){
     </div>
 
     {/* Upcoming */}
-    <Card><Sec action={<button style={btnP}><span style={{fontSize:15}}>+</span> Create Reservation</button>}>Upcoming Reservations</Sec><div style={{overflowX:"auto"}}><table style={{width:"100%",borderCollapse:"collapse",fontSize:13}}><thead><tr>{["Res #","Asset","Customer","Date","Time","Revenue",""].map(h=><th key={h} style={TH}>{h}</th>)}</tr></thead><tbody>{upcoming.map((x,i)=><tr key={x.id} style={{background:i%2===0?C.g50:C.w,cursor:"pointer",transition:"background .15s"}} onMouseEnter={e=>e.currentTarget.style.background=C.blueL} onMouseLeave={e=>e.currentTarget.style.background=i%2===0?C.g50:C.w}><td style={{...TD,fontWeight:700,color:C.blue,fontVariantNumeric:"tabular-nums"}}>{x.id}</td><td style={{...TD,fontWeight:600,color:C.g700}}>{x.a}</td><td style={{...TD,color:C.g600}}>{x.c}</td><td style={{...TD,color:C.g600}}>{x.d}</td><td style={{...TD,color:C.g600}}>{x.t}</td><td style={{...TD,fontWeight:700,color:C.g800}}>${x.r.toFixed(2)}</td><td style={TD}><button onClick={e=>{e.stopPropagation();setSelRes(i)}} style={{...btnO,padding:"5px 12px",fontSize:12}}>View</button></td></tr>)}</tbody></table></div></Card>
+    <Card><Sec action={<button style={btnP}><span style={{fontSize:15}}>+</span> Create Reservation</button>}>Upcoming Reservations</Sec><div className="pp-table-wrap"><table style={{width:"100%",borderCollapse:"collapse",fontSize:13}}><thead><tr>{["Res #","Asset","Customer","Date","Time","Revenue",""].map(h=><th key={h} style={TH}>{h}</th>)}</tr></thead><tbody>{upcoming.map((x,i)=><tr key={x.id} style={{background:i%2===0?C.g50:C.w,cursor:"pointer",transition:"background .15s"}} onMouseEnter={e=>e.currentTarget.style.background=C.blueL} onMouseLeave={e=>e.currentTarget.style.background=i%2===0?C.g50:C.w}><td style={{...TD,fontWeight:700,color:C.blue,fontVariantNumeric:"tabular-nums"}}>{x.id}</td><td style={{...TD,fontWeight:600,color:C.g700}}>{x.a}</td><td style={{...TD,color:C.g600}}>{x.c}</td><td style={{...TD,color:C.g600}}>{x.d}</td><td style={{...TD,color:C.g600}}>{x.t}</td><td style={{...TD,fontWeight:700,color:C.g800}}>${x.r.toFixed(2)}</td><td style={TD}><button onClick={e=>{e.stopPropagation();setSelRes(i)}} style={{...btnO,padding:"5px 12px",fontSize:12}}>View</button></td></tr>)}</tbody></table></div></Card>
   </div>
 }
 
@@ -675,7 +675,7 @@ function Rentals(){
     {selApproval!==null&&<ReservationPanel approval={selApproval} onClose={()=>setSelApproval(null)}/>}
     {selRes!==null&&<ReservationPanel res={upcoming[selRes]} onClose={()=>setSelRes(null)}/>}
     {/* Sub-tab navigation */}
-    <div style={{display:"flex",gap:0,borderBottom:`2px solid ${C.g200}`}}>
+    <div className="pp-sub-tabs" style={{display:"flex",gap:0,borderBottom:`2px solid ${C.g200}`}}>
       {[["locations","Locations",null],["reservations","Reservations",null],["approvals","Approvals",pendingApprovals.length]].map(([k,l,badge])=>
         <button key={k} onClick={()=>setSubTab(k)} style={{padding:"12px 24px",fontSize:14,fontWeight:subTab===k?700:500,color:subTab===k?C.g800:C.g500,background:"none",border:"none",borderBottom:subTab===k?`2px solid ${k==="approvals"&&pendingApprovals.length>0?C.orange:C.blue}`:"2px solid transparent",marginBottom:-2,cursor:"pointer",fontFamily:font,position:"relative",display:"flex",alignItems:"center",gap:6}}>
           {l}
@@ -686,11 +686,11 @@ function Rentals(){
 
     {/* ---- LOCATIONS ---- */}
     {subTab==="locations"&&<>
-      <div style={{display:"flex",justifyContent:"space-between",alignItems:"center",flexWrap:"wrap",gap:12}}>
+      <div className="pp-filter-bar" style={{display:"flex",justifyContent:"space-between",alignItems:"center",flexWrap:"wrap",gap:12}}>
         <div style={{position:"relative"}}><span style={{position:"absolute",left:10,top:"50%",transform:"translateY(-50%)",fontSize:14,color:C.g400}}>🔍</span><input type="text" placeholder="Search..." style={{padding:"9px 14px 9px 32px",border:`1px solid ${C.g300}`,borderRadius:8,fontSize:13,width:200,fontFamily:font}}/></div>
         <button style={btnP}>+ Add Location</button>
       </div>
-      <Card>
+      <Card np><div className="pp-table-wrap">
         <table style={{width:"100%",borderCollapse:"collapse",fontSize:13}}><thead><tr>{["Active","Name","Assets","Status","Last Updated","Hourly Rate","Action"].map(h=><th key={h} style={TH}>{h}</th>)}</tr></thead>
           <tbody>{campuses.map((c,i)=><tr key={c.id} style={{background:i%2===0?C.g50:C.w}}>
             <td style={TD}><div style={{width:38,height:20,borderRadius:10,background:C.green,position:"relative",cursor:"pointer"}}><div style={{width:14,height:14,borderRadius:"50%",background:C.w,position:"absolute",top:3,right:3,boxShadow:"0 1px 2px rgba(0,0,0,.2)"}}/></div></td>
@@ -702,12 +702,12 @@ function Rentals(){
             <td style={TD}><button style={{background:C.green,color:C.w,border:"none",borderRadius:8,padding:"6px 16px",fontSize:12,fontWeight:700,cursor:"pointer",fontFamily:font}}>Actions</button></td>
           </tr>)}</tbody>
         </table>
-      </Card>
+      </div></Card>
     </>}
 
     {/* ---- RESERVATIONS ---- */}
     {subTab==="reservations"&&<>
-      <div style={{display:"flex",justifyContent:"space-between",alignItems:"center",flexWrap:"wrap",gap:12}}>
+      <div className="pp-filter-bar" style={{display:"flex",justifyContent:"space-between",alignItems:"center",flexWrap:"wrap",gap:12}}>
         <div style={{display:"flex",gap:10,alignItems:"center",flexWrap:"wrap"}}>
           <select value={campusFilt} onChange={e=>setCampusFilt(e.target.value)} style={sel}><option value="all">All Campuses</option>{campuses.map(c=><option key={c.id} value={c.short}>{c.short}</option>)}</select>
           <div style={{display:"flex",gap:4,background:C.g100,borderRadius:10,padding:3}}>{[["all","All Events"],["pp","PP Bookings"],["synced","Synced Only"]].map(([k,l])=><button key={k} onClick={()=>setSrcFilt(k)} style={pill(srcFilt===k)}>{l}</button>)}</div>
@@ -715,7 +715,7 @@ function Rentals(){
         <div style={{display:"flex",gap:10}}>{[["cal","Calendar"],["list","List View"]].map(([k,l])=><button key={k} onClick={()=>setView(k)} style={{...btnO,...(view===k?{background:C.blue,color:C.w,border:"none"}:{})}}>{l}</button>)}<button style={btnP}>+ New Reservation</button></div>
       </div>
       {/* Legend + sync status */}
-      <div style={{display:"flex",justifyContent:"space-between",alignItems:"center",flexWrap:"wrap",gap:8}}>
+      <div className="pp-legend" style={{display:"flex",justifyContent:"space-between",alignItems:"center",flexWrap:"wrap",gap:8}}>
         <div style={{display:"flex",gap:14,alignItems:"center",fontSize:11,color:C.g400,flexWrap:"wrap"}}>
           <span style={{fontWeight:700}}>Sources:</span>
           {[["🟢","PP - PracticePlan"],["📅","Google Calendar"],["🏟","RankOne Athletics"],["📧","Outlook"]].map(([ic,n])=><div key={n} style={{display:"flex",alignItems:"center",gap:4}}><span>{ic}</span><span style={{fontWeight:600}}>{n}</span></div>)}
@@ -725,7 +725,7 @@ function Rentals(){
           <span><span style={{fontWeight:800,color:C.g600}}>{syncCount}</span> synced events</span>
         </div>
       </div>
-      {view==="cal"?<Card np>
+      {view==="cal"?<Card np><div className="pp-calendar-wrap">
         <div style={{padding:"16px 24px",display:"flex",justifyContent:"space-between",alignItems:"center",borderBottom:`1px solid ${C.g200}`}}>
           <div style={{display:"flex",alignItems:"center",gap:12}}><button style={{...btnO,padding:"5px 10px"}}>‹</button><span style={{fontSize:16,fontWeight:700,color:C.g800}}>February 2026</span><button style={{...btnO,padding:"5px 10px"}}>›</button></div>
           <div style={{display:"flex",alignItems:"center",gap:8}}><span style={{fontSize:11,color:C.g400}}>Ascension Parish School District</span><img src={LOGO} alt="" style={{height:18,opacity:.35}}/></div>
@@ -742,16 +742,16 @@ function Rentals(){
                 {evts.length>3&&<div style={{fontSize:9,color:C.g400,fontWeight:700,marginTop:1,paddingLeft:2}}>+{evts.length-3} more</div>}
               </div>}</td>})}</tr>)}</tbody>
         </table>
-      </Card>:<Card>
+      </div></Card>:<Card np><div className="pp-table-wrap">
         <table style={{width:"100%",borderCollapse:"collapse",fontSize:13}}><thead><tr>{["Source","Res #","Facility","Campus","Organization","Date","Time","Revenue","Status",""].map(h=><th key={h} style={TH}>{h}</th>)}</tr></thead>
           <tbody>{upcoming.map((x,i)=><tr key={x.id} style={{background:i%2===0?C.g50:C.w}}><td style={TD}><span title="PracticePlan Booking">🟢</span></td><td style={{...TD,fontWeight:700,color:C.blue}}>{x.id}</td><td style={{...TD,fontWeight:600,color:C.g700}}>{x.a}</td><td style={{...TD,color:C.g500,fontSize:12}}>{x.fac}</td><td style={{...TD,color:C.g600}}>{x.c}</td><td style={{...TD,color:C.g600}}>{x.d}</td><td style={{...TD,color:C.g600}}>{x.t}</td><td style={{...TD,fontWeight:700}}>${x.r.toFixed(2)}</td><td style={TD}><span style={statusBadge("completed")}>confirmed</span></td><td style={TD}><button onClick={()=>setSelRes(i)} style={{...btnO,padding:"5px 12px",fontSize:12}}>View</button></td></tr>)}</tbody>
         </table>
-      </Card>}
+      </div></Card>}
     </>}
 
     {/* ---- APPROVALS ---- */}
     {subTab==="approvals"&&<>
-      <div style={{display:"flex",justifyContent:"space-between",alignItems:"center",flexWrap:"wrap",gap:12}}>
+      <div className="pp-filter-bar" style={{display:"flex",justifyContent:"space-between",alignItems:"center",flexWrap:"wrap",gap:12}}>
         <div style={{display:"flex",gap:10,alignItems:"center",flexWrap:"wrap"}}>
           <div style={{display:"flex",gap:4,background:C.g100,borderRadius:10,padding:3}}>{[["all","All"],["pending","Pending"],["approved","Approved"],["denied","Denied"]].map(([k,l])=><button key={k} onClick={()=>setApprovalFilt(k)} style={pill(approvalFilt===k)}>{l}</button>)}</div>
           <div style={{position:"relative"}}><span style={{position:"absolute",left:10,top:"50%",transform:"translateY(-50%)",fontSize:14,color:C.g400}}>🔍</span><input type="text" placeholder="Search by customer..." style={{padding:"9px 14px 9px 32px",border:`1px solid ${C.g300}`,borderRadius:8,fontSize:13,width:200,fontFamily:font}}/></div>
@@ -759,9 +759,8 @@ function Rentals(){
         <ExportBtns/>
       </div>
 
-      {/* Approval cards */}
       {filteredApprovals.map((a,i)=>{const totalRev=a.bk.reduce((s,b)=>s+b.rev,0);const totalHrs=a.bk.reduce((s,b)=>s+b.hours,0);return <Card key={a.id} style={{border:a.status==="pending"&&a.expiresIn==="0 Days"?`1px solid ${C.red}30`:a.status==="pending"?`1px solid ${C.orange}25`:`1px solid ${C.g200}`,background:a.status==="pending"&&a.expiresIn==="0 Days"?`${C.red}03`:a.status==="pending"?`${C.orange}03`:C.w}}>
-        <div style={{display:"flex",justifyContent:"space-between",alignItems:"flex-start",gap:16,flexWrap:"wrap"}}>
+        <div className="pp-approval-card" style={{display:"flex",justifyContent:"space-between",alignItems:"flex-start",gap:16,flexWrap:"wrap"}}>
           <div style={{display:"flex",gap:14,alignItems:"flex-start",flex:1,minWidth:0}}>
             <div style={{width:44,height:44,borderRadius:12,background:a.color,display:"flex",alignItems:"center",justifyContent:"center",color:C.w,fontWeight:800,fontSize:14,flexShrink:0}}>{a.photo}</div>
             <div style={{flex:1,minWidth:0}}>
@@ -773,7 +772,7 @@ function Rentals(){
                 {a.status==="pending"&&a.expiresIn==="0 Days"&&<span style={{background:C.red,color:C.w,padding:"2px 8px",borderRadius:4,fontSize:10,fontWeight:800}}>EXPIRES TODAY</span>}
                 {a.status==="pending"&&a.expiresIn!=="0 Days"&&<span style={{fontSize:11,color:C.orange,fontWeight:600}}>Expires in {a.expiresIn}</span>}
               </div>
-              <div style={{display:"grid",gridTemplateColumns:"repeat(auto-fill,minmax(160px,1fr))",gap:8,margin:"8px 0"}}>
+              <div className="pp-approval-grid" style={{display:"grid",gridTemplateColumns:"repeat(auto-fill,minmax(160px,1fr))",gap:8,margin:"8px 0"}}>
                 {[["Asset",a.bk[0].asset],["Campus",a.campus],["Dates",a.bk.length===1?a.bk[0].date:`${a.bk[0].date} + ${a.bk.length-1} more`],["Hours",totalHrs+"h total"],["Revenue","$"+totalRev.toLocaleString()],["Submitted",a.submitted]].map(([l,v])=><div key={l}>
                   <div style={{fontSize:9,fontWeight:700,color:C.g400,textTransform:"uppercase",letterSpacing:"0.06em"}}>{l}</div>
                   <div style={{fontSize:13,fontWeight:600,color:C.g700}}>{v}</div>
@@ -782,9 +781,9 @@ function Rentals(){
               {a.notes&&<div style={{fontSize:12,color:C.g500,fontStyle:"italic",marginTop:4,padding:"8px 12px",background:C.g50,borderRadius:6,border:`1px solid ${C.g100}`}}>{a.notes}</div>}
             </div>
           </div>
-          <div style={{display:"flex",flexDirection:"column",gap:6,alignItems:"flex-end",flexShrink:0}}>
+          <div className="pp-approval-right" style={{display:"flex",flexDirection:"column",gap:6,alignItems:"flex-end",flexShrink:0}}>
             <div style={{fontSize:24,fontWeight:900,color:C.g800}}>${totalRev.toLocaleString()}</div>
-            {a.status==="pending"&&<div style={{display:"flex",gap:6}}>
+            {a.status==="pending"&&<div className="pp-approval-actions" style={{display:"flex",gap:6}}>
               <button onClick={()=>triggerApproval(a.id,"approved")} style={{background:C.green,color:C.w,border:"none",borderRadius:8,padding:"9px 22px",fontSize:13,fontWeight:700,cursor:"pointer",fontFamily:font}}>Approve</button>
               <button onClick={()=>triggerApproval(a.id,"denied")} style={{background:C.w,color:C.red,border:`1px solid ${C.red}30`,borderRadius:8,padding:"9px 22px",fontSize:13,fontWeight:700,cursor:"pointer",fontFamily:font}}>Deny</button>
             </div>}
@@ -792,7 +791,7 @@ function Rentals(){
             <button onClick={()=>setExpandedApproval(expandedApproval===a.id?null:a.id)} style={{background:"none",border:"none",color:C.blue,fontSize:11,fontWeight:700,cursor:"pointer",fontFamily:font,padding:0,marginTop:2}}>{expandedApproval===a.id?"Hide Contact Info":"Contact Info"}</button>
           </div>
         </div>
-        {expandedApproval===a.id&&<div style={{marginTop:12,padding:"14px 18px",background:C.blueL+"40",borderRadius:10,border:`1px solid ${C.g200}`,display:"flex",gap:24,flexWrap:"wrap",marginLeft:58}}>
+        {expandedApproval===a.id&&<div className="pp-approval-expand" style={{marginTop:12,padding:"14px 18px",background:C.blueL+"40",borderRadius:10,border:`1px solid ${C.g200}`,display:"flex",gap:24,flexWrap:"wrap",marginLeft:58}}>
           {[["Contact",a.contact],["Email",a.email],["Phone",a.phone]].map(([l,v])=><div key={l}>
             <div style={{fontSize:9,fontWeight:700,color:C.g400,textTransform:"uppercase",letterSpacing:"0.06em"}}>{l}</div>
             <div style={{fontSize:13,fontWeight:600,color:l==="Email"?C.blue:C.g700,marginTop:2}}>{v}</div>
@@ -853,7 +852,7 @@ function Reporting(){
   const maxDistrib=Math.max(...distrib,1);
 
   return <div style={{display:"flex",flexDirection:"column",gap:20}}>
-    <div style={{display:"flex",gap:8,flexWrap:"wrap"}}>{rTabs.map((t,i)=><button key={t} onClick={()=>setRt(i)} style={{...btnO,...(rt===i?{background:C.blue,color:C.w,border:"none"}:{})}}>{t}</button>)}</div>
+    <div className="pp-report-tabs" style={{display:"flex",gap:8,flexWrap:"wrap"}}>{rTabs.map((t,i)=><button key={t} onClick={()=>setRt(i)} style={{...btnO,...(rt===i?{background:C.blue,color:C.w,border:"none"}:{})}}>{t}</button>)}</div>
 
     {rt===0&&<>
       {/* Ratings header metrics */}
@@ -1478,13 +1477,13 @@ function Payments(){
   const totalRev=paymentsData.reduce((s,p)=>s+p.rev,0);
   const failedRev=paymentsData.filter(p=>p.status==="failed").reduce((s,p)=>s+p.rev,0);
   return <div style={{display:"flex",flexDirection:"column",gap:20}}>
-    <div style={{display:"flex",gap:12,flexWrap:"wrap"}}>
+    <div className="pp-pay-metrics" style={{display:"flex",gap:12,flexWrap:"wrap"}}>
       <Card style={{flex:1,minWidth:150}}><div style={{fontSize:10,fontWeight:700,color:C.g400,textTransform:"uppercase",letterSpacing:"0.08em",marginBottom:6}}>Total Processed</div><div style={{fontSize:22,fontWeight:800,color:C.g800}}>${totalRev.toLocaleString()}</div></Card>
       <Card style={{flex:1,minWidth:150}}><div style={{fontSize:10,fontWeight:700,color:C.g400,textTransform:"uppercase",letterSpacing:"0.08em",marginBottom:6}}>Successful</div><div style={{fontSize:22,fontWeight:800,color:C.green}}>${(totalRev-failedRev).toLocaleString()}</div></Card>
       <Card style={{flex:1,minWidth:150}}><div style={{fontSize:10,fontWeight:700,color:C.g400,textTransform:"uppercase",letterSpacing:"0.08em",marginBottom:6}}>Failed / At Risk</div><div style={{fontSize:22,fontWeight:800,color:C.red}}>${failedRev.toLocaleString()}</div></Card>
       <Card style={{flex:1,minWidth:150}}><div style={{fontSize:10,fontWeight:700,color:C.g400,textTransform:"uppercase",letterSpacing:"0.08em",marginBottom:6}}>Transactions</div><div style={{fontSize:22,fontWeight:800,color:C.g800}}>{paymentsData.length}</div></Card>
     </div>
-    <div style={{display:"flex",justifyContent:"space-between",alignItems:"center",flexWrap:"wrap",gap:12}}>
+    <div className="pp-pay-filters" style={{display:"flex",justifyContent:"space-between",alignItems:"center",flexWrap:"wrap",gap:12}}>
       <div style={{display:"flex",gap:4,background:C.g100,borderRadius:10,padding:3}}>
         {["all","completed","pending","failed"].map(s=><button key={s} onClick={()=>setStatusFilt(s)} style={pill(statusFilt===s)}>{s==="all"?"All":s.charAt(0).toUpperCase()+s.slice(1)}</button>)}
       </div>
@@ -1493,7 +1492,7 @@ function Payments(){
         <button style={{...btnO,color:C.blue,borderColor:`${C.blue}40`}}>Export CSV</button>
       </div>
     </div>
-    <Card><table style={{width:"100%",borderCollapse:"collapse",fontSize:13}}><thead><tr>{["Date","Asset","Facility","Participant","Revenue","Status"].map(h=><th key={h} style={TH}>{h}</th>)}</tr></thead>
+    <Card np><div className="pp-table-wrap"><table style={{width:"100%",borderCollapse:"collapse",fontSize:13}}><thead><tr>{["Date","Asset","Facility","Participant","Revenue","Status"].map(h=><th key={h} style={TH}>{h}</th>)}</tr></thead>
       <tbody>{filtered.map((p,i)=><tr key={i} style={{background:i%2===0?C.g50:C.w}}>
         <td style={{...TD,color:C.g500}}><div style={{fontWeight:600,color:C.g700}}>{p.date}</div><div style={{fontSize:11}}>{p.time}</div></td>
         <td style={{...TD,fontWeight:600,color:C.g700}}>{p.asset}</td>
@@ -1502,7 +1501,7 @@ function Payments(){
         <td style={{...TD,fontWeight:700}}>${p.rev.toFixed(2)}</td>
         <td style={TD}><span style={statusBadge(p.status)}><span style={{width:6,height:6,borderRadius:"50%",background:"currentColor"}}/>{p.status}</span></td>
       </tr>)}</tbody>
-    </table></Card>
+    </table></div></Card>
   </div>
 }
 
@@ -1560,21 +1559,112 @@ export default function App(){
           animation:slideDown .2s ease;
           overflow-y:auto;
         }
-        .pp-main{padding:12px 10px}
+        .pp-main{padding:12px 8px}
         .pp-notif-panel{width:calc(100vw - 24px);right:-40px}
       }
 
       @keyframes slideDown{from{opacity:0;transform:translateY(-8px)}to{opacity:1;transform:translateY(0)}}
 
+      /* ===== BASE MOBILE RESETS ===== */
       @media(max-width:768px){
         table{font-size:12px !important}
-        th,td{padding:8px 6px !important}
+        th,td{padding:8px 6px !important;font-size:11px !important}
         .pp-card{padding:14px !important;border-radius:10px !important}
         .pp-card[style*="padding: 0"]{padding:0 !important}
+        button{min-height:36px}
+        select{min-height:38px}
+        input[type="text"]{min-height:38px}
       }
 
-      /* Responsive table wrapper */
+      /* ===== DASHBOARD MOBILE ===== */
+      /* Pending approval rows - stack on mobile */
+      @media(max-width:768px){
+        .pp-pending-row{flex-direction:column !important;align-items:flex-start !important;gap:8px !important}
+        .pp-pending-row .pp-pending-info{width:100%}
+        .pp-pending-row .pp-pending-actions{width:100%;display:flex !important;justify-content:flex-start !important;flex-wrap:wrap !important;gap:6px !important}
+        .pp-pending-row .pp-pending-actions button{flex:1;min-width:0 !important;padding:8px 10px !important;font-size:12px !important}
+        .pp-pending-header{flex-direction:column !important;align-items:flex-start !important;gap:8px !important}
+      }
+
+      /* Metric cards - 2-col on tablet, 2-col on mobile */
+      @media(max-width:768px){
+        .pp-metrics{display:grid !important;grid-template-columns:1fr 1fr !important;gap:8px !important}
+        .pp-metrics .pp-card{min-width:0 !important}
+      }
+      @media(max-width:420px){
+        .pp-metrics{grid-template-columns:1fr 1fr !important}
+      }
+
+      /* Welcome banner text */
+      @media(max-width:768px){
+        .pp-welcome{padding:16px 18px !important;border-radius:12px !important}
+        .pp-welcome>div:first-child{font-size:16px !important}
+      }
+
+      /* ===== RENTALS MOBILE ===== */
+      /* Sub-tabs - scrollable row */
+      @media(max-width:768px){
+        .pp-sub-tabs{overflow-x:auto;-webkit-overflow-scrolling:touch;white-space:nowrap;margin:0 -8px;padding:0 8px;scrollbar-width:none;-ms-overflow-style:none}
+        .pp-sub-tabs::-webkit-scrollbar{display:none}
+        .pp-sub-tabs button{flex-shrink:0;padding:10px 16px !important;font-size:13px !important}
+      }
+
+      /* Filter bars - stack on mobile */
+      @media(max-width:768px){
+        .pp-filter-bar{flex-direction:column !important;align-items:stretch !important;gap:8px !important}
+        .pp-filter-bar>div{width:100% !important}
+        .pp-filter-bar input[type="text"]{width:100% !important}
+        .pp-filter-bar select{width:100% !important}
+        .pp-filter-actions{width:100%;display:flex;gap:6px}
+        .pp-filter-actions button{flex:1}
+      }
+
+      /* Calendar - hide on mobile, show message */
+      @media(max-width:640px){
+        .pp-calendar-wrap table{font-size:8px !important}
+        .pp-calendar-wrap td{height:60px !important;padding:1px !important}
+        .pp-calendar-wrap th{font-size:8px !important;padding:4px 2px !important}
+      }
+
+      /* Legend row */
+      @media(max-width:768px){
+        .pp-legend{flex-direction:column !important;gap:6px !important}
+      }
+
+      /* Approval cards - completely restructure on mobile */
+      @media(max-width:768px){
+        .pp-approval-card{flex-direction:column !important;gap:12px !important}
+        .pp-approval-card .pp-approval-right{flex-direction:row !important;align-items:center !important;justify-content:space-between !important;width:100% !important;flex-wrap:wrap !important;gap:8px !important}
+        .pp-approval-card .pp-approval-right>div:first-child{font-size:18px !important}
+        .pp-approval-card .pp-approval-actions{display:flex;gap:6px;flex-wrap:wrap}
+        .pp-approval-card .pp-approval-actions button{padding:8px 14px !important;font-size:12px !important}
+        .pp-approval-grid{grid-template-columns:1fr 1fr !important}
+        .pp-approval-expand{margin-left:0 !important;flex-direction:column !important;gap:8px !important}
+      }
+      @media(max-width:420px){
+        .pp-approval-grid{grid-template-columns:1fr 1fr !important}
+      }
+
+      /* ===== PAYMENTS MOBILE ===== */
+      @media(max-width:768px){
+        .pp-pay-metrics{display:grid !important;grid-template-columns:1fr 1fr !important;gap:8px !important}
+        .pp-pay-metrics .pp-card{min-width:0 !important}
+        .pp-pay-filters{flex-direction:column !important;align-items:stretch !important;gap:8px !important}
+        .pp-pay-filters>div{width:100% !important}
+        .pp-pay-filters input{width:100% !important}
+      }
+
+      /* ===== DATA TABLES MOBILE ===== */
+      /* All tables get horizontal scroll wrapper */
       .pp-table-wrap{overflow-x:auto;-webkit-overflow-scrolling:touch;margin:0 -4px;padding:0 4px}
+
+      /* Mobile-card view for tables */
+      @media(max-width:640px){
+        .pp-mobile-cards thead{display:none}
+        .pp-mobile-cards tbody tr{display:flex;flex-direction:column;padding:12px 0;border-bottom:1px solid ${C.g200}}
+        .pp-mobile-cards tbody tr td{display:flex;justify-content:space-between;align-items:center;padding:3px 0 !important;border:none !important}
+        .pp-mobile-cards tbody tr td::before{content:attr(data-label);font-size:10px;font-weight:700;color:${C.g400};text-transform:uppercase;letter-spacing:0.06em}
+      }
 
       /* Responsive flex helpers */
       @media(max-width:640px){
@@ -1583,19 +1673,22 @@ export default function App(){
         .pp-full-sm{min-width:100% !important;flex:1 1 100% !important}
       }
 
-      /* Touch-friendly tap targets */
-      @media(max-width:768px){
-        button{min-height:36px}
-        select{min-height:38px}
-        input[type="text"]{min-height:38px}
-      }
-
       /* Fix grid columns on mobile */
       @media(max-width:640px){
+        [style*="gridTemplateColumns"]{grid-template-columns:1fr 1fr !important}
+      }
+      @media(max-width:420px){
         [style*="gridTemplateColumns"]{grid-template-columns:1fr !important}
       }
       @media(min-width:641px) and (max-width:768px){
-        [style*="repeat(auto-fill"]{grid-template-columns:repeat(auto-fill,minmax(160px,1fr)) !important}
+        [style*="repeat(auto-fill"]{grid-template-columns:repeat(auto-fill,minmax(140px,1fr)) !important}
+      }
+
+      /* ===== ORGANIZATION / SETTINGS / REPORTING MOBILE ===== */
+      @media(max-width:768px){
+        .pp-report-tabs{overflow-x:auto;-webkit-overflow-scrolling:touch;white-space:nowrap;flex-wrap:nowrap !important;scrollbar-width:none}
+        .pp-report-tabs::-webkit-scrollbar{display:none}
+        .pp-report-tabs button{flex-shrink:0 !important;white-space:nowrap}
       }
     `}</style>
 
