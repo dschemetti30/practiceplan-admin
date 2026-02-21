@@ -1,3 +1,4 @@
+/* PracticePlan Admin v2.8 */
 import React, { useState, createContext, useContext, useEffect, useRef } from "react";
 import { AreaChart, Area, BarChart, Bar, PieChart, Pie, Cell, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, Legend } from "recharts";
 
@@ -25,15 +26,14 @@ const facilities={
   "Donaldsonville HS":["DO Gym"],
 };
 const facilityFull={"DT Gym":"Dutchtown Gymnasium","DT Stadium":"Dutchtown Stadium","DT Fields":"Dutchtown Fields","EA Gym":"East Ascension Gym","EA Cafeteria":"EA Cafeteria","EA Pool":"East Ascension Pool","Spartan Stadium":"Spartan Stadium","Gator Stadium":"Gator Stadium","SA Gym":"St. Amant Gymnasium","SA Fields":"St. Amant Fields","PV Complex":"Prairieville Complex","PV Gym":"Prairieville Gymnasium","DO Gym":"Donaldsonville Gym","District Office":"District Office","District":"District","Away":"Away","All Campuses":"All Campuses"};
-const tabs=["Dashboard","Rentals","Organization","Reporting","Users","Payments"];
+const tabs=["Dashboard","Rentals","Organization","Reporting","Users","Promote"];
 const monthlyRev=[{m:"Aug",r:3420},{m:"Sep",r:7850},{m:"Oct",r:11240},{m:"Nov",r:9680},{m:"Dec",r:5840},{m:"Jan",r:14220},{m:"Feb",r:8761}];
-const weeklyTrend=[{w:"W1",r:2875,l:1620},{w:"W2",r:3340,l:2780},{w:"W3",r:1960,l:3150},{w:"W4",r:4580,l:2890},{w:"W5",r:5100,l:3340},{w:"W6",r:3761,l:2020}];
 const facMix=[
   {n:"Dutchtown High School",v:18296,c:"#0076BB",assets:3,bookings:62,topAsset:"Dutchtown Gymnasium"},
-  {n:"East Ascension High School",v:14700,c:"#00A84F",assets:3,bookings:48,topAsset:"Spartan Stadium"},
-  {n:"St. Amant High School",v:11865,c:"#F59E0B",assets:2,bookings:35,topAsset:"St. Amant Gymnasium"},
-  {n:"Prairieville High School",v:9450,c:"#7C3AED",assets:2,bookings:28,topAsset:"Prairieville Gymnasium"},
-  {n:"Donaldsonville High School",v:6700,c:"#F15A29",assets:2,bookings:19,topAsset:"Tiger Stadium"},
+  {n:"East Ascension High School",v:14700,c:"#1A8FCE",assets:3,bookings:48,topAsset:"Spartan Stadium"},
+  {n:"St. Amant High School",v:11865,c:"#4DA8D8",assets:2,bookings:35,topAsset:"St. Amant Gymnasium"},
+  {n:"Prairieville High School",v:9450,c:"#80C1E2",assets:2,bookings:28,topAsset:"Prairieville Gymnasium"},
+  {n:"Donaldsonville High School",v:6700,c:"#B3D9ED",assets:2,bookings:19,topAsset:"Tiger Stadium"},
 ];
 const assetPerfData={
   day:[{a:"Dutchtown Gymnasium",r:425,b:3,u:72},{a:"Spartan Stadium",r:0,b:0,u:0},{a:"St. Amant Gymnasium",r:275,b:2,u:58},{a:"Prairieville Gymnasium",r:150,b:1,u:45},{a:"Gator Stadium",r:0,b:0,u:0},{a:"Tiger Stadium",r:0,b:0,u:0}],
@@ -163,7 +163,7 @@ const defaultVenueAssign={
 };
 const amenities=amenityLib.filter(a=>defaultEnabled.includes(a.id));
 /* Notifications */
-const notifs=[{type:"alert",msg:"Gonzales FC insurance expired 01/15/2026 - 2 upcoming bookings at risk",time:"2h ago",read:false},{type:"approval",msg:"Pending Approval: Bayou City Volleyball - Dutchtown Gym, 2/14 6-9 PM ($525)",time:"35m ago",read:false,approvalId:"APR-0042"},{type:"info",msg:"Bayou City Volleyball booked Dutchtown Gym for 2/7",time:"5h ago",read:false},{type:"approval",msg:"Pending Approval: Louisiana Tigers AAU - EA Gymnasium, 2/15 10AM-2PM ($400)",time:"4h ago",read:false,approvalId:"APR-0041"},{type:"success",msg:"February payout processed - $8,761.25",time:"1d ago",read:true},{type:"alert",msg:"RankOne sync conflict: Varsity Basketball overlaps PP booking on 2/18 at DT Gym",time:"1d ago",read:false},{type:"approval",msg:"Pending Approval: Gonzales FC - Prairieville Complex, 2/22 8AM-12PM ($475)",time:"1d ago",read:false,approvalId:"APR-0040"},{type:"info",msg:"Louisiana Tigers AAU completed onboarding",time:"3d ago",read:true}];
+const notifsInit=[{type:"alert",msg:"Gonzales FC insurance expired 01/15/2026 - 2 upcoming bookings at risk",time:"2h ago",read:false},{type:"approval",msg:"Pending Approval: Bayou City Volleyball - Dutchtown Gym, 2/14 6-9 PM ($525)",time:"35m ago",read:false,approvalId:"APR-0042"},{type:"info",msg:"Bayou City Volleyball booked Dutchtown Gym for 2/7",time:"5h ago",read:false},{type:"approval",msg:"Pending Approval: Louisiana Tigers AAU - EA Gymnasium, 2/15 10AM-2PM ($400)",time:"4h ago",read:false,approvalId:"APR-0041"},{type:"success",msg:"February payout processed - $8,761.25",time:"1d ago",read:true},{type:"alert",msg:"RankOne sync conflict: Varsity Basketball overlaps PP booking on 2/18 at DT Gym",time:"1d ago",read:false},{type:"approval",msg:"Pending Approval: Gonzales FC - Prairieville Complex, 2/22 8AM-12PM ($475)",time:"1d ago",read:false,approvalId:"APR-0040"},{type:"info",msg:"Louisiana Tigers AAU completed onboarding",time:"3d ago",read:true}];
 /* Approvals data */
 let approvalsDataInit=[
   {id:"APR-0042",org:"Bayou City Volleyball",contact:"Sarah Fontenot",email:"bayoucityvb@gmail.com",phone:"(225) 555-0182",campus:"Dutchtown High School",discount:0,expiresIn:"2 Days",status:"pending",submitted:"02/04/2026",notes:"Recurring weekly booking request for volleyball practice. Has existing COI on file.",photo:"BC",color:C.blue,insStart:"03/01/2025",insEnd:"03/01/2026",insActive:true,insLimit:"$300,000",
@@ -195,59 +195,133 @@ let globalApprovals=null;
 let globalSetApprovals=null;
 let globalPrompt=null;
 let globalSetPrompt=null;
+let globalRequireSiteAdmin=null;
+let globalSetRequireSiteAdmin=null;
+let globalAssignedAdmins=null;
+let globalSetAssignedAdmins=null;
+let globalNotifs=null;
 function useApprovals(){return{approvals:globalApprovals||approvalsDataInit,setApprovals:globalSetApprovals||(()=>{}),prompt:globalPrompt,setPrompt:globalSetPrompt||(()=>{})}}
+function useSiteAdmin(){return{requireSiteAdmin:globalRequireSiteAdmin??true,setRequireSiteAdmin:globalSetRequireSiteAdmin||(()=>{}),assignedAdmins:globalAssignedAdmins||{},setAssignedAdmins:globalSetAssignedAdmins||(()=>{})}}
 function triggerApproval(id){if(globalSetPrompt)globalSetPrompt({id,reason:""})}
 
 /* Approval Confirmation Prompt */
 function ApprovalPrompt(){
   const {prompt,setPrompt,approvals,setApprovals}=useApprovals();
+  const {assignedAdmins,setAssignedAdmins}=useSiteAdmin();
+  const [selAdmin,setSelAdmin]=useState(null);
+  const [showAllAdmins,setShowAllAdmins]=useState(false);
   if(!prompt)return null;
   const a=approvals.find(x=>x.id===prompt.id);
   if(!a)return null;
   const hasNote=prompt.reason.trim().length>0;
+
+  /* Site admins for the campus */
+  const campusAdmins=usersData.filter(u=>u.role==="Site Admin"&&u.loc===a.campus);
+  const allAdmins=usersData.filter(u=>u.role==="Site Admin");
+  const relevantAdmins=campusAdmins.length>0?campusAdmins:allAdmins;
+
   const doAction=(action)=>{
     const note=hasNote?` ${action==="approved"?"Approved":"Denied"} by Marcus Williams: ${prompt.reason.trim()}`:"";
-    setApprovals(approvals.map(x=>x.id===prompt.id?{...x,status:action,expiresIn:"--",notes:note?((x.notes||"")+note):x.notes}:x));
+    const adminNote=selAdmin?` Site Admin: ${selAdmin}`:"";
+    setApprovals(approvals.map(x=>x.id===prompt.id?{...x,status:action,expiresIn:"--",notes:note?((x.notes||"")+note+adminNote):x.notes}:x));
+    if(selAdmin&&action==="approved"){
+      const newAssigned={...assignedAdmins};
+      /* Map by day-label so calendar can look them up */
+      a.bk.forEach(b=>{
+        const dayMatch=b.date?parseInt(b.date.split("/")[1]):null;
+        const labelKey=dayMatch?`${dayMatch}-PP - ${a.org}`:b.bid;
+        newAssigned[labelKey]=selAdmin;
+      });
+      setAssignedAdmins(newAssigned);
+    }
     setPrompt(null);
+    setSelAdmin(null);
+    setShowAllAdmins(false);
     if(globalShowToast)globalShowToast({
       type:action==="approved"?"success":"error",
       title:action==="approved"?"Reservation Approved":"Reservation Rejected",
-      msg:`${a.org} - ${a.id}`,
+      msg:`${a.org} - ${a.id}${selAdmin?` - Assigned to ${selAdmin}`:""}`,
       color:action==="approved"?C.green:C.red
     });
   };
   const totalRev=a.bk.reduce((s,b)=>s+b.rev,0);
   return <>
-    <div onClick={()=>setPrompt(null)} style={{position:"fixed",inset:0,background:"rgba(15,23,42,0.4)",backdropFilter:"blur(2px)",zIndex:300,animation:"fadeIn .2s ease"}}/>
-    <div style={{position:"fixed",top:"50%",left:"50%",transform:"translate(-50%,-50%)",width:400,maxWidth:"92vw",background:C.cardBg,borderRadius:R.lg,boxShadow:`0 20px 60px rgba(0,0,0,${C.bg==="#0F1318"?0.4:0.18})`,zIndex:301,fontFamily:font,animation:"slideUp .25s ease",overflow:"hidden"}}>
-      <div style={{padding:"20px 24px"}}>
+    <div onClick={()=>{setPrompt(null);setSelAdmin(null);setShowAllAdmins(false)}} style={{position:"fixed",inset:0,background:"rgba(15,23,42,0.4)",backdropFilter:"blur(2px)",zIndex:300,animation:"fadeIn .2s ease"}}/>
+    <div style={{position:"fixed",top:"50%",left:"50%",transform:"translate(-50%,-50%)",width:440,maxWidth:"92vw",background:C.cardBg,borderRadius:R.lg,boxShadow:`0 20px 60px rgba(0,0,0,${C.bg==="#0F1318"?0.4:0.18})`,zIndex:301,fontFamily:font,animation:"slideUp .25s ease",overflow:"hidden"}}>
+      <div style={{padding:"22px 24px 20px"}}>
         {/* Header */}
-        <div style={{display:"flex",justifyContent:"space-between",alignItems:"flex-start",marginBottom:16}}>
-          <div>
-            <div style={{fontSize:15,fontWeight:800,color:C.g800,letterSpacing:"-0.01em"}}>Review Reservation</div>
-            <div style={{fontSize:12,color:C.g500,marginTop:3}}>{a.org} - <span style={{fontFamily:"monospace",fontWeight:600,color:C.g600}}>{a.id}</span></div>
+        <div style={{display:"flex",justifyContent:"space-between",alignItems:"flex-start",marginBottom:18}}>
+          <div style={{display:"flex",gap:12,alignItems:"center"}}>
+            <div style={{width:38,height:38,borderRadius:10,background:a.color,display:"flex",alignItems:"center",justifyContent:"center",color:"#fff",fontWeight:800,fontSize:13,flexShrink:0}}>{a.photo}</div>
+            <div>
+              <div style={{fontSize:16,fontWeight:800,color:C.g800,letterSpacing:"-0.01em"}}>{a.org}</div>
+              <div style={{fontSize:11,color:C.g500,marginTop:2}}>{a.contact} - <span style={{fontFamily:"monospace",fontWeight:600,color:C.g600}}>{a.id}</span></div>
+            </div>
           </div>
-          <button onClick={()=>setPrompt(null)} style={{background:C.g100,border:"none",width:28,height:28,borderRadius:R.sm,cursor:"pointer",display:"flex",alignItems:"center",justifyContent:"center"}}>{I.x(12,C.g500)}</button>
+          <button onClick={()=>{setPrompt(null);setSelAdmin(null);setShowAllAdmins(false)}} style={{background:C.g100,border:"none",width:28,height:28,borderRadius:R.sm,cursor:"pointer",display:"flex",alignItems:"center",justifyContent:"center"}}>{I.x(12,C.g500)}</button>
         </div>
 
         {/* Booking summary */}
-        <div style={{display:"flex",gap:0,borderRadius:R.sm,border:`1px solid ${C.g200}`,overflow:"hidden",marginBottom:16}}>
+        <div style={{display:"flex",gap:0,borderRadius:R.sm,border:`1px solid ${C.g200}`,overflow:"hidden",marginBottom:14}}>
           {[["Asset",a.bk[0].asset],["Date",a.bk.length===1?a.bk[0].date:a.bk[0].date+" +"+(a.bk.length-1)],["Revenue","$"+totalRev.toLocaleString()]].map(([l,v],i)=><div key={l} style={{flex:1,padding:"10px 12px",background:C.g50,borderRight:i<2?`1px solid ${C.g200}`:"none"}}>
             <div style={{fontSize:9,fontWeight:700,color:C.g400,textTransform:"uppercase",letterSpacing:"0.06em"}}>{l}</div>
             <div style={{fontSize:12,fontWeight:600,color:C.g700,marginTop:2}}>{v}</div>
           </div>)}
         </div>
 
+        {/* Insurance status callout */}
+        <div style={{padding:"10px 14px",borderRadius:R.sm,background:a.insActive?`${C.green}06`:`${C.red}08`,border:`1px solid ${a.insActive?`${C.green}20`:`${C.red}25`}`,marginBottom:14,display:"flex",alignItems:"center",gap:10}}>
+          <div style={{width:28,height:28,borderRadius:8,background:a.insActive?`${C.green}12`:`${C.red}12`,display:"flex",alignItems:"center",justifyContent:"center",flexShrink:0}}>
+            {a.insActive?I.check(14,C.green):<span style={{fontSize:14}}>⚠</span>}
+          </div>
+          <div style={{flex:1,minWidth:0}}>
+            <div style={{fontSize:12,fontWeight:700,color:a.insActive?C.green:C.red}}>
+              {a.insActive?"Insurance Verified":"Insurance Not Verified"}
+            </div>
+            <div style={{fontSize:10,color:C.g500,marginTop:1}}>
+              {a.insActive
+                ?<>COI on file - expires {a.insEnd}{a.insLimit&&a.insLimit!=="N/A"?` - ${a.insLimit} coverage`:""}</>
+                :<>Certificate expired {a.insEnd}. Request updated COI before approving.</>
+              }
+            </div>
+          </div>
+          <button style={{background:"none",border:`1px solid ${C.g200}`,borderRadius:6,padding:"5px 10px",fontSize:10,fontWeight:600,color:C.g600,cursor:"pointer",fontFamily:font,flexShrink:0,whiteSpace:"nowrap"}}>View COI</button>
+        </div>
+
+        {/* Site admin assignment */}
+        <div style={{marginBottom:16}}>
+          <div style={{fontSize:12,fontWeight:600,color:C.g700,marginBottom:6}}>Assign Site Admin</div>
+          <div style={{display:"flex",flexDirection:"column",gap:4}}>
+            {(showAllAdmins?allAdmins:relevantAdmins).map(s=>{
+              const isSel=selAdmin===s.name;
+              const isCampusMatch=s.loc===a.campus;
+              return <div key={s.name} onClick={()=>setSelAdmin(isSel?null:s.name)} style={{display:"flex",alignItems:"center",gap:10,padding:"8px 12px",borderRadius:8,border:`1px solid ${isSel?C.blue:C.g200}`,background:isSel?`${C.blue}06`:C.cardBg,cursor:"pointer",transition:"all .12s"}}>
+                <div style={{width:26,height:26,borderRadius:7,background:s.color,display:"flex",alignItems:"center",justifyContent:"center",color:"#fff",fontWeight:800,fontSize:9,flexShrink:0}}>{s.initials}</div>
+                <div style={{flex:1,minWidth:0}}>
+                  <div style={{display:"flex",alignItems:"center",gap:5}}>
+                    <span style={{fontSize:12,fontWeight:600,color:C.g800}}>{s.name}</span>
+                    {isCampusMatch&&<span style={{fontSize:8,fontWeight:700,color:C.green,background:C.greenL,padding:"1px 5px",borderRadius:3}}>Campus</span>}
+                  </div>
+                  <div style={{fontSize:10,color:C.g400}}>{s.loc}</div>
+                </div>
+                {isSel&&<span style={{width:18,height:18,borderRadius:5,background:C.blue,color:"#fff",display:"flex",alignItems:"center",justifyContent:"center",fontSize:10,fontWeight:800,flexShrink:0}}>✓</span>}
+              </div>})}
+          </div>
+          {!showAllAdmins&&campusAdmins.length>0&&campusAdmins.length<allAdmins.length&&<button onClick={()=>setShowAllAdmins(true)} style={{background:"none",border:"none",color:C.blue,fontSize:11,fontWeight:600,cursor:"pointer",fontFamily:font,padding:"6px 0 0",display:"flex",alignItems:"center",gap:4}}>Show all site admins ({allAdmins.length})</button>}
+          {showAllAdmins&&<button onClick={()=>setShowAllAdmins(false)} style={{background:"none",border:"none",color:C.g400,fontSize:11,fontWeight:600,cursor:"pointer",fontFamily:font,padding:"6px 0 0"}}>Show campus admin only</button>}
+          {!selAdmin&&<div style={{fontSize:10,color:C.g400,marginTop:4,fontStyle:"italic"}}>Select who will be on-site for this rental. You can also assign later from the full review.</div>}
+        </div>
+
         {/* Note */}
-        <div style={{marginBottom:20}}>
+        <div style={{marginBottom:18}}>
           <div style={{fontSize:12,fontWeight:600,color:C.g700,marginBottom:5}}>Note <span style={{fontWeight:400,color:C.g400}}>(optional)</span></div>
           <textarea value={prompt.reason} onChange={e=>setPrompt({...prompt,reason:e.target.value})} placeholder="Add a note..." rows={2} style={{width:"100%",padding:"10px 12px",border:`1px solid ${C.cardBorder}`,borderRadius:R.sm,fontSize:12,fontFamily:font,resize:"vertical",color:C.g700,boxSizing:"border-box",background:C.g50}}/>
         </div>
 
         {/* Actions */}
         <div style={{display:"flex",gap:8}}>
-          <button onClick={()=>doAction("approved")} style={{flex:1,padding:"10px",borderRadius:R.sm,border:"none",background:C.green,color:"#fff",fontSize:13,fontWeight:700,cursor:"pointer",fontFamily:font}}>Approve</button>
-          <button onClick={()=>doAction("denied")} style={{flex:1,padding:"10px",borderRadius:R.sm,border:`1px solid ${C.red}30`,background:C.cardBg,color:C.red,fontSize:13,fontWeight:700,cursor:"pointer",fontFamily:font}}>Reject</button>
+          <button onClick={()=>doAction("approved")} style={{flex:1,padding:"11px",borderRadius:R.sm,border:"none",background:C.green,color:"#fff",fontSize:13,fontWeight:700,cursor:"pointer",fontFamily:font}}>Approve</button>
+          <button onClick={()=>doAction("denied")} style={{flex:1,padding:"11px",borderRadius:R.sm,border:`1px solid ${C.red}30`,background:C.cardBg,color:C.red,fontSize:13,fontWeight:700,cursor:"pointer",fontFamily:font}}>Reject</button>
         </div>
       </div>
     </div>
@@ -313,6 +387,7 @@ const txnData=[
 
 /* ======== STYLES ======== */
 const font="'Montserrat', sans-serif";
+const numFont="'DM Sans', 'Montserrat', sans-serif";
 const R={sm:8,md:10,lg:12,xl:16};/* border radius scale */
 /* SVG Icons - inline, no emoji */
 const I={
@@ -345,21 +420,38 @@ const I={
   chevR:(s=16,c=C.g400)=><svg width={s} height={s} viewBox="0 0 24 24" fill="none" stroke={c} strokeWidth="2" strokeLinecap="round"><path d="m9 18 6-6-6-6"/></svg>,
   sun:(s=16,c=C.g500)=><svg width={s} height={s} viewBox="0 0 24 24" fill="none" stroke={c} strokeWidth="2" strokeLinecap="round"><circle cx="12" cy="12" r="5"/><path d="M12 1v2"/><path d="M12 21v2"/><path d="M4.22 4.22l1.42 1.42"/><path d="M18.36 18.36l1.42 1.42"/><path d="M1 12h2"/><path d="M21 12h2"/><path d="M4.22 19.78l1.42-1.42"/><path d="M18.36 5.64l1.42-1.42"/></svg>,
   moon:(s=16,c=C.g500)=><svg width={s} height={s} viewBox="0 0 24 24" fill="none" stroke={c} strokeWidth="2" strokeLinecap="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>,
+  megaphone:(s=18,c=C.g500)=><svg width={s} height={s} viewBox="0 0 24 24" fill="none" stroke={c} strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="m3 11 18-5v12L3 13v-2z"/><path d="M11.6 16.8a3 3 0 1 1-5.8-1.6"/></svg>,
+  share:(s=14,c=C.g500)=><svg width={s} height={s} viewBox="0 0 24 24" fill="none" stroke={c} strokeWidth="2" strokeLinecap="round"><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><path d="m8.59 13.51 6.83 3.98"/><path d="m8.59 10.49 6.83-3.98"/></svg>,
+  download:(s=14,c=C.g500)=><svg width={s} height={s} viewBox="0 0 24 24" fill="none" stroke={c} strokeWidth="2" strokeLinecap="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>,
+  copy:(s=14,c=C.g500)=><svg width={s} height={s} viewBox="0 0 24 24" fill="none" stroke={c} strokeWidth="2" strokeLinecap="round"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>,
 };
-const TH={textAlign:"left",padding:"11px 16px",color:C.g400,fontWeight:700,fontSize:10,textTransform:"uppercase",letterSpacing:"0.08em",borderBottom:`1px solid ${C.g200}`,background:C.g50};
-const TD={padding:"12px 16px",fontSize:13,borderBottom:`1px solid ${C.g100}`};
-const sel={padding:"9px 34px 9px 12px",border:`1px solid ${C.cardBorder}`,borderRadius:R.sm,fontSize:13,color:C.g700,background:C.cardBg,appearance:"none",backgroundImage:`url("data:image/svg+xml,%3Csvg width='10' height='6' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M1 1l4 4 4-4' stroke='%239BA5B3' stroke-width='1.5' fill='none'/%3E%3C/svg%3E")`,backgroundRepeat:"no-repeat",backgroundPosition:"right 10px center",cursor:"pointer",fontWeight:600,fontFamily:font};
-const btnP={background:C.blue,color:"#fff",border:"none",borderRadius:R.sm,padding:"9px 18px",fontSize:13,fontWeight:700,cursor:"pointer",fontFamily:font,display:"inline-flex",alignItems:"center",gap:6,transition:"all .15s"};
-const btnO={background:C.cardBg,color:C.g600,border:`1px solid ${C.cardBorder}`,borderRadius:R.sm,padding:"9px 18px",fontSize:13,fontWeight:600,cursor:"pointer",fontFamily:font,transition:"all .15s"};
+const _TH=()=>({textAlign:"left",padding:"11px 16px",color:C.g400,fontWeight:700,fontSize:10,textTransform:"uppercase",letterSpacing:"0.08em",borderBottom:`1px solid ${C.g200}`,background:C.g50});
+const _TD=()=>({padding:"12px 16px",fontSize:13,borderBottom:`1px solid ${C.g100}`});
+const _sel=()=>({padding:"9px 34px 9px 12px",border:`1px solid ${C.cardBorder}`,borderRadius:R.sm,fontSize:13,color:C.g700,background:C.cardBg,appearance:"none",backgroundImage:`url("data:image/svg+xml,%3Csvg width='10' height='6' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M1 1l4 4 4-4' stroke='%239BA5B3' stroke-width='1.5' fill='none'/%3E%3C/svg%3E")`,backgroundRepeat:"no-repeat",backgroundPosition:"right 10px center",cursor:"pointer",fontWeight:600,fontFamily:font});
+const _btnP=()=>({background:C.blue,color:"#fff",border:"none",borderRadius:R.sm,padding:"9px 18px",fontSize:13,fontWeight:700,cursor:"pointer",fontFamily:font,display:"inline-flex",alignItems:"center",gap:6,transition:"all .15s",whiteSpace:"nowrap"});
+const _btnO=()=>({background:C.cardBg,color:C.g600,border:`1px solid ${C.cardBorder}`,borderRadius:R.sm,padding:"9px 18px",fontSize:13,fontWeight:600,cursor:"pointer",fontFamily:font,transition:"all .15s",whiteSpace:"nowrap",display:"inline-flex",alignItems:"center",gap:6});
+/* Proxy objects that always read current theme */
+const TH=new Proxy({},{get:(_,p)=>_TH()[p],ownKeys:()=>Object.keys(_TH()),getOwnPropertyDescriptor:(_,p)=>({value:_TH()[p],enumerable:true,configurable:true})});
+const TD=new Proxy({},{get:(_,p)=>_TD()[p],ownKeys:()=>Object.keys(_TD()),getOwnPropertyDescriptor:(_,p)=>({value:_TD()[p],enumerable:true,configurable:true})});
+const sel=new Proxy({},{get:(_,p)=>_sel()[p],ownKeys:()=>Object.keys(_sel()),getOwnPropertyDescriptor:(_,p)=>({value:_sel()[p],enumerable:true,configurable:true})});
+const btnP=new Proxy({},{get:(_,p)=>_btnP()[p],ownKeys:()=>Object.keys(_btnP()),getOwnPropertyDescriptor:(_,p)=>({value:_btnP()[p],enumerable:true,configurable:true})});
+const btnO=new Proxy({},{get:(_,p)=>_btnO()[p],ownKeys:()=>Object.keys(_btnO()),getOwnPropertyDescriptor:(_,p)=>({value:_btnO()[p],enumerable:true,configurable:true})});
 const pill=(a)=>({padding:"6px 14px",borderRadius:20,fontSize:11,fontWeight:700,cursor:"pointer",border:"none",fontFamily:font,background:a?C.g800:C.g100,color:a?"#fff":C.g500,transition:"all .15s"});
 const statusBadge=(s)=>{const m={completed:{bg:C.greenL,c:C.green},failed:{bg:C.redL,c:C.red},pending:{bg:C.amberL,c:C.amber},processing:{bg:C.blueL,c:C.blue},paid:{bg:C.greenL,c:C.green}};const x=m[s]||m.pending;return{display:"inline-flex",alignItems:"center",gap:5,padding:"4px 10px",borderRadius:20,background:x.bg,color:x.c,fontSize:10,fontWeight:700,textTransform:"uppercase",letterSpacing:"0.04em"}};
 
 /* ======== COMPONENTS ======== */
 function Card({children,style={},np,className=""}){return <div className={`pp-card ${className}`} style={{background:C.cardBg,borderRadius:R.lg,border:`1px solid ${C.cardBorder}`,padding:np?0:20,boxShadow:C.cardShadow,...style}}>{children}</div>}
 function Sec({children,action}){return <div style={{display:"flex",justifyContent:"space-between",alignItems:"center",marginBottom:16}}><h3 style={{margin:0,fontSize:14,fontWeight:700,color:C.g800,letterSpacing:"-0.01em"}}>{children}</h3>{action}</div>}
+function Div({children}){return <div style={{display:"flex",alignItems:"center",gap:12,marginTop:8}}><div style={{fontSize:11,fontWeight:700,color:C.g400,textTransform:"uppercase",letterSpacing:"0.1em",whiteSpace:"nowrap"}}>{children}</div><div style={{flex:1,height:1,background:C.g200}}/></div>}
+function Empty({icon,title,desc,action,onAction}){return <div style={{padding:"48px 20px",textAlign:"center",display:"flex",flexDirection:"column",alignItems:"center",gap:6}}>
+  <div style={{width:48,height:48,borderRadius:14,background:C.g100,display:"flex",alignItems:"center",justifyContent:"center",marginBottom:4}}>{icon||I.search(22,C.g300)}</div>
+  <div style={{fontSize:14,fontWeight:700,color:C.g600}}>{title||"No results found"}</div>
+  {desc&&<div style={{fontSize:12,color:C.g400,maxWidth:280,lineHeight:1.5}}>{desc}</div>}
+  {action&&<button onClick={onAction} style={{...btnO,fontSize:12,padding:"7px 16px",marginTop:8,color:C.blue,borderColor:`${C.blue}30`}}>{action}</button>}
+</div>}
+function Skeleton({rows=3}){return <div style={{display:"flex",flexDirection:"column",gap:12,padding:"8px 0"}}>{Array(rows).fill(0).map((_,i)=><div key={i} style={{display:"flex",gap:12,alignItems:"center"}}><div className="pp-skel" style={{width:40,height:40,borderRadius:10,background:C.g100}}/><div style={{flex:1,display:"flex",flexDirection:"column",gap:6}}><div className="pp-skel" style={{height:12,borderRadius:4,background:C.g100,width:`${70-i*15}%`}}/><div className="pp-skel" style={{height:10,borderRadius:4,background:C.g100,width:`${50-i*10}%`}}/></div></div>)}</div>}
 function Met({label,value,change,dir,sub,accent=C.blue}){
   const spark=sparkData[label];
-  /* Animated counter */
   const numericVal=parseFloat(value.replace(/[^0-9.]/g,""));
   const prefix=value.match(/^[^0-9]*/)?.[0]||"";
   const suffix=value.match(/[^0-9.]*$/)?.[0]||"";
@@ -375,17 +467,15 @@ function Met({label,value,change,dir,sub,accent=C.blue}){
   },[numericVal]);
   const fmt=numericVal>=1000?Math.round(display).toLocaleString():numericVal%1!==0?display.toFixed(numericVal.toString().split(".")[1]?.length||0):Math.round(display).toString();
 
-  return <Card style={{flex:1,minWidth:170,position:"relative",overflow:"hidden"}}>
-    <div style={{display:"flex",justifyContent:"space-between",alignItems:"flex-start"}}>
-      <div style={{fontSize:10,fontWeight:700,color:C.g400,letterSpacing:"0.08em",textTransform:"uppercase"}}>{label}</div>
-      {change&&<span style={{fontSize:11,fontWeight:700,color:dir==="up"?C.blue:C.g400,background:dir==="up"?C.blueL:C.g100,padding:"2px 8px",borderRadius:20}}>{dir==="up"?"↑":"↓"} {change}</span>}
+  return <Card className="pp-met" style={{overflow:"hidden",padding:"14px 16px"}}>
+    <div className="pp-met-top" style={{display:"flex",alignItems:"center",justifyContent:"space-between",gap:4,marginBottom:6}}>
+      <div style={{fontSize:10,fontWeight:700,color:C.g400,letterSpacing:"0.08em",textTransform:"uppercase",whiteSpace:"nowrap",overflow:"hidden",textOverflow:"ellipsis",minWidth:0}}>{label}</div>
+      {change&&<span className="pp-met-badge" style={{fontSize:10,fontWeight:700,color:dir==="up"?C.blue:C.g400,background:dir==="up"?C.blueL:C.g100,padding:"2px 7px",borderRadius:20,whiteSpace:"nowrap",flexShrink:0,lineHeight:1.2}}>{dir==="up"?"↑":"↓"} {change}</span>}
     </div>
-    <div style={{display:"flex",alignItems:"flex-end",justifyContent:"space-between",marginTop:8,gap:8}}>
-      <div>
-        <div style={{fontSize:26,fontWeight:800,color:C.g800,lineHeight:1.1,letterSpacing:"-0.02em",fontVariantNumeric:"tabular-nums"}}>{prefix}{fmt}{suffix}</div>
-        {sub&&<div style={{fontSize:11,color:C.g400,marginTop:5}}>{sub}</div>}
-      </div>
-      {spark&&<div style={{flexShrink:0,opacity:0.8}}><Sparkline data={spark} color={dir==="up"?C.blue:C.g400}/></div>}
+    <div style={{fontSize:28,fontWeight:800,color:C.g800,lineHeight:1,letterSpacing:"-0.02em",fontVariantNumeric:"tabular-nums",fontFamily:numFont}}>{prefix}{fmt}{suffix}</div>
+    <div className="pp-met-bottom" style={{display:"flex",alignItems:"center",justifyContent:"space-between",marginTop:6}}>
+      {sub&&<div style={{fontSize:11,color:C.g400,whiteSpace:"nowrap",overflow:"hidden",textOverflow:"ellipsis",minWidth:0}}>{sub}</div>}
+      {spark&&<div style={{flexShrink:0,opacity:0.7}}><Sparkline data={spark} color={dir==="up"?C.blue:C.g400} w={44} h={16}/></div>}
     </div>
   </Card>
 }
@@ -407,52 +497,116 @@ const SortIcon=({dir})=><svg width="10" height="10" viewBox="0 0 10 10" fill="no
 
 /* Create Reservation Modal */
 function CreateResModal({open,onClose}){
-  const [form,setForm]=useState({asset:"",customer:"",date:"",time:"",duration:"2",rate:"350"});
-  const upd=(k,v)=>setForm({...form,[k]:v});
+  const [form,setForm]=useState({campus:"",asset:"",customer:"",date:"",time:"",endTime:"",duration:"2",rate:"175",activity:"",people:"",notes:""});
+  const [step,setStep]=useState(1);
+  const upd=(k,v)=>{
+    const nf={...form,[k]:v};
+    /* Auto-calc duration when start/end times set */
+    if((k==="time"||k==="endTime")&&nf.time&&nf.endTime){
+      const parseT=(t)=>{const [h,rest]=t.split(":");const m=parseInt(rest);const hr=parseInt(h);const pm=t.includes("PM")&&hr!==12;const am=t.includes("AM")&&hr===12;return (pm?hr+12:am?0:hr)+m/60};
+      const diff=parseT(nf.endTime)-parseT(nf.time);if(diff>0)nf.duration=String(diff);
+    }
+    /* Auto-set rate based on campus */
+    if(k==="campus"){nf.asset="";nf.rate=v==="Dutchtown High School"?"200":v==="East Ascension High School"?"185":v==="Prairieville High School"?"190":"175"}
+    setForm(nf);
+  };
   if(!open)return null;
   const rev=parseFloat(form.rate||0)*parseFloat(form.duration||0);
-  const canSubmit=form.asset&&form.customer&&form.date&&form.time;
+  const processingFee=(rev*0.029).toFixed(2);
+  const platformFee=(rev*0.05).toFixed(2);
+  const net=(rev-parseFloat(processingFee)-parseFloat(platformFee)).toFixed(2);
+  const campusFacs=form.campus?facilities[campuses.find(c=>c.name===form.campus)?.short]||[]:[];
+  const canNext=step===1?(form.campus&&form.asset&&form.customer):true;
+  const canSubmit=form.campus&&form.asset&&form.customer&&form.date&&form.time;
+  const times=["6:00 AM","7:00 AM","8:00 AM","9:00 AM","10:00 AM","11:00 AM","12:00 PM","1:00 PM","2:00 PM","3:00 PM","4:00 PM","5:00 PM","6:00 PM","7:00 PM","8:00 PM","9:00 PM"];
+  const Label=({children})=><label style={{fontSize:10,fontWeight:700,color:C.g400,textTransform:"uppercase",letterSpacing:"0.06em",display:"block",marginBottom:5}}>{children}</label>;
+  const inp={width:"100%",padding:"10px 12px",border:`1px solid ${C.cardBorder}`,borderRadius:R.sm,fontSize:16,fontFamily:font,background:C.g50,color:C.g700,boxSizing:"border-box"};
+
   return <>
     <div onClick={onClose} style={{position:"fixed",inset:0,background:"rgba(15,23,42,0.35)",backdropFilter:"blur(2px)",zIndex:299,animation:"fadeIn .2s ease"}}/>
-    <div style={{position:"fixed",top:"50%",left:"50%",transform:"translate(-50%,-50%)",width:480,maxWidth:"94vw",background:C.cardBg,borderRadius:R.lg,boxShadow:`0 20px 60px rgba(0,0,0,${C.bg==="#0F1318"?0.4:0.18})`,zIndex:300,fontFamily:font,overflow:"hidden",animation:"slideUp .25s cubic-bezier(.22,1,.36,1)"}}>
-      <div style={{padding:"18px 22px",borderBottom:`1px solid ${C.cardBorder}`,display:"flex",justifyContent:"space-between",alignItems:"center"}}>
-        <div style={{fontSize:16,fontWeight:800,color:C.g800}}>Create Reservation</div>
+    <div className="pp-create-modal" onClick={e=>e.stopPropagation()} style={{position:"fixed",top:"50%",left:"50%",transform:"translate(-50%,-50%)",width:540,maxWidth:"94vw",maxHeight:"90vh",background:C.cardBg,borderRadius:R.lg,boxShadow:`0 20px 60px rgba(0,0,0,${C.bg==="#0F1318"?0.4:0.18})`,zIndex:300,fontFamily:font,overflow:"hidden",animation:"slideUp .25s cubic-bezier(.22,1,.36,1)",display:"flex",flexDirection:"column"}}>
+      <div style={{padding:"18px 22px",borderBottom:`1px solid ${C.cardBorder}`,display:"flex",justifyContent:"space-between",alignItems:"center",flexShrink:0}}>
+        <div>
+          <div style={{fontSize:16,fontWeight:800,color:C.g800}}>Create Reservation</div>
+          <div style={{fontSize:11,color:C.g400,marginTop:2}}>Step {step} of 2 - {step===1?"Booking Info":"Schedule & Pricing"}</div>
+        </div>
         <button onClick={onClose} style={{background:C.g100,border:"none",width:30,height:30,borderRadius:8,cursor:"pointer",display:"flex",alignItems:"center",justifyContent:"center"}}>{I.x(12,C.g500)}</button>
       </div>
-      <div style={{padding:"18px 22px",display:"flex",flexDirection:"column",gap:14}}>
-        <div><label style={{fontSize:11,fontWeight:700,color:C.g400,textTransform:"uppercase",letterSpacing:"0.06em",display:"block",marginBottom:5}}>Asset</label>
-          <select value={form.asset} onChange={e=>upd("asset",e.target.value)} style={{...sel,width:"100%"}}><option value="">Select asset...</option><option>Dutchtown Gymnasium</option><option>Spartan Stadium</option><option>St. Amant Gymnasium</option><option>Prairieville Gymnasium</option><option>Gator Stadium</option><option>Tiger Stadium</option></select></div>
-        <div><label style={{fontSize:11,fontWeight:700,color:C.g400,textTransform:"uppercase",letterSpacing:"0.06em",display:"block",marginBottom:5}}>Customer / Organization</label>
-          <input type="text" value={form.customer} onChange={e=>upd("customer",e.target.value)} placeholder="e.g. Bayou City VB" style={{width:"100%",padding:"9px 12px",border:`1px solid ${C.cardBorder}`,borderRadius:R.sm,fontSize:13,fontFamily:font,background:C.g50,color:C.g700,boxSizing:"border-box"}}/></div>
-        <div style={{display:"grid",gridTemplateColumns:"1fr 1fr",gap:12}}>
-          <div><label style={{fontSize:11,fontWeight:700,color:C.g400,textTransform:"uppercase",letterSpacing:"0.06em",display:"block",marginBottom:5}}>Date</label>
-            <input type="text" value={form.date} onChange={e=>upd("date",e.target.value)} placeholder="MM/DD/YYYY" style={{width:"100%",padding:"9px 12px",border:`1px solid ${C.cardBorder}`,borderRadius:R.sm,fontSize:13,fontFamily:font,background:C.g50,color:C.g700,boxSizing:"border-box"}}/></div>
-          <div><label style={{fontSize:11,fontWeight:700,color:C.g400,textTransform:"uppercase",letterSpacing:"0.06em",display:"block",marginBottom:5}}>Time</label>
-            <select value={form.time} onChange={e=>upd("time",e.target.value)} style={{...sel,width:"100%"}}><option value="">Select time...</option>{["6:00 AM","7:00 AM","8:00 AM","9:00 AM","10:00 AM","11:00 AM","12:00 PM","1:00 PM","2:00 PM","3:00 PM","4:00 PM","5:00 PM","6:00 PM","7:00 PM","8:00 PM","9:00 PM"].map(t=><option key={t}>{t}</option>)}</select></div>
-        </div>
-        <div style={{display:"grid",gridTemplateColumns:"1fr 1fr",gap:12}}>
-          <div><label style={{fontSize:11,fontWeight:700,color:C.g400,textTransform:"uppercase",letterSpacing:"0.06em",display:"block",marginBottom:5}}>Duration (hrs)</label>
-            <input type="number" value={form.duration} onChange={e=>upd("duration",e.target.value)} min="1" max="12" style={{width:"100%",padding:"9px 12px",border:`1px solid ${C.cardBorder}`,borderRadius:R.sm,fontSize:13,fontFamily:font,background:C.g50,color:C.g700,boxSizing:"border-box"}}/></div>
-          <div><label style={{fontSize:11,fontWeight:700,color:C.g400,textTransform:"uppercase",letterSpacing:"0.06em",display:"block",marginBottom:5}}>Rate ($/hr)</label>
-            <input type="number" value={form.rate} onChange={e=>upd("rate",e.target.value)} style={{width:"100%",padding:"9px 12px",border:`1px solid ${C.cardBorder}`,borderRadius:R.sm,fontSize:13,fontFamily:font,background:C.g50,color:C.g700,boxSizing:"border-box"}}/></div>
-        </div>
-        {rev>0&&<div style={{padding:"12px 16px",background:C.g50,borderRadius:R.sm,border:`1px solid ${C.cardBorder}`,display:"flex",justifyContent:"space-between",alignItems:"center"}}>
-          <span style={{fontSize:12,fontWeight:600,color:C.g500}}>Estimated Revenue</span>
-          <span style={{fontSize:20,fontWeight:800,color:C.green}}>${rev.toLocaleString()}</span>
-        </div>}
+      {/* Step indicator */}
+      <div style={{display:"flex",gap:4,padding:"0 22px",paddingTop:14,flexShrink:0}}>
+        {[1,2].map(s=><div key={s} style={{flex:1,height:3,borderRadius:2,background:s<=step?C.blue:C.g200,transition:"background .2s"}}/>)}
       </div>
-      <div style={{padding:"14px 22px",borderTop:`1px solid ${C.cardBorder}`,display:"flex",gap:10,justifyContent:"flex-end"}}>
-        <button onClick={onClose} style={{...btnO,background:C.cardBg}}>Cancel</button>
-        <button onClick={()=>{if(canSubmit){globalShowToast({type:"success",title:"Reservation Created",msg:`${form.customer} - ${form.asset}`,color:C.green});onClose()}}} style={{...btnP,opacity:canSubmit?1:0.5,cursor:canSubmit?"pointer":"not-allowed"}}>Create Reservation</button>
+      <div style={{padding:"14px 22px 18px",display:"flex",flexDirection:"column",gap:12,overflow:"auto",flex:1}}>
+        {step===1&&<>
+          <div><Label>Campus</Label>
+            <select value={form.campus} onChange={e=>upd("campus",e.target.value)} style={{...sel,width:"100%"}}><option value="">Select campus...</option>{campuses.map(c=><option key={c.id} value={c.name}>{c.name}</option>)}</select></div>
+          <div><Label>Facility / Asset</Label>
+            <select value={form.asset} onChange={e=>upd("asset",e.target.value)} style={{...sel,width:"100%"}} disabled={!form.campus}><option value="">Select facility...</option>{campusFacs.map(f=><option key={f} value={facilityFull[f]||f}>{facilityFull[f]||f}</option>)}</select>
+            {!form.campus&&<div style={{fontSize:10,color:C.g400,marginTop:4,fontStyle:"italic"}}>Select a campus first</div>}
+          </div>
+          <div><Label>Customer / Organization</Label>
+            <input type="text" value={form.customer} onChange={e=>upd("customer",e.target.value)} placeholder="e.g. Bayou City Volleyball" style={inp}/>
+            {form.customer.length>1&&<div style={{marginTop:4,borderRadius:R.sm,border:`1px solid ${C.g200}`,overflow:"hidden"}}>{topCustData.filter(c=>c.n.toLowerCase().includes(form.customer.toLowerCase())).slice(0,3).map(c=><div key={c.n} onClick={()=>upd("customer",c.n)} style={{padding:"8px 12px",fontSize:12,color:C.g700,cursor:"pointer",display:"flex",alignItems:"center",gap:8,borderBottom:`1px solid ${C.g100}`}} onMouseEnter={e=>e.currentTarget.style.background=C.g50} onMouseLeave={e=>e.currentTarget.style.background="transparent"}>
+              <div style={{width:22,height:22,borderRadius:6,background:C.blueL,display:"flex",alignItems:"center",justifyContent:"center",fontSize:8,fontWeight:800,color:C.blue}}>{c.photo}</div>
+              <span style={{fontWeight:600}}>{c.n}</span><span style={{fontSize:10,color:C.g400,marginLeft:"auto"}}>{c.b} bookings</span>
+            </div>)}</div>}
+          </div>
+          <div style={{display:"grid",gridTemplateColumns:"1fr 1fr",gap:12}}>
+            <div><Label>Activity Type</Label>
+              <select value={form.activity} onChange={e=>upd("activity",e.target.value)} style={{...sel,width:"100%"}}><option value="">Select...</option>{["Basketball","Volleyball","Soccer","Cheerleading","Track & Field","Wrestling","Meeting/Event","Other"].map(a=><option key={a}>{a}</option>)}</select></div>
+            <div><Label>Est. Attendees</Label>
+              <input type="number" value={form.people} onChange={e=>upd("people",e.target.value)} placeholder="e.g. 25" style={inp}/></div>
+          </div>
+        </>}
+        {step===2&&<>
+          <div><Label>Date</Label>
+            <input type="date" value={form.date} onChange={e=>upd("date",e.target.value)} style={inp}/></div>
+          <div style={{display:"grid",gridTemplateColumns:"1fr 1fr",gap:12}}>
+            <div><Label>Start Time</Label>
+              <select value={form.time} onChange={e=>upd("time",e.target.value)} style={{...sel,width:"100%"}}><option value="">Select...</option>{times.map(t=><option key={t}>{t}</option>)}</select></div>
+            <div><Label>End Time</Label>
+              <select value={form.endTime} onChange={e=>upd("endTime",e.target.value)} style={{...sel,width:"100%"}}><option value="">Select...</option>{times.map(t=><option key={t}>{t}</option>)}</select></div>
+          </div>
+          <div style={{display:"grid",gridTemplateColumns:"1fr 1fr",gap:12}}>
+            <div><Label>Duration (hrs)</Label>
+              <input type="number" value={form.duration} onChange={e=>upd("duration",e.target.value)} min="1" max="12" style={inp}/></div>
+            <div><Label>Rate ($/hr)</Label>
+              <input type="number" value={form.rate} onChange={e=>upd("rate",e.target.value)} style={inp}/></div>
+          </div>
+          <div><Label>Notes (optional)</Label>
+            <textarea value={form.notes} onChange={e=>upd("notes",e.target.value)} placeholder="Setup needs, equipment, special instructions..." rows={2} style={{...inp,resize:"vertical",lineHeight:1.5}}/></div>
+          {/* Price preview */}
+          {rev>0&&<div style={{borderRadius:R.sm,border:`1px solid ${C.green}30`,overflow:"hidden"}}>
+            <div style={{padding:"12px 16px",background:`${C.green}06`,display:"flex",justifyContent:"space-between",alignItems:"center",borderBottom:`1px solid ${C.green}15`}}>
+              <span style={{fontSize:13,fontWeight:700,color:C.g800}}>Revenue Summary</span>
+              <span style={{fontSize:10,color:C.g400}}>{form.duration}hr x ${form.rate}/hr</span>
+            </div>
+            <div style={{padding:"8px 16px"}}>
+              {[["Rental Total","$"+rev.toLocaleString()],["Processing (2.9%)","-$"+processingFee],["Platform (5.0%)","-$"+platformFee]].map(([l,v])=><div key={l} style={{display:"flex",justifyContent:"space-between",padding:"5px 0",fontSize:12,color:C.g500}}><span>{l}</span><span style={{fontWeight:600,color:v.startsWith("-")?C.g400:C.g700}}>{v}</span></div>)}
+            </div>
+            <div style={{display:"flex",justifyContent:"space-between",padding:"10px 16px",background:C.g50,borderTop:`1px solid ${C.g100}`}}>
+              <span style={{fontSize:13,fontWeight:700,color:C.g800}}>Net to District</span>
+              <span style={{fontSize:18,fontWeight:800,color:C.green,fontFamily:numFont}}>${net}</span>
+            </div>
+          </div>}
+        </>}
+      </div>
+      <div style={{padding:"14px 22px",borderTop:`1px solid ${C.cardBorder}`,display:"flex",gap:10,justifyContent:"space-between",flexShrink:0}}>
+        {step===1?<div/>:<button onClick={()=>setStep(1)} style={{...btnO}}>← Back</button>}
+        <div style={{display:"flex",gap:10}}>
+          <button onClick={onClose} style={{...btnO,background:C.cardBg}}>Cancel</button>
+          {step===1?<button onClick={()=>{if(canNext)setStep(2)}} style={{...btnP,opacity:canNext?1:0.5,cursor:canNext?"pointer":"not-allowed"}}>Next →</button>
+          :<button onClick={()=>{if(canSubmit){globalShowToast({type:"success",title:"Reservation Created",msg:`${form.customer} - ${form.asset} on ${form.date}`,color:C.green});setStep(1);setForm({campus:"",asset:"",customer:"",date:"",time:"",endTime:"",duration:"2",rate:"175",activity:"",people:"",notes:""});onClose()}}} style={{...btnP,opacity:canSubmit?1:0.5,cursor:canSubmit?"pointer":"not-allowed"}}>Create Reservation</button>}
+        </div>
       </div>
     </div>
   </>
 }
-const Tip=({active,payload,label})=>{if(!active||!payload?.length)return null;return <div style={{background:"#1A2030",color:"#fff",padding:"10px 14px",borderRadius:R.sm,fontSize:12,fontFamily:font,boxShadow:"0 8px 24px rgba(0,0,0,0.18)",border:"1px solid rgba(255,255,255,0.06)"}}><div style={{fontWeight:700,marginBottom:4,letterSpacing:"-0.01em"}}>{label}</div>{payload.map((p,i)=><div key={i} style={{display:"flex",alignItems:"center",gap:6,marginTop:3}}><span style={{width:7,height:7,borderRadius:2,background:p.color}}/><span style={{opacity:0.6,fontSize:11}}>{p.name}:</span><span style={{fontWeight:700}}>{typeof p.value==="number"?`$${p.value.toLocaleString()}`:p.value}</span></div>)}</div>};
+const Tip=({active,payload,label})=>{if(!active||!payload?.length)return null;return <div style={{background:"#1A2030",color:"#fff",padding:"10px 14px",borderRadius:R.sm,fontSize:12,fontFamily:numFont,boxShadow:"0 8px 24px rgba(0,0,0,0.18)",border:"1px solid rgba(255,255,255,0.06)"}}><div style={{fontWeight:700,marginBottom:4,letterSpacing:"-0.01em",fontFamily:font}}>{label}</div>{payload.map((p,i)=><div key={i} style={{display:"flex",alignItems:"center",gap:6,marginTop:3}}><span style={{width:7,height:7,borderRadius:2,background:p.color}}/><span style={{opacity:0.6,fontSize:11}}>{p.name}:</span><span style={{fontWeight:700}}>{typeof p.value==="number"?`$${p.value.toLocaleString()}`:p.value}</span></div>)}</div>};
 function HC({v}){const i=v/6;const blue=C.blue;return <td style={{width:38,height:30,textAlign:"center",fontSize:11,fontWeight:600,background:i===0?C.g100:`${blue}${Math.round((.15+i*.6)*255).toString(16).padStart(2,"0")}`,color:i>.5?"#fff":C.g600,borderRadius:R.sm-2,border:`2px solid ${C.cardBg}`}}>{v||""}</td>}
 
 /* ======== SLIDE PANELS (preserved) ======== */
-function SlidePanel({open,onClose,children,width=500}){if(!open)return null;return <><style>{`@keyframes slideIn{from{transform:translateX(100%);opacity:0.5}to{transform:translateX(0);opacity:1}}@keyframes fadeIn{from{opacity:0}to{opacity:1}}@keyframes slideUp{from{transform:translateY(12px);opacity:0}to{transform:translateY(0);opacity:1}}.slide-panel{animation:slideIn .32s cubic-bezier(.22,1,.36,1) forwards}.slide-overlay{animation:fadeIn .25s ease forwards}.slide-section{animation:slideUp .35s ease forwards;opacity:0}@media(max-width:768px){.slide-panel{width:100vw !important;max-width:100vw !important}}`}</style><div className="slide-overlay" onClick={onClose} style={{position:"fixed",inset:0,background:"rgba(15,23,42,0.35)",backdropFilter:"blur(2px)",zIndex:199}}/><div className="slide-panel" style={{position:"fixed",top:0,right:0,width,maxWidth:"92vw",height:"100vh",background:C.cardBg,boxShadow:`-8px 0 40px rgba(0,0,0,${C.bg==="#0F1318"?0.3:0.12}), -1px 0 0 ${C.cardBorder}`,zIndex:200,display:"flex",flexDirection:"column",fontFamily:font,overflowY:"auto",WebkitOverflowScrolling:"touch"}}>{children}</div></>}
+function SlidePanel({open,onClose,children,width=500}){if(!open)return null;return <><style>{`@keyframes slideIn{from{transform:translateX(100%);opacity:0.5}to{transform:translateX(0);opacity:1}}@keyframes fadeIn{from{opacity:0}to{opacity:1}}@keyframes slideUp{from{transform:translateY(12px);opacity:0}to{transform:translateY(0);opacity:1}}.slide-panel{animation:slideIn .32s cubic-bezier(.22,1,.36,1) forwards}.slide-overlay{animation:fadeIn .25s ease forwards}.slide-section{animation:slideUp .35s ease forwards;opacity:0}@media(max-width:768px){.slide-panel{width:100vw !important;max-width:100vw !important;height:100dvh !important;height:100vh !important}}`}</style><div className="slide-overlay" onClick={onClose} style={{position:"fixed",inset:0,background:"rgba(15,23,42,0.35)",backdropFilter:"blur(2px)",zIndex:199}}/><div className="slide-panel" style={{position:"fixed",top:0,right:0,width,maxWidth:"92vw",height:"100dvh",background:C.cardBg,boxShadow:`-8px 0 40px rgba(0,0,0,${C.bg==="#0F1318"?0.3:0.12}), -1px 0 0 ${C.cardBorder}`,zIndex:200,display:"flex",flexDirection:"column",fontFamily:font,overflow:"hidden"}}>{children}</div></>}
 
 function CustomerPanel({cust,onClose}){if(!cust)return null;return <SlidePanel open={true} onClose={onClose} width={480}>
   <div style={{padding:"28px 30px",borderBottom:`1px solid ${C.g200}`,display:"flex",justifyContent:"space-between",alignItems:"flex-start"}}><div style={{display:"flex",gap:16,alignItems:"center"}}><div style={{width:56,height:56,borderRadius:16,background:`linear-gradient(135deg,${C.blue},${C.green})`,display:"flex",alignItems:"center",justifyContent:"center",color:"#fff",fontWeight:800,fontSize:20}}>{cust.photo}</div><div><div style={{fontSize:20,fontWeight:800,color:C.g800}}>{cust.n}</div><div style={{fontSize:12,color:C.g400,marginTop:2}}>Customer since {cust.since}</div></div></div><button onClick={onClose} style={{background:C.g100,border:"none",width:32,height:32,borderRadius:8,color:C.g500,cursor:"pointer",display:"flex",alignItems:"center",justifyContent:"center"}}>{I.x(14,C.g500)}</button></div>
@@ -532,7 +686,7 @@ function ReservationPanel({res,onClose,approval}){
     <div style={{display:"flex",gap:0,margin:"0 -28px",borderTop:`1px solid ${C.g200}`}}>
       {[["Revenue",`$${totalRev.toLocaleString()}`],["Bookings",""+bookings.length],["Hours",totalHrs+"h"],["Campus",campus]].map(([l,v],i)=><div key={l} style={{flex:1,padding:"10px 12px",textAlign:"center",...(i<3?{borderRight:`1px solid ${C.g200}`}:{})}}>
         <div style={{fontSize:8,fontWeight:700,color:C.g400,textTransform:"uppercase",letterSpacing:"0.06em"}}>{l}</div>
-        <div style={{fontSize:12,fontWeight:700,color:C.g800,marginTop:2,overflow:"hidden",textOverflow:"ellipsis",whiteSpace:"nowrap"}}>{v}</div>
+        <div style={{fontSize:12,fontWeight:700,color:C.g800,marginTop:2,overflow:"hidden",textOverflow:"ellipsis",whiteSpace:"nowrap",fontFamily:numFont}}>{v}</div>
       </div>)}
     </div>
     {/* Tab nav */}
@@ -550,6 +704,33 @@ function ReservationPanel({res,onClose,approval}){
 
     {/* -- Participant -- */}
     <div style={{padding:"16px 28px",borderBottom:`1px solid ${C.g200}`}}>
+      {/* Status Timeline */}
+      {(()=>{
+        const steps=["Submitted","Approved","Confirmed","Completed"];
+        const st=isPending?"Submitted":a?.status==="approved"?"Approved":a?.status==="denied"?"Denied":res?.status==="confirmed"?"Confirmed":res?.status==="at-risk"?"Confirmed":"Submitted";
+        const isDenied=a?.status==="denied";
+        const activeIdx=isDenied?-1:steps.indexOf(st);
+        return <div style={{display:"flex",alignItems:"center",marginBottom:16,gap:0}}>
+          {steps.map((s,i)=>{
+            const done=!isDenied&&i<=activeIdx;
+            const current=!isDenied&&i===activeIdx;
+            const denied=isDenied&&i===0;
+            const clr=denied?C.red:done?C.green:C.g300;
+            return <React.Fragment key={s}>
+              <div style={{display:"flex",flexDirection:"column",alignItems:"center",gap:4,flex:0,position:"relative"}}>
+                <div style={{width:22,height:22,borderRadius:11,background:done||denied?clr:C.cardBg,border:`2px solid ${clr}`,display:"flex",alignItems:"center",justifyContent:"center",zIndex:1}}>
+                  {done&&!denied?<svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="#fff" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round"><path d="M20 6L9 17l-5-5"/></svg>
+                  :denied?I.x(10,"#fff")
+                  :current?<div style={{width:8,height:8,borderRadius:4,background:C.green}}/>
+                  :null}
+                </div>
+                <span style={{fontSize:8,fontWeight:700,color:done||denied?clr:C.g400,textTransform:"uppercase",letterSpacing:"0.04em",whiteSpace:"nowrap"}}>{isDenied&&i===0?"Denied":s}</span>
+              </div>
+              {i<steps.length-1&&<div style={{flex:1,height:2,background:!isDenied&&i<activeIdx?C.green:C.g200,borderRadius:1,margin:"0 -2px",marginBottom:16}}/>}
+            </React.Fragment>
+          })}
+        </div>
+      })()}
       <div style={{fontSize:11,fontWeight:700,color:C.g400,textTransform:"uppercase",letterSpacing:"0.06em",marginBottom:8}}>Participant</div>
       <div style={{display:"grid",gridTemplateColumns:"1fr 1fr",gap:4}}>
         {[["Contact",name],["Organization",team],["Email",email],["Phone",phone]].map(([l,v])=><div key={l} style={{padding:"4px 0"}}>
@@ -622,7 +803,7 @@ function ReservationPanel({res,onClose,approval}){
         </span>
       </div>
       <div style={{marginTop:8,display:"flex",gap:6}}>
-        <input type="text" placeholder="Discount code" style={{flex:1,padding:"7px 10px",border:`1px solid ${C.g200}`,borderRadius:6,fontSize:11,fontFamily:font}}/>
+        <input type="text" placeholder="Discount code" style={{flex:1,padding:"7px 10px",border:`1px solid ${C.g200}`,borderRadius:6,fontSize:11,fontFamily:font,background:C.g50,color:C.g700}}/>
         <button style={{background:C.blue,color:"#fff",border:"none",borderRadius:6,padding:"7px 14px",fontSize:11,fontWeight:700,cursor:"pointer",fontFamily:font}}>Apply</button>
       </div>
     </div>
@@ -746,29 +927,22 @@ function ReservationPanel({res,onClose,approval}){
 /* ======== DASHBOARD ======== */
 function Dashboard(){
   const [assetRange,setAssetRange]=useState("month");
-  const [selCust,setSelCust]=useState(null);
   const [selRes,setSelRes]=useState(null);
   const [selApproval,setSelApproval]=useState(null);
-  const [showCreateRes,setShowCreateRes]=useState(false);
   const [showAllRes,setShowAllRes]=useState(false);
   const [showActivity,setShowActivity]=useState(false);
+  const [selMonth,setSelMonth]=useState(null);
+  const [revPeriod,setRevPeriod]=useState("ytd");
   const {approvals}=useApprovals();
   const pendingApprovals=approvals.filter(a=>a.status==="pending");
   const ap=assetPerfData[assetRange];
   const totalFacRev=facMix.reduce((s,f)=>s+f.v,0);
   const todayRes=upcoming.filter(x=>x.d==="2/6/2026");
-  const unreadNotifs=notifs.filter(n=>!n.read).length;
+  const unreadNotifs=(globalNotifs||notifsInit).filter(n=>!n.read).length;
 
-  return <div style={{display:"flex",flexDirection:"column",gap:16}}>
-    {selCust!==null&&<CustomerPanel cust={topCustData[selCust]} onClose={()=>setSelCust(null)}/>}
+  return <div style={{display:"flex",flexDirection:"column",gap:20}}>
     {selRes!==null&&<ReservationPanel res={upcoming[selRes]} onClose={()=>setSelRes(null)}/>}
     {selApproval!==null&&<ReservationPanel approval={selApproval} onClose={()=>setSelApproval(null)}/>}
-    <CreateResModal open={showCreateRes} onClose={()=>setShowCreateRes(false)}/>
-
-    {/* Welcome */}
-    <div style={{display:"flex",alignItems:"center",justifyContent:"space-between",flexWrap:"wrap",gap:8}}>
-      <div style={{fontSize:14,color:C.g500}}>Good morning, <strong style={{color:C.g800}}>Marcus</strong> - {todayRes.length} reservation{todayRes.length!==1?"s":""} today{pendingApprovals.length>0&&<>, <strong style={{color:C.blue}}>{pendingApprovals.length} pending approval{pendingApprovals.length>1?"s":""}</strong></>}. Revenue tracking <strong style={{color:C.blue}}>18% above</strong> last month.</div>
-    </div>
 
     {/* Pending Approvals */}
     {pendingApprovals.length>0&&(()=>{
@@ -785,21 +959,66 @@ function Dashboard(){
       </div>})()}
 
     {/* Metrics */}
-    <div className="pp-metrics" style={{display:"flex",gap:12,flexWrap:"wrap"}}>
+    <div className="pp-metrics" style={{display:"grid",gridTemplateColumns:"repeat(3,1fr)",gap:12}}>
       <Met label="YTD Revenue" value="$61,011" change="+28%" dir="up" sub="vs last year"/>
       <Met label="This Month" value="$8,761" change="+18.4%" dir="up" sub="projected $14.2k"/>
-      <Met label="Reservations" value="192" change="+34" dir="up" sub="YTD"/>
-      <Met label="Avg / Booking" value="$318" change="+$42" dir="up" sub="vs $276 prior"/>
-      <Met label="Utilization" value="52%" change="+9%" dir="up" sub="all assets"/>
-      <Met label="Active Customers" value="23" change="+5" dir="up" sub="trailing 90 days"/>
+      <Met label="Bookings" value="192" change="+34" dir="up" sub="YTD"/>
+      <Met label="Avg Rate" value="$318" change="+$42" dir="up" sub="vs $276 prior"/>
+      <Met label="Util. Rate" value="52%" change="+9%" dir="up" sub="all assets"/>
+      <Met label="Customers" value="23" change="+5" dir="up" sub="trailing 90 days"/>
     </div>
 
-    {/* Upcoming Reservations */}
-    <div style={{display:"flex",justifyContent:"space-between",alignItems:"center"}}>
-      <div><span style={{fontSize:14,fontWeight:700,color:C.g800}}>Upcoming Reservations</span><span style={{fontSize:11,color:C.g400,marginLeft:8}}>{upcoming.length} total</span></div>
-      <button onClick={()=>setShowCreateRes(true)} style={btnP}>+ New Reservation</button>
+    {/* ─── AI Insights ─── */}
+    <Card>
+      <AIInsights/>
+    </Card>
+
+    {/* ─── SECTION: Revenue ─── */}
+    <Div>Revenue</Div>
+
+    {/* Revenue Trend - full width */}
+    <Card><Sec action={<div style={{display:"flex",gap:6,alignItems:"center"}}><div style={{display:"flex",gap:0,border:`1px solid ${C.cardBorder}`,borderRadius:R.sm,overflow:"hidden"}}>{[["6m","6 Mo"],["ytd","YTD"],["1y","1 Year"]].map(([k,l])=><button key={k} onClick={()=>setRevPeriod(k)} style={{padding:"4px 10px",fontSize:10,fontWeight:revPeriod===k?700:500,background:revPeriod===k?C.blue:C.cardBg,color:revPeriod===k?"#fff":C.g400,border:"none",cursor:"pointer",fontFamily:font,transition:"all .12s"}}>{l}</button>)}</div>{selMonth&&<button onClick={()=>setSelMonth(null)} style={{...btnO,fontSize:10,padding:"3px 10px",color:C.blue,borderColor:`${C.blue}30`}}>Clear x</button>}</div>}>Revenue Trend {selMonth&&<span style={{fontSize:12,fontWeight:500,color:C.blue}}>- {selMonth}</span>}</Sec><ResponsiveContainer width="100%" height={220}><AreaChart data={revPeriod==="6m"?monthlyRev.slice(-6):revPeriod==="1y"?monthlyRev:monthlyRev} onClick={(e)=>{if(e&&e.activeLabel)setSelMonth(prev=>prev===e.activeLabel?null:e.activeLabel)}}><defs><linearGradient id="gr" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stopColor={C.blue} stopOpacity={.15}/><stop offset="100%" stopColor={C.blue} stopOpacity={.01}/></linearGradient></defs><CartesianGrid strokeDasharray="3 3" stroke={C.g200} vertical={false}/><XAxis dataKey="m" axisLine={false} tickLine={false} tick={{fontSize:11,fill:C.g400,fontFamily:font}}/><YAxis axisLine={false} tickLine={false} tick={{fontSize:11,fill:C.g400,fontFamily:font}} tickFormatter={v=>"$"+(v/1000).toFixed(1)+"k"}/><Tooltip content={<Tip/>}/><Area type="monotone" dataKey="r" name="Revenue" stroke={C.blue} strokeWidth={2} fill="url(#gr)" dot={(props)=>{const {cx,cy,payload,index}=props;return (<circle key={index} cx={cx} cy={cy} r={selMonth===payload.m?6:3} fill={C.blue} stroke={selMonth===payload.m?"#fff":C.cardBg} strokeWidth={selMonth===payload.m?3:2} style={{cursor:"pointer",transition:"r .2s"}}/>)}} activeDot={{r:5,stroke:C.blue,strokeWidth:2,fill:C.cardBg}}/></AreaChart></ResponsiveContainer>
+      {selMonth&&<div style={{marginTop:8,padding:"10px 14px",background:C.blueL,borderRadius:R.sm,display:"flex",alignItems:"center",gap:8}}>
+        <span style={{fontSize:12,fontWeight:600,color:C.blue}}>{selMonth} - ${(monthlyRev.find(m=>m.m===selMonth)||{}).r?monthlyRev.find(m=>m.m===selMonth).r.toLocaleString():""} revenue</span>
+        <span style={{fontSize:11,color:C.g400,marginLeft:"auto"}}>Click chart to filter</span>
+      </div>}
+    </Card>
+
+    {/* Revenue by Campus + Top Organizations - side by side */}
+    <div style={{display:"flex",gap:16,flexWrap:"wrap"}}>
+      <Card style={{flex:1,minWidth:300}}><Sec>Revenue by Campus</Sec>
+        {/* Stacked bar summary */}
+        <div style={{display:"flex",height:6,borderRadius:3,overflow:"hidden",marginBottom:16}}>{facMix.map((f,i)=><div key={f.n} style={{flex:f.v,background:f.c,transition:"flex .3s"}}/>)}</div>
+        {/* Campus rows */}
+        <div style={{display:"flex",flexDirection:"column",gap:0}}>
+        {facMix.map((f,i)=>{const pct=Math.round(f.v/totalFacRev*100);return <div key={f.n} style={{display:"flex",alignItems:"center",gap:10,padding:"10px 0",borderBottom:i<facMix.length-1?`1px solid ${C.g100}`:"none"}}>
+          <div style={{width:3,height:28,borderRadius:2,background:f.c,flexShrink:0}}/>
+          <div style={{flex:1,minWidth:0}}>
+            <div style={{display:"flex",justifyContent:"space-between",alignItems:"baseline",marginBottom:4}}>
+              <span style={{fontSize:12,fontWeight:600,color:C.g700}}>{f.n.replace(" High School","")}</span>
+              <span style={{fontSize:13,fontWeight:800,color:C.g800,fontFamily:numFont}}>${f.v.toLocaleString()}</span>
+            </div>
+            <div style={{height:3,borderRadius:2,background:C.g100}}>
+              <div style={{height:"100%",borderRadius:2,background:f.c,width:`${pct}%`,opacity:0.6,transition:"width .5s"}}/>
+            </div>
+          </div>
+          <span style={{fontSize:10,fontWeight:700,color:C.g400,width:30,textAlign:"right",flexShrink:0}}>{pct}%</span>
+        </div>})}
+        </div>
+        <div style={{padding:"10px 14px",background:C.g50,borderRadius:8,border:`1px solid ${C.g200}`,display:"flex",justifyContent:"space-between",alignItems:"center",marginTop:12}}><div><div style={{fontSize:10,fontWeight:700,color:C.g400,textTransform:"uppercase",letterSpacing:"0.06em"}}>Total</div><div style={{fontSize:18,fontWeight:800,color:C.g800,fontFamily:numFont}}>${totalFacRev.toLocaleString()}</div></div><div style={{fontSize:11,color:C.g400}}>{facMix.length} campuses - {facMix.reduce((s,f)=>s+f.assets,0)} assets</div></div>
+      </Card>
+      <Card style={{flex:1,minWidth:300}}><Sec>Top Organizations</Sec>{topCustData.map((c,i)=><div key={c.n} onClick={()=>globalShowCust(i)} style={{display:"flex",alignItems:"center",gap:10,padding:"11px 4px",borderBottom:i<4?`1px solid ${C.g100}`:"none",cursor:"pointer",borderRadius:8,transition:"background .15s"}} onMouseEnter={e=>e.currentTarget.style.background=C.blueL} onMouseLeave={e=>e.currentTarget.style.background="transparent"}><div style={{width:36,height:36,borderRadius:12,background:`linear-gradient(135deg,${[C.blue,"#4DA8D8",C.blueDk,"#2A8CBF",C.g500][i]},${[C.blueDk,C.blue,"#4DA8D8",C.blueDk,C.g600][i]})`,display:"flex",alignItems:"center",justifyContent:"center",color:"#fff",fontWeight:800,fontSize:13,flexShrink:0}}>{c.photo}</div><div style={{flex:1,minWidth:0}}><div style={{fontSize:13,fontWeight:700,color:C.g700}}>{c.n}</div><div style={{fontSize:11,color:C.g400}}>{c.b} bookings - {c.fav}</div></div><div style={{display:"flex",alignItems:"center",gap:8,flexShrink:0}}><div style={{textAlign:"right"}}><div style={{fontSize:14,fontWeight:800,color:C.g800,fontFamily:numFont}}>${c.s.toLocaleString()}</div></div><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke={C.g300} strokeWidth="2" strokeLinecap="round"><path d="M9 18l6-6-6-6"/></svg></div></div>)}</Card>
     </div>
-    <Card np><div className="pp-table-wrap"><table style={{width:"100%",borderCollapse:"collapse",fontSize:13}}><thead><tr>{[{h:"Res #",k:"id"},{h:"Asset",k:"a"},{h:"Customer",k:"c"},{h:"Date",k:"d"},{h:"Time",k:"t"},{h:"Status",k:"status"},{h:"Revenue",k:"r"},{h:"",k:""}].map(col=><th key={col.h||"act"} style={{...TH,cursor:col.k?"pointer":"default",userSelect:"none"}}>{col.h}</th>)}</tr></thead><tbody>{(showAllRes?upcoming:upcoming.slice(0,3)).map((x,i)=>{
+
+    {/* ─── SECTION: Bookings & Operations ─── */}
+    <Div>Bookings & Operations</Div>
+
+    {/* Upcoming Reservations */}
+    <div className="pp-res-header" style={{display:"flex",justifyContent:"space-between",alignItems:"center",gap:8}}>
+      <div style={{cursor:"pointer",minWidth:0}} onClick={()=>{globalSetTab("Rentals");setTimeout(()=>{if(globalSetRentalsTab)globalSetRentalsTab("reservations")},100)}}><span style={{fontSize:14,fontWeight:700,color:C.g800}}>Upcoming Reservations</span><span className="pp-res-meta" style={{fontSize:11,color:C.g400,marginLeft:8}}>{upcoming.length} total</span><span className="pp-res-meta" style={{fontSize:10,color:C.blue,marginLeft:6,fontWeight:600}}>View all  </span></div>
+      <button onClick={()=>globalCreateRes()} style={{...btnP,whiteSpace:"nowrap",flexShrink:0}}><span className="pp-btn-full">+ New Reservation</span><span className="pp-btn-short">+ New</span></button>
+    </div>
+    <Card np><div className="pp-table-wrap"><table style={{width:"100%",borderCollapse:"collapse",fontSize:13}}><thead><tr>{[{h:"Res #",k:"id"},{h:"Asset",k:"a"},{h:"Customer",k:"c"},{h:"Date",k:"d"},{h:"Time",k:"t"},{h:"Status",k:"status"},{h:"Revenue",k:"r"},{h:"",k:""}].map(col=><th key={col.h||"act"} style={{...TH,cursor:col.k?"pointer":"default",userSelect:"none"}}>{col.h}</th>)}</tr></thead><tbody>{(()=>{const monthMap={Aug:"8",Sep:"9",Oct:"10",Nov:"11",Dec:"12",Jan:"1",Feb:"2"};const filt=selMonth?upcoming.filter(x=>{const m=x.d.split("/")[0];return m===monthMap[selMonth]}):upcoming;const shown=showAllRes?filt:filt.slice(0,3);return shown.map((x,i)=>{
       const stMap={"confirmed":{bg:C.greenL,c:C.green,label:"Confirmed"},"pending":{bg:C.amberL,c:C.amber,label:"Pending"},"at-risk":{bg:C.redL,c:C.red,label:"At Risk"}};
       const st=stMap[x.status]||stMap.confirmed;
       return <tr key={x.id} style={{cursor:"pointer",background:x.status==="at-risk"?`${C.red}05`:undefined}} onMouseEnter={e=>e.currentTarget.style.background=C.g50} onMouseLeave={e=>e.currentTarget.style.background=x.status==="at-risk"?`${C.red}05`:""}>
@@ -812,67 +1031,137 @@ function Dashboard(){
         <td style={{...TD,fontWeight:700,color:C.g800,fontVariantNumeric:"tabular-nums"}}>${x.r.toFixed(2)}</td>
         <td style={{...TD,whiteSpace:"nowrap"}}><div style={{display:"flex",gap:4}}>
           <button onClick={e=>{e.stopPropagation();setSelRes(i)}} style={{...btnO,padding:"5px 12px",fontSize:11}}>View</button>
-          <button onClick={e=>{e.stopPropagation();globalShowToast({type:"success",title:"Reservation Cancelled",msg:`${x.c} - ${x.id}`,color:C.red})}} style={{background:"none",border:`1px solid ${C.red}25`,borderRadius:R.sm,padding:"5px 10px",fontSize:11,fontWeight:600,color:C.red,cursor:"pointer",fontFamily:font}}>Cancel</button>
+          <button onClick={e=>{e.stopPropagation();globalShowToast({type:"success",title:"Reservation Cancelled",msg:x.c+" - "+x.id,color:C.red})}} style={{background:"none",border:`1px solid ${C.red}25`,borderRadius:R.sm,padding:"5px 10px",fontSize:11,fontWeight:600,color:C.red,cursor:"pointer",fontFamily:font}}>Cancel</button>
         </div></td>
-      </tr>})}</tbody></table></div>
+      </tr>})})()}</tbody></table></div>
       <div style={{padding:"12px 20px",borderTop:`1px solid ${C.g100}`,textAlign:"center"}}>
-        <button onClick={()=>setShowAllRes(!showAllRes)} style={{background:"none",border:"none",fontSize:12,fontWeight:600,color:C.blue,cursor:"pointer",fontFamily:font}}>{showAllRes?`Show Less`:`View All ${upcoming.length} Reservations`}</button>
+        <button onClick={()=>setShowAllRes(!showAllRes)} style={{background:"none",border:"none",fontSize:12,fontWeight:600,color:C.blue,cursor:"pointer",fontFamily:font}}>{showAllRes?"Show Less":"View All "+upcoming.length+" Reservations"}</button>
       </div>
     </Card>
 
-    {/* Charts */}
-    <div style={{display:"flex",gap:16,flexWrap:"wrap"}}>
-      <Card style={{flex:2,minWidth:380}}><Sec>Revenue Trend</Sec><ResponsiveContainer width="100%" height={220}><AreaChart data={monthlyRev}><defs><linearGradient id="gr" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stopColor={C.blue} stopOpacity={.15}/><stop offset="100%" stopColor={C.blue} stopOpacity={.01}/></linearGradient></defs><CartesianGrid strokeDasharray="3 3" stroke={C.g200} vertical={false}/><XAxis dataKey="m" axisLine={false} tickLine={false} tick={{fontSize:11,fill:C.g400,fontFamily:font}}/><YAxis axisLine={false} tickLine={false} tick={{fontSize:11,fill:C.g400,fontFamily:font}} tickFormatter={v=>`$${(v/1000).toFixed(1)}k`}/><Tooltip content={<Tip/>}/><Area type="monotone" dataKey="r" name="Revenue" stroke={C.blue} strokeWidth={2} fill="url(#gr)" dot={{r:3,fill:C.blue,strokeWidth:2,stroke:C.cardBg}} activeDot={{r:5,stroke:C.blue,strokeWidth:2,fill:C.cardBg}}/></AreaChart></ResponsiveContainer></Card>
-      <Card style={{flex:1,minWidth:260}}><Sec>This Month vs Last</Sec><ResponsiveContainer width="100%" height={220}><BarChart data={weeklyTrend} barGap={4}><CartesianGrid strokeDasharray="3 3" stroke={C.g200} vertical={false}/><XAxis dataKey="w" axisLine={false} tickLine={false} tick={{fontSize:11,fill:C.g400,fontFamily:font}}/><YAxis axisLine={false} tickLine={false} tick={{fontSize:11,fill:C.g400,fontFamily:font}} tickFormatter={v=>`$${v}`}/><Tooltip content={<Tip/>}/><Bar dataKey="l" name="Last Mo" fill={C.g200} radius={[4,4,0,0]} barSize={14}/><Bar dataKey="r" name="This Mo" fill={C.blue} radius={[4,4,0,0]} barSize={14}/></BarChart></ResponsiveContainer></Card>
-    </div>
-
-    {/* AI Insights */}
-    <Card style={{border:`1px solid ${C.blue}20`,position:"relative",overflow:"hidden"}}>
-      <div style={{position:"absolute",top:0,left:0,right:0,height:2,background:`linear-gradient(90deg, ${C.blue}, #4DA8D8, ${C.blue})`}}/>
-      <AIInsights/>
+    {/* Asset Performance + Recent Activity */}
+    <Card><Sec action={<div style={{display:"flex",gap:4}}>{["day","week","month","year"].map(p=><button key={p} onClick={()=>setAssetRange(p)} style={pill(assetRange===p)}>{p.charAt(0).toUpperCase()+p.slice(1)}</button>)}</div>}>Asset Performance</Sec>
+      <div className="pp-table-wrap"><table style={{width:"100%",borderCollapse:"collapse",fontSize:13}}><thead><tr>{["Asset","Revenue","Bookings","Utilization"].map(h=><th key={h} style={TH}>{h}</th>)}</tr></thead><tbody>{ap.map((x,i)=><tr key={x.a} style={{background:i%2===0?C.g50:C.cardBg}}><td style={{...TD,fontWeight:600,color:C.g700}}>{x.a}</td><td style={{...TD,fontWeight:700,color:C.g800}}>${x.r.toFixed(2)}</td><td style={TD}>{x.b}</td><td style={TD}><div style={{display:"flex",alignItems:"center",gap:8}}><ProgressRing pct={x.u} size={32} stroke={3}/><span style={{fontSize:11,fontWeight:700,color:C.g600}}>{x.u}%</span></div></td></tr>)}</tbody></table></div>
+      <div style={{marginTop:14,padding:"10px 14px",background:C.g50,borderRadius:8,display:"flex",justifyContent:"space-between",fontSize:12}}><span style={{color:C.g400}}>Total ({assetRange})</span><span style={{fontWeight:800,color:C.g800}}>${ap.reduce((s,x)=>s+x.r,0).toFixed(2)}</span></div>
+      <div style={{marginTop:16,borderTop:`1px solid ${C.g200}`,paddingTop:14}}>
+        <div onClick={()=>setShowActivity(!showActivity)} style={{display:"flex",alignItems:"center",justifyContent:"space-between",cursor:"pointer"}}>
+          <div style={{fontSize:11,fontWeight:700,color:C.g400,textTransform:"uppercase",letterSpacing:"0.08em"}}>Recent Activity</div>
+          <span style={{fontSize:10,color:C.blue,fontWeight:600}}>{showActivity?"Hide":"Show"}</span>
+        </div>
+        {showActivity&&<div style={{marginTop:10}}>{[
+          {time:"Today, 9:15 AM",text:"Bayou City VB checked in at Dutchtown Gymnasium",type:"checkin"},
+          {time:"Today, 8:02 AM",text:"Gonzales FC reservation confirmed for 02/14",type:"confirm"},
+          {time:"Yesterday",text:"$425.00 payment received from LA Tigers AAU",type:"payment"},
+          {time:"Yesterday",text:"Coach Bourque approved Elite Cheer practice (02/13)",type:"approved"},
+          {time:"02/04/2026",text:"River Parish Runners completed session at Gator Stadium",type:"checkin"},
+        ].map((ev,i)=><div key={i} style={{display:"flex",gap:10,alignItems:"flex-start",padding:"6px 0",borderBottom:i<4?`1px solid ${C.g100}`:"none"}}>
+          <div style={{width:6,height:6,borderRadius:3,background:ev.type==="payment"?C.blue:ev.type==="approved"?C.green:C.g400,flexShrink:0,marginTop:5}}/>
+          <div style={{flex:1,minWidth:0}}>
+            <div style={{fontSize:12,color:C.g700,lineHeight:1.4}}>{ev.text}</div>
+            <div style={{fontSize:10,color:C.g400,marginTop:1}}>{ev.time}</div>
+          </div>
+        </div>)}
+        </div>}
+      </div>
     </Card>
 
-    {/* Facility Revenue + Asset Perf */}
-    <div style={{display:"flex",gap:16,flexWrap:"wrap"}}>
-      <Card style={{flex:1,minWidth:300}}><Sec>Revenue by Campus</Sec>
-        <div style={{display:"flex",alignItems:"center",gap:20,marginBottom:14}}><ResponsiveContainer width={140} height={140}><PieChart><Pie data={facMix} cx="50%" cy="50%" innerRadius={40} outerRadius={64} paddingAngle={3} dataKey="v" stroke="none">{facMix.map((e,i)=><Cell key={i} fill={e.c}/>)}</Pie><Tooltip content={<Tip/>}/></PieChart></ResponsiveContainer><div style={{flex:1}}>{facMix.map(f=><div key={f.n} style={{display:"flex",alignItems:"center",justifyContent:"space-between",padding:"7px 0",borderBottom:`1px solid ${C.g100}`}}><div style={{display:"flex",alignItems:"center",gap:10}}><span style={{width:10,height:10,borderRadius:3,background:f.c,flexShrink:0}}/><span style={{fontSize:12,fontWeight:600,color:C.g700}}>{f.n}</span></div><span style={{fontSize:12,fontWeight:700,color:C.g800}}>${f.v.toLocaleString()}</span></div>)}</div></div>
-        <div style={{padding:"10px 14px",background:C.g50,borderRadius:8,border:`1px solid ${C.g200}`,display:"flex",justifyContent:"space-between",alignItems:"center"}}><div><div style={{fontSize:10,fontWeight:700,color:C.g400,textTransform:"uppercase",letterSpacing:"0.06em"}}>Total</div><div style={{fontSize:18,fontWeight:800,color:C.g800}}>${totalFacRev.toLocaleString()}</div></div><div style={{fontSize:11,color:C.g400}}>{facMix.length} campuses - {facMix.reduce((s,f)=>s+f.assets,0)} assets</div></div>
-      </Card>
-      <Card style={{flex:1.3,minWidth:340}}><Sec action={<div style={{display:"flex",gap:4}}>{["day","week","month","year"].map(p=><button key={p} onClick={()=>setAssetRange(p)} style={pill(assetRange===p)}>{p.charAt(0).toUpperCase()+p.slice(1)}</button>)}</div>}>Asset Performance</Sec>
-        <div className="pp-table-wrap"><table style={{width:"100%",borderCollapse:"collapse",fontSize:13}}><thead><tr>{["Asset","Revenue","Bookings","Utilization"].map(h=><th key={h} style={TH}>{h}</th>)}</tr></thead><tbody>{ap.map((x,i)=><tr key={x.a} style={{background:i%2===0?C.g50:C.cardBg}}><td style={{...TD,fontWeight:600,color:C.g700}}>{x.a}</td><td style={{...TD,fontWeight:700,color:C.g800}}>${x.r.toFixed(2)}</td><td style={TD}>{x.b}</td><td style={TD}><div style={{display:"flex",alignItems:"center",gap:8}}><ProgressRing pct={x.u} size={32} stroke={3}/><span style={{fontSize:11,fontWeight:700,color:C.g600}}>{x.u}%</span></div></td></tr>)}</tbody></table></div>
-        <div style={{marginTop:14,padding:"10px 14px",background:C.g50,borderRadius:8,display:"flex",justifyContent:"space-between",fontSize:12}}><span style={{color:C.g400}}>Total ({assetRange})</span><span style={{fontWeight:800,color:C.g800}}>${ap.reduce((s,x)=>s+x.r,0).toFixed(2)}</span></div>
 
-        {/* Recent Activity Feed */}
-        <div style={{marginTop:16,borderTop:`1px solid ${C.g200}`,paddingTop:14}}>
-          <div onClick={()=>setShowActivity(!showActivity)} style={{display:"flex",alignItems:"center",justifyContent:"space-between",cursor:"pointer"}}>
-            <div style={{fontSize:11,fontWeight:700,color:C.g400,textTransform:"uppercase",letterSpacing:"0.08em"}}>Recent Activity</div>
-            <span style={{fontSize:10,color:C.blue,fontWeight:600}}>{showActivity?"Hide":"Show"}</span>
-          </div>
-          {showActivity&&<div style={{marginTop:10}}>{[
-            {time:"Today, 9:15 AM",text:"Bayou City VB checked in at Dutchtown Gymnasium",type:"checkin"},
-            {time:"Today, 8:02 AM",text:"Gonzales FC reservation confirmed for 02/14",type:"confirm"},
-            {time:"Yesterday",text:"$425.00 payment received from LA Tigers AAU",type:"payment"},
-            {time:"Yesterday",text:"Coach Bourque approved Elite Cheer practice (02/13)",type:"approved"},
-            {time:"02/04/2026",text:"River Parish Runners completed session at Gator Stadium",type:"checkin"},
-          ].map((ev,i)=><div key={i} style={{display:"flex",gap:10,alignItems:"flex-start",padding:"6px 0",borderBottom:i<4?`1px solid ${C.g100}`:"none"}}>
-            <div style={{width:6,height:6,borderRadius:3,background:ev.type==="payment"?C.blue:ev.type==="approved"?C.green:C.g400,flexShrink:0,marginTop:5}}/>
-            <div style={{flex:1,minWidth:0}}>
-              <div style={{fontSize:12,color:C.g700,lineHeight:1.4}}>{ev.text}</div>
-              <div style={{fontSize:10,color:C.g400,marginTop:1}}>{ev.time}</div>
-            </div>
-          </div>)}
-          </div>}
-        </div>
-      </Card>
-    </div>
-
-    {/* Top Customers */}
-    <Card><Sec action={<span style={{fontSize:11,color:C.g400}}>Click to expand</span>}>Top Organizations</Sec>{topCustData.map((c,i)=><div key={c.n} onClick={()=>setSelCust(i)} style={{display:"flex",alignItems:"center",gap:10,padding:"11px 4px",borderBottom:i<4?`1px solid ${C.g100}`:"none",cursor:"pointer",borderRadius:8,transition:"background .15s"}} onMouseEnter={e=>e.currentTarget.style.background=C.blueL} onMouseLeave={e=>e.currentTarget.style.background="transparent"}><div style={{width:36,height:36,borderRadius:12,background:`linear-gradient(135deg,${[C.blue,"#4DA8D8",C.blueDk,"#2A8CBF",C.g500][i]},${[C.blueDk,C.blue,"#4DA8D8",C.blueDk,C.g600][i]})`,display:"flex",alignItems:"center",justifyContent:"center",color:"#fff",fontWeight:800,fontSize:13,flexShrink:0}}>{c.photo}</div><div style={{flex:1,minWidth:0}}><div style={{fontSize:13,fontWeight:700,color:C.g700}}>{c.n}</div><div style={{fontSize:11,color:C.g400}}>{c.b} bookings - {c.fav}</div></div><div style={{textAlign:"right",flexShrink:0}}><div style={{fontSize:14,fontWeight:800,color:C.g800}}>${c.s.toLocaleString()}</div><span style={{fontSize:12,fontWeight:700,color:c.t==="up"?C.blue:c.t==="down"?C.g400:C.g400}}>{c.t==="up"?"↑":c.t==="down"?"↓":"-"}</span></div></div>)}</Card>
   </div>
 }
 
 /* ======== RENTALS (sub-tabs: Locations, Reservations, Approvals) ======== */
+function FacilityPanel({selFacility,setSelFacility}){
+  if(selFacility===null)return null;
+  const c=campuses[selFacility];const facs=facilities[c.short]||[];const rateDefaults=[200,185,175,190,165];const utilizations=[62,54,31,48,29];const bookingCounts=[42,38,12,28,8];
+  const [editRates,setEditRates]=useState(()=>facs.map((_,fi)=>String(rateDefaults[selFacility]+fi*15)));
+  const [campusStatus,setCampusStatus]=useState(true);
+  const [facAvail,setFacAvail]=useState(()=>facs.map((_,fi)=>[0,1,2,3,4,5,6].map(di=>fi<5?(di+fi)%3!==0:true)));
+  const [contactName,setContactName]=useState(c.name.includes("Dutchtown")?"Mike Reynolds":c.name.includes("East")?"Sarah Chen":"TBD");
+  const [contactEmail,setContactEmail]=useState(contactName==="TBD"?"":"admin@"+c.short.toLowerCase().replace(/ /g,"")+".edu");
+  const [contactPhone,setContactPhone]=useState(contactName==="TBD"?"":"(225) 555-01"+selFacility+"0");
+  const inp={width:"100%",padding:"8px 10px",border:`1px solid ${C.cardBorder}`,borderRadius:R.sm,fontSize:16,fontFamily:font,background:C.g50,color:C.g700,boxSizing:"border-box"};
+  const Label=({children})=><label style={{fontSize:9,fontWeight:700,color:C.g400,textTransform:"uppercase",letterSpacing:"0.06em",display:"block",marginBottom:4}}>{children}</label>;
+
+  const toggleDay=(fi,di)=>{
+    setFacAvail(prev=>{const n=[...prev];n[fi]=[...n[fi]];n[fi][di]=!n[fi][di];return n});
+  };
+
+  return <SlidePanel open={true} onClose={()=>setSelFacility(null)} width={520}>
+    <div style={{padding:"20px 24px",borderBottom:`1px solid ${C.g200}`,flexShrink:0}}>
+      <div style={{display:"flex",justifyContent:"space-between",alignItems:"flex-start"}}>
+        <div>
+          <div style={{fontSize:10,fontWeight:700,color:C.g400,textTransform:"uppercase",letterSpacing:"0.08em",marginBottom:4}}>Edit Campus</div>
+          <div style={{fontSize:18,fontWeight:800,color:C.g800}}>{c.name}</div>
+        </div>
+        <button onClick={()=>setSelFacility(null)} style={{background:C.g100,border:"none",width:30,height:30,borderRadius:8,cursor:"pointer",display:"flex",alignItems:"center",justifyContent:"center"}}>{I.x(14,C.g500)}</button>
+      </div>
+    </div>
+    <div style={{flex:1,overflow:"auto",WebkitOverflowScrolling:"touch",padding:"16px 24px"}}>
+      {/* Campus toggle + stats */}
+      <div style={{display:"flex",alignItems:"center",justifyContent:"space-between",marginBottom:16}}>
+        <div style={{display:"flex",alignItems:"center",gap:8}}>
+          <span style={{fontSize:12,fontWeight:600,color:C.g600}}>Campus Status</span>
+          <div onClick={()=>setCampusStatus(!campusStatus)} style={{width:38,height:20,borderRadius:10,background:campusStatus?C.green:C.g300,cursor:"pointer",position:"relative",transition:"background .2s"}}>
+            <div style={{width:14,height:14,borderRadius:"50%",background:"#fff",position:"absolute",top:3,...(campusStatus?{right:3}:{left:3}),boxShadow:"0 1px 2px rgba(0,0,0,.2)",transition:"all .15s"}}/>
+          </div>
+          <span style={{fontSize:10,fontWeight:600,color:campusStatus?C.green:C.g400}}>{campusStatus?"Published":"Draft"}</span>
+        </div>
+        <span style={{fontSize:10,color:C.g400}}>{facs.length} facilities</span>
+      </div>
+
+      <div style={{display:"grid",gridTemplateColumns:"1fr 1fr 1fr",gap:8,marginBottom:20}}>
+        {[["Utilization",utilizations[selFacility]+"%",utilizations[selFacility]>50?C.green:C.orange],["Bookings",bookingCounts[selFacility]+" YTD",C.blue],["Revenue","$"+Math.round(bookingCounts[selFacility]*rateDefaults[selFacility]*1.8).toLocaleString(),C.g800]].map(([l,v,clr])=><div key={l} style={{padding:"10px",background:C.g50,borderRadius:R.sm,border:`1px solid ${C.g200}`,textAlign:"center"}}>
+          <div style={{fontSize:8,fontWeight:700,color:C.g400,textTransform:"uppercase",letterSpacing:"0.06em"}}>{l}</div>
+          <div style={{fontSize:16,fontWeight:800,color:clr,marginTop:2}}>{v}</div>
+        </div>)}
+      </div>
+
+      {/* Campus contact */}
+      <div style={{fontSize:11,fontWeight:700,color:C.g800,marginBottom:8}}>Campus Contact</div>
+      <div style={{display:"grid",gridTemplateColumns:"1fr 1fr",gap:8,marginBottom:20}}>
+        <div><Label>Contact Name</Label><input value={contactName} onChange={e=>setContactName(e.target.value)} style={inp}/></div>
+        <div><Label>Email</Label><input value={contactEmail} onChange={e=>setContactEmail(e.target.value)} style={inp}/></div>
+        <div><Label>Phone</Label><input value={contactPhone} onChange={e=>setContactPhone(e.target.value)} style={inp}/></div>
+        <div><Label>Location</Label><input value={c.city+", Louisiana"} readOnly style={{...inp,color:C.g400}}/></div>
+      </div>
+
+      {/* Facilities - editable */}
+      <div style={{fontSize:11,fontWeight:700,color:C.g800,marginBottom:8}}>Facilities ({facs.length})</div>
+      {facs.map((f,fi)=>{const fullN=facilityFull[f]||f;return <div key={f} style={{padding:"12px",borderRadius:R.sm,border:`1px solid ${C.cardBorder}`,marginBottom:8,background:C.cardBg}}>
+        <div style={{fontSize:13,fontWeight:700,color:C.g800,marginBottom:10}}>{fullN}</div>
+        <div style={{display:"grid",gridTemplateColumns:"1fr 1fr",gap:8,marginBottom:10}}>
+          <div>
+            <Label>Hourly Rate ($)</Label>
+            <input type="number" value={editRates[fi]||""} onChange={e=>{const n=[...editRates];n[fi]=e.target.value;setEditRates(n)}} style={inp}/>
+          </div>
+          <div>
+            <Label>Capacity</Label>
+            <input value={[200,500,150,300,100][fi]} readOnly style={{...inp,color:C.g400}}/>
+          </div>
+        </div>
+        <Label>Availability</Label>
+        <div style={{display:"flex",gap:3,marginBottom:2}}>
+          {["M","T","W","T","F","S","S"].map((d,di)=>{
+            const on=facAvail[fi]?.[di]??true;
+            return <div key={di} onClick={()=>toggleDay(fi,di)} style={{flex:1,textAlign:"center",cursor:"pointer",padding:"4px 0",borderRadius:4,background:on?`${C.green}12`:`${C.red}08`,border:`1px solid ${on?`${C.green}30`:`${C.red}20`}`,transition:"all .15s"}}>
+              <div style={{fontSize:8,fontWeight:700,color:on?C.green:C.g400}}>{d}</div>
+            </div>
+          })}
+        </div>
+        <div style={{fontSize:9,color:C.g400,marginTop:4}}>Click days to toggle availability</div>
+      </div>})}
+
+      {/* Sticky save/cancel footer */}
+      <div style={{position:"sticky",bottom:0,margin:"8px -16px -16px",padding:"16px 16px",paddingBottom:"max(16px, env(safe-area-inset-bottom, 16px))",borderTop:`2px solid ${C.g200}`,display:"flex",gap:10,background:C.cardBg,boxShadow:`0 -4px 16px rgba(0,0,0,${C.bg==="#0F1318"?0.25:0.08})`}}>
+        <button onClick={()=>setSelFacility(null)} style={{...btnO,flex:1,display:"flex",justifyContent:"center",padding:"12px 14px"}}>Cancel</button>
+        <button onClick={()=>{if(globalShowToast)globalShowToast({type:"success",title:"Campus Updated",msg:c.name+" settings saved successfully",color:C.green});setSelFacility(null)}} style={{...btnP,flex:2,justifyContent:"center",padding:"12px 14px"}}>Save Changes</button>
+      </div>
+    </div>
+  </SlidePanel>
+}
+
 function Rentals(){
+  const {dark}=useContext(ThemeCtx);
   const [subTab,setSubTab]=useState("approvals");
   const [view,setView]=useState("cal");
   const [campusFilt,setCampusFilt]=useState("all");
@@ -883,8 +1172,22 @@ function Rentals(){
   const [selApproval,setSelApproval]=useState(null);
   const [selRes,setSelRes]=useState(null);
   const [showSyncMenu,setShowSyncMenu]=useState(false);
-  const [showCreateRes,setShowCreateRes]=useState(false);
+  const [locView,setLocView]=useState("list");
+  const {requireSiteAdmin,assignedAdmins}=useSiteAdmin();
   globalSetRentalsTab=setSubTab;
+  /* Helper: is a PP event unassigned? Checks all assigned keys for day+partial match */
+  const isUnassigned=(ev,day)=>{
+    if(ev.src!=="pp"||!requireSiteAdmin)return false;
+    const exactKey=`${day}-${ev.l}`;
+    if(assignedAdmins[exactKey])return false;
+    /* Check if any key matches this day and org name fragment */
+    const evName=ev.l.replace("PP - ","").toLowerCase();
+    const dayKeys=Object.keys(assignedAdmins).filter(k=>k.startsWith(`${day}-`));
+    return !dayKeys.some(k=>{
+      const kName=k.replace(`${day}-`,"").replace("PP - ","").toLowerCase();
+      return evName.includes(kName.split(" ")[0])||kName.includes(evName.split(" ")[0]);
+    });
+  };
   const dw=["Mon","Tue","Wed","Thu","Fri","Sat","Sun"];
   const days=[...Array(6).fill(null),...Array.from({length:28},(_,i)=>i+1)];
   const wks=[];for(let i=0;i<days.length;i+=7)wks.push(days.slice(i,i+7));
@@ -901,7 +1204,6 @@ function Rentals(){
   };
   const {approvals:approvalsData}=useApprovals();
   const pendingApprovals=approvalsData.filter(a=>a.status==="pending");
-  const filteredApprovals=approvalFilt==="all"?approvalsData:approvalsData.filter(a=>a.status===approvalFilt);
   const availFacilities=campusFilt==="all"?Object.values(facilities).flat():facilities[campusFilt]||[];
   const campusFacilities=campusFilt==="all"?Object.values(facilities).flat().concat(["District Office","District","Away","All Campuses"]):facilities[campusFilt]||[];
   const filterEvts=(evts)=>{
@@ -913,10 +1215,9 @@ function Rentals(){
     return f;
   };
 
-  return <div style={{display:"flex",flexDirection:"column",gap:16}}>
+  return <div style={{display:"flex",flexDirection:"column",gap:20}}>
     {selApproval!==null&&<ReservationPanel approval={selApproval} onClose={()=>setSelApproval(null)}/>}
     {selRes!==null&&<ReservationPanel res={upcoming[selRes]} onClose={()=>setSelRes(null)}/>}
-    <CreateResModal open={showCreateRes} onClose={()=>setShowCreateRes(false)}/>
 
     {/* Sub-tab navigation */}
     <div className="pp-rentals-tabs" style={{display:"flex",gap:0,borderBottom:`1px solid ${C.cardBorder}`}}>
@@ -931,11 +1232,30 @@ function Rentals(){
     {/* ============ LOCATIONS TAB ============ */}
     {subTab==="locations"&&<>
       <div className="pp-r-toolbar" style={{display:"flex",justifyContent:"space-between",alignItems:"center",gap:12,flexWrap:"wrap"}}>
-        <div className="pp-r-search" style={{position:"relative",flex:"1 1 200px",maxWidth:280}}><span style={{position:"absolute",left:10,top:"50%",transform:"translateY(-50%)"}}>{I.search(14,C.g400)}</span><input type="text" placeholder="Search locations..." style={{width:"100%",padding:"9px 14px 9px 32px",border:`1px solid ${C.cardBorder}`,borderRadius:R.sm,fontSize:13,fontFamily:font,background:C.g50,color:C.g700,boxSizing:"border-box"}}/></div>
+        <div style={{display:"flex",gap:8,alignItems:"center"}}>
+          <div className="pp-r-search" style={{position:"relative",flex:"1 1 200px",maxWidth:280}}><span style={{position:"absolute",left:10,top:"50%",transform:"translateY(-50%)"}}>{I.search(14,C.g400)}</span><input type="text" placeholder="Search locations..." style={{width:"100%",padding:"9px 14px 9px 32px",border:`1px solid ${C.cardBorder}`,borderRadius:R.sm,fontSize:13,fontFamily:font,background:C.g50,color:C.g700,boxSizing:"border-box"}}/></div>
+          <div style={{display:"flex",gap:0,border:`1px solid ${C.cardBorder}`,borderRadius:R.sm,overflow:"hidden"}}>
+            {[["list","List"],["map","Map"]].map(([k,l])=><button key={k} onClick={()=>setLocView(k)} style={{padding:"8px 14px",fontSize:12,fontWeight:locView===k?700:500,background:locView===k?C.blue:C.cardBg,color:locView===k?"#fff":C.g400,border:"none",cursor:"pointer",fontFamily:font,transition:"all .12s"}}>{l}</button>)}
+          </div>
+        </div>
         <button onClick={()=>{if(globalShowToast)globalShowToast({type:"success",title:"Location Added",msg:"New location configured",color:C.green})}} style={btnP}>+ Add Location</button>
       </div>
 
-      {/* Desktop table */}
+      {locView==="map"&&<Card style={{padding:0,overflow:"hidden"}}>
+        <iframe title="District Campuses" src="https://www.google.com/maps/embed/v1/place?key=AIzaSyBFw0Qbyq9zTFTd-tUY6dZWTgaQzuU17R8&q=Ascension+Parish+School+Board,+Donaldsonville+LA&zoom=11" style={{width:"100%",height:340,border:"none",display:"block",filter:dark?"invert(90%) hue-rotate(180deg) brightness(0.95) contrast(0.9)":"none"}} loading="lazy"/>
+        <div style={{padding:"14px 18px",borderTop:`1px solid ${C.cardBorder}`,display:"flex",gap:8,flexWrap:"wrap"}}>
+          {campuses.map((c,i)=><div key={c.id} style={{display:"flex",alignItems:"center",gap:8,padding:"8px 12px",background:C.g50,borderRadius:8,border:`1px solid ${C.cardBorder}`,flex:"1 1 200px"}}>
+            <div style={{width:8,height:8,borderRadius:4,background:[C.blue,C.green,"#F59E0B","#7C3AED",C.orange][i],flexShrink:0}}/>
+            <div style={{flex:1,minWidth:0}}>
+              <div style={{fontSize:12,fontWeight:700,color:C.g700}}>{c.short}</div>
+              <div style={{fontSize:10,color:C.g400}}>{c.city}, LA - {[3,3,2,2,2][i]} assets</div>
+            </div>
+            <button onClick={()=>globalShowFacility(i)} style={{...btnO,padding:"3px 10px",fontSize:10}}>View</button>
+          </div>)}
+        </div>
+      </Card>}
+
+      {locView==="list"&&<>
       <Card np className="pp-loc-card"><div className="pp-loc-desktop">
         <table style={{width:"100%",borderCollapse:"collapse",fontSize:13}}><thead><tr>{["","Name","Assets","Status","Last Updated","Hourly Rate",""].map(h=><th key={h} style={TH}>{h}</th>)}</tr></thead>
           <tbody>{campuses.map((c,i)=><tr key={c.id} style={{background:i%2===0?C.g50:C.cardBg}} onMouseEnter={e=>e.currentTarget.style.background=C.blueL} onMouseLeave={e=>e.currentTarget.style.background=i%2===0?C.g50:C.cardBg}>
@@ -945,7 +1265,7 @@ function Rentals(){
             <td style={TD}><span style={{...statusBadge("completed"),fontSize:10}}><span style={{width:5,height:5,borderRadius:"50%",background:"currentColor"}}/>Published</span></td>
             <td style={{...TD,color:C.g500,fontSize:12}}>02/04/2026</td>
             <td style={{...TD,color:C.g500,fontSize:12}}>$175/hr avg</td>
-            <td style={{...TD,textAlign:"right"}}><div style={{display:"flex",gap:4,justifyContent:"flex-end"}}><button style={{...btnO,padding:"5px 12px",fontSize:11}}>Edit</button><button style={{background:C.blue,color:"#fff",border:"none",borderRadius:R.sm,padding:"5px 12px",fontSize:11,fontWeight:700,cursor:"pointer",fontFamily:font}}>Manage</button></div></td>
+            <td style={{...TD,textAlign:"right"}}><button onClick={()=>globalShowFacility(i)} style={{background:C.blue,color:"#fff",border:"none",borderRadius:R.sm,padding:"5px 12px",fontSize:11,fontWeight:700,cursor:"pointer",fontFamily:font}}>Manage</button></td>
           </tr>)}</tbody>
         </table>
       </div>
@@ -966,109 +1286,138 @@ function Rentals(){
             </div>)}
           </div>
           <div style={{display:"grid",gridTemplateColumns:"1fr 1fr",gap:6}}>
-            <button style={{...btnO,fontSize:12,padding:"8px",display:"flex",alignItems:"center",justifyContent:"center"}}>Edit</button>
-            <button style={{...btnP,fontSize:12,padding:"8px",display:"flex",alignItems:"center",justifyContent:"center"}}>Manage</button>
+            <button onClick={()=>globalShowFacility(i)} style={{...btnP,fontSize:12,padding:"8px",display:"flex",alignItems:"center",justifyContent:"center",width:"100%"}}>Manage</button>
           </div>
         </div>)}
-      </div></Card>
+      </div></Card></>}
     </>}
 
     {/* ============ RESERVATIONS TAB ============ */}
     {subTab==="reservations"&&<>
-      {/* Toolbar row 1: filters */}
-      <div className="pp-r-toolbar" style={{display:"flex",justifyContent:"space-between",alignItems:"center",gap:12,flexWrap:"wrap"}}>
-        <div className="pp-r-filters" style={{display:"flex",gap:8,alignItems:"center",flexWrap:"wrap"}}>
-          <select value={campusFilt} onChange={e=>{setCampusFilt(e.target.value);setFacilityFilt("all")}} style={{...sel,minWidth:140}}><option value="all">All Campuses</option>{campuses.map(c=><option key={c.id} value={c.short}>{c.short}</option>)}</select>
-          <select value={facilityFilt} onChange={e=>setFacilityFilt(e.target.value)} style={{...sel,minWidth:150}}><option value="all">All Facilities</option>{availFacilities.map(f=><option key={f} value={f}>{facilityFull[f]||f}</option>)}</select>
-          <div className="pp-r-pills" style={{display:"flex",gap:3,background:C.g100,borderRadius:10,padding:3}}>{[["all","All Events"],["pp","PP Bookings"],["synced","Synced"]].map(([k,l])=><button key={k} onClick={()=>setSrcFilt(k)} style={pill(srcFilt===k)}>{l}</button>)}</div>
+      {/* Action bar */}
+      <div className="pp-r-row1" style={{display:"flex",alignItems:"center",justifyContent:"space-between",gap:12}}>
+        <div style={{display:"flex",gap:0,border:`1px solid ${C.cardBorder}`,borderRadius:R.sm,overflow:"hidden",flexShrink:0}}>
+          {[["cal","Calendar"],["list","List"]].map(([k,l])=><button key={k} onClick={()=>setView(k)} style={{padding:"9px 20px",fontSize:12,fontWeight:view===k?700:500,cursor:"pointer",fontFamily:font,border:"none",background:view===k?C.blue:C.cardBg,color:view===k?"#fff":C.g500,transition:"all .15s",letterSpacing:"-0.01em"}}>{l}</button>)}
         </div>
-        <div className="pp-r-actions" style={{display:"flex",gap:6,alignItems:"center",flexWrap:"wrap"}}>
-          <div style={{display:"flex",gap:0,border:`1px solid ${C.cardBorder}`,borderRadius:R.sm,overflow:"hidden"}}>
-            {[["cal","Calendar"],["list","List"]].map(([k,l])=><button key={k} onClick={()=>setView(k)} style={{padding:"7px 14px",fontSize:12,fontWeight:600,cursor:"pointer",fontFamily:font,border:"none",background:view===k?C.blue:C.cardBg,color:view===k?"#fff":C.g500,transition:"all .15s"}}>{l}</button>)}
-          </div>
+        <div style={{display:"flex",gap:8,alignItems:"center"}}>
           <div style={{position:"relative"}}>
-            <button onClick={()=>setShowSyncMenu(!showSyncMenu)} style={{...btnO,display:"flex",alignItems:"center",gap:5,fontSize:12,padding:"7px 12px"}}>{I.sync(13,C.g500)} Sync</button>
-            {showSyncMenu&&<div style={{position:"absolute",top:"100%",right:0,marginTop:6,background:C.cardBg,borderRadius:R.lg,border:`1px solid ${C.cardBorder}`,boxShadow:`0 12px 32px rgba(0,0,0,${C.bg==="#0F1318"?0.3:0.1})`,padding:6,minWidth:220,zIndex:50}}>
-              {[[I.calendar(16,C.blue),"Google Calendar","Sync school events"],[I.mail(16,"#0078D4"),"Outlook 365","Import district events"],[I.link(16,"#94A3B8"),"RankOne","Athletic scheduling sync"],[I.link(16,C.g500),"iCal URL","Sync from any calendar"],[I.link(16,C.g400),"Other","Connect a custom calendar"]].map(([ic,name,desc])=>
-                <button key={name} onClick={()=>{setShowSyncMenu(false);if(globalShowToast)globalShowToast({type:"info",title:`${name} Synced`,msg:"Calendar synced successfully",color:C.blue})}} style={{display:"flex",alignItems:"center",gap:10,width:"100%",padding:"10px 12px",background:"none",border:"none",borderRadius:R.sm,cursor:"pointer",fontFamily:font,textAlign:"left",transition:"background .12s"}} onMouseEnter={e=>e.currentTarget.style.background=C.g50} onMouseLeave={e=>e.currentTarget.style.background="transparent"}>
-                  <span style={{flexShrink:0}}>{ic}</span>
+            <button onClick={()=>setShowSyncMenu(!showSyncMenu)} style={{...btnO,display:"flex",alignItems:"center",gap:6,fontSize:12,padding:"9px 14px"}}><span className="pp-pulse-dot" style={{width:6,height:6,borderRadius:3,background:C.green,flexShrink:0}}/><span className="pp-btn-full" style={{whiteSpace:"nowrap"}}>Calendar Integrated - Google</span><span className="pp-btn-short" style={{display:"none",whiteSpace:"nowrap"}}>Integrated</span> <svg width="10" height="6" viewBox="0 0 10 6" fill="none" style={{flexShrink:0}}><path d="M1 1l4 4 4-4" stroke={C.g400} strokeWidth="1.5" fill="none"/></svg></button>
+            {showSyncMenu&&<div style={{position:"absolute",top:"100%",right:0,marginTop:8,background:C.cardBg,borderRadius:R.lg,border:`1px solid ${C.cardBorder}`,boxShadow:`0 16px 48px rgba(0,0,0,${C.bg==="#0F1318"?0.35:0.12}), 0 4px 12px rgba(0,0,0,${C.bg==="#0F1318"?0.2:0.06})`,padding:8,minWidth:260,zIndex:50}}>
+              <div style={{padding:"6px 14px 10px",fontSize:10,fontWeight:700,color:C.g400,textTransform:"uppercase",letterSpacing:"0.06em"}}>Connected</div>
+              {[["Google Calendar","District calendar sync",C.blue,true],["Outlook 365","Staff calendar integration","#0078D4",true],["RankOne","Athletic scheduling","#1B4D3E",true]].map(([name,desc,clr,active])=>
+                <button key={name} onClick={()=>{setShowSyncMenu(false);if(globalShowToast)globalShowToast({type:"info",title:`${name} Synced`,msg:"Calendar refreshed successfully",color:C.blue})}} style={{display:"flex",alignItems:"center",gap:12,width:"100%",padding:"10px 14px",background:"none",border:"none",borderRadius:R.sm,cursor:"pointer",fontFamily:font,textAlign:"left",transition:"background .12s"}} onMouseEnter={e=>e.currentTarget.style.background=C.g50} onMouseLeave={e=>e.currentTarget.style.background="transparent"}>
+                  <span style={{width:8,height:8,borderRadius:4,background:C.green,flexShrink:0}}/>
+                  <div style={{flex:1}}><div style={{fontSize:13,fontWeight:600,color:C.g700}}>{name}</div><div style={{fontSize:11,color:C.g400,marginTop:1}}>{desc}</div></div>
+                  <span style={{fontSize:10,fontWeight:600,color:C.g400}}>{I.sync(11,C.g400)}</span>
+                </button>)}
+              <div style={{height:1,background:C.g200,margin:"6px 0"}}/>
+              <div style={{padding:"6px 14px 6px",fontSize:10,fontWeight:700,color:C.g400,textTransform:"uppercase",letterSpacing:"0.06em"}}>Add Integration</div>
+              {[["iCal URL","Import from any calendar feed"],["DragonFly","Athletic scheduling"],["Custom API","Connect via webhook"]].map(([name,desc])=>
+                <button key={name} onClick={()=>{setShowSyncMenu(false);if(globalShowToast)globalShowToast({type:"info",title:`Connect ${name}`,msg:"Visit Organization > Integrations to set up",color:C.blue})}} style={{display:"flex",alignItems:"center",gap:12,width:"100%",padding:"10px 14px",background:"none",border:"none",borderRadius:R.sm,cursor:"pointer",fontFamily:font,textAlign:"left",transition:"background .12s"}} onMouseEnter={e=>e.currentTarget.style.background=C.g50} onMouseLeave={e=>e.currentTarget.style.background="transparent"}>
+                  <span style={{width:8,height:8,borderRadius:4,background:C.g300,flexShrink:0}}/>
                   <div><div style={{fontSize:13,fontWeight:600,color:C.g700}}>{name}</div><div style={{fontSize:11,color:C.g400,marginTop:1}}>{desc}</div></div>
                 </button>)}
             </div>}
           </div>
-          <button onClick={()=>setShowCreateRes(true)} style={btnP}>+ New Reservation</button>
+          <button onClick={()=>globalCreateRes()} style={{...btnP,padding:"9px 18px",whiteSpace:"nowrap",flexShrink:0}}><span className="pp-btn-full">+ New Reservation</span><span className="pp-btn-short">+ New</span></button>
         </div>
       </div>
 
-      {/* Legend bar */}
-      {(()=>{const allFiltered=Object.values(calEvents).flat().filter(e=>filterEvts([e]).length>0);const ppF=allFiltered.filter(e=>e.src==="pp").length;const syncF=allFiltered.filter(e=>e.src!=="pp").length;return <div className="pp-r-legend" style={{display:"flex",justifyContent:"space-between",alignItems:"center",gap:8,flexWrap:"wrap",fontSize:11,color:C.g400}}>
-        <div style={{display:"flex",gap:12,alignItems:"center",flexWrap:"wrap"}}>
-          {facilityFilt!=="all"&&<span style={{fontSize:12,fontWeight:700,color:C.g700}}>{facilityFull[facilityFilt]||facilityFilt}</span>}
-          {campusFilt!=="all"&&facilityFilt==="all"&&<span style={{fontSize:12,fontWeight:700,color:C.g700}}>{campusFilt}</span>}
-          {[["PP Bookings",C.blue],["Google",C.green],["RankOne","#94A3B8"],["Outlook","#7C3AED"]].map(([n,clr])=><div key={n} style={{display:"flex",alignItems:"center",gap:4}}><span style={{width:8,height:8,borderRadius:2,background:clr,flexShrink:0}}/><span style={{fontWeight:600}}>{n}</span></div>)}
+      {/* Filter bar - inside a card for visual grouping */}
+      <Card style={{padding:0,overflow:"visible"}}>
+        {/* Dropdowns + source pills */}
+        <div className="pp-r-row2" style={{display:"flex",alignItems:"center",gap:10,padding:"14px 20px",flexWrap:"wrap"}}>
+          <div className="pp-r-selects" style={{display:"flex",gap:8,alignItems:"center"}}>
+            <select value={campusFilt} onChange={e=>{setCampusFilt(e.target.value);setFacilityFilt("all")}} style={{...sel,minWidth:150}}><option value="all">All Campuses</option>{campuses.map(c=><option key={c.id} value={c.short}>{c.short}</option>)}</select>
+            <select value={facilityFilt} onChange={e=>setFacilityFilt(e.target.value)} style={{...sel,minWidth:160}}><option value="all">All Facilities</option>{availFacilities.map(f=><option key={f} value={f}>{facilityFull[f]||f}</option>)}</select>
+          </div>
+          <div className="pp-r-pills" style={{display:"flex",gap:3,background:C.g100,borderRadius:10,padding:3}}>{[["all","All Events"],["pp","PP Bookings"],["synced","Synced"]].map(([k,l])=><button key={k} onClick={()=>setSrcFilt(k)} style={pill(srcFilt===k)}>{l}</button>)}</div>
         </div>
-        <div style={{display:"flex",gap:10}}>
-          <span><strong style={{color:C.blue}}>{ppF}</strong> bookings</span>
-          <span><strong style={{color:C.g600}}>{syncF}</strong> synced</span>
-        </div>
-      </div>})()}
+
+        {/* Divider */}
+        <div style={{height:1,background:C.g100,margin:"0 20px"}}/>
+
+        {/* Legend + stats */}
+        {(()=>{const allFiltered=Object.values(calEvents).flat().filter(e=>filterEvts([e]).length>0);const ppF=allFiltered.filter(e=>e.src==="pp").length;const syncF=allFiltered.filter(e=>e.src!=="pp").length;const unassignedCount=requireSiteAdmin?Object.entries(calEvents).reduce((sum,[day,evts])=>sum+filterEvts(evts).filter(e=>isUnassigned(e,parseInt(day))).length,0):0;return <div className="pp-r-legend" style={{display:"flex",alignItems:"center",justifyContent:"space-between",padding:"12px 20px",flexWrap:"wrap",gap:8}}>
+          <div style={{display:"flex",gap:14,alignItems:"center"}}>
+            {facilityFilt!=="all"&&<span style={{fontSize:12,fontWeight:700,color:C.g700,marginRight:4}}>{facilityFull[facilityFilt]||facilityFilt}</span>}
+            {campusFilt!=="all"&&facilityFilt==="all"&&<span style={{fontSize:12,fontWeight:700,color:C.g700,marginRight:4}}>{campusFilt}</span>}
+            {[["PP Bookings",C.blue],["Google",C.green],["RankOne","#94A3B8"],["Outlook","#7C3AED"]].map(([n,clr])=><div key={n} style={{display:"inline-flex",alignItems:"center",gap:5,fontSize:11,color:C.g500}}><span style={{width:8,height:8,borderRadius:2,background:clr,flexShrink:0}}/><span style={{fontWeight:600}}>{n}</span></div>)}
+          </div>
+          <div style={{display:"flex",gap:12,alignItems:"center",fontSize:12,color:C.g400}}>
+            <span><strong style={{color:C.blue,fontWeight:800}}>{ppF}</strong> bookings</span>
+            <span style={{width:1,height:12,background:C.g200}}/>
+            <span><strong style={{color:C.g600,fontWeight:800}}>{syncF}</strong> synced</span>
+            {unassignedCount>0&&<><span style={{width:1,height:12,background:C.g200}}/><span style={{display:"inline-flex",alignItems:"center",gap:4,color:C.amber,fontWeight:700,fontSize:11}}><span style={{display:"inline-flex",alignItems:"center",justifyContent:"center",width:14,height:14,borderRadius:7,background:C.amberL}}>{I.user(9,C.amber)}</span>{unassignedCount} unassigned</span></>}
+          </div>
+        </div>})()}
+      </Card>
 
       {/* Calendar or list */}
       {view==="cal"?<Card np><div className="pp-calendar-wrap">
-        <div style={{padding:"14px 20px",display:"flex",justifyContent:"space-between",alignItems:"center",borderBottom:`1px solid ${C.cardBorder}`}}>
-          <div style={{display:"flex",alignItems:"center",gap:10}}><button style={{...btnO,padding:"5px 10px",fontSize:12}}>‹</button><span style={{fontSize:15,fontWeight:700,color:C.g800}}>February 2026</span><button style={{...btnO,padding:"5px 10px",fontSize:12}}>›</button></div>
-          <div className="pp-r-district" style={{display:"flex",alignItems:"center",gap:8}}><span style={{fontSize:11,color:C.g500,fontWeight:500}}>{facilityFilt!=="all"?(facilityFull[facilityFilt]||facilityFilt):campusFilt!=="all"?campusFilt:"All Facilities"}</span></div>
+        <div style={{padding:"16px 20px",display:"flex",justifyContent:"space-between",alignItems:"center",borderBottom:`1px solid ${C.cardBorder}`}}>
+          <div style={{display:"flex",alignItems:"center",gap:12}}><button style={{...btnO,padding:"6px 12px",fontSize:13}}>‹</button><span style={{fontSize:16,fontWeight:800,color:C.g800,letterSpacing:"-0.02em"}}>February 2026</span><button style={{...btnO,padding:"6px 12px",fontSize:13}}>›</button><button onClick={()=>{const el=document.querySelector('[data-today="true"]');if(el)el.scrollIntoView({behavior:"smooth",block:"center"});if(globalShowToast)globalShowToast({type:"success",title:"Today",msg:"Showing February 11, 2026",color:C.blue})}} style={{...btnO,padding:"5px 12px",fontSize:11,color:C.blue,borderColor:`${C.blue}30`,fontWeight:700}}>Today</button></div>
+          <div className="pp-r-district" style={{display:"flex",alignItems:"center",gap:8}}><span style={{fontSize:12,color:C.g500,fontWeight:500}}>{facilityFilt!=="all"?(facilityFull[facilityFilt]||facilityFilt):campusFilt!=="all"?campusFilt:"All Facilities"}</span></div>
         </div>
         {/* Desktop: grid calendar */}
         <div className="pp-cal-grid">
-        <table style={{width:"100%",borderCollapse:"collapse"}}><thead><tr>{dw.map(d=><th key={d} style={{padding:"10px 4px",textAlign:"center",fontSize:10,fontWeight:700,color:C.g400,textTransform:"uppercase",letterSpacing:"0.08em",borderBottom:`1px solid ${C.cardBorder}`}}>{d}</th>)}</tr></thead>
-          <tbody>{wks.map((wk,wi)=><tr key={wi}>{wk.map((day,di)=>{const isT=day===6;
+        <table style={{width:"100%",borderCollapse:"collapse"}}><thead><tr>{dw.map(d=><th key={d} style={{padding:"12px 4px",textAlign:"center",fontSize:10,fontWeight:700,color:C.g400,textTransform:"uppercase",letterSpacing:"0.08em",borderBottom:`1px solid ${C.cardBorder}`}}>{d}</th>)}</tr></thead>
+          <tbody>{wks.map((wk,wi)=><tr key={wi}>{wk.map((day,di)=>{const isToday=day===11;
             let evts=day?filterEvts(calEvents[day]||[]):[];
-            return <td key={di} style={{height:evts.length>1?Math.max(84,48+evts.length*28):84,verticalAlign:"top",borderBottom:`1px solid ${C.g100}`,borderRight:di<6?`1px solid ${C.g100}`:"none",background:!day?C.g50:isT?C.blueL:C.cardBg,padding:2,width:"14.28%"}}>
+            return <td key={di} data-today={isToday?"true":undefined} style={{height:evts.length>1?Math.max(84,48+evts.length*28):84,verticalAlign:"top",borderBottom:`1px solid ${C.g100}`,borderRight:di<6?`1px solid ${C.g100}`:"none",background:!day?C.g50:isToday?C.blueL:C.cardBg,padding:2,width:"14.28%"}}>
               {day&&<div style={{padding:2}}>
-                <span style={{fontSize:11,fontWeight:isT?800:500,color:isT?C.blue:C.g600,background:isT?`${C.blue}18`:"none",borderRadius:5,padding:isT?"1px 5px":0,display:"inline-block",marginBottom:1}}>{day}</span>
-                {evts.slice(0,3).map((ev,ei)=>{const isPP=ev.src==="pp";const bg=isPP?C.blue:ev.src==="google"?C.green:ev.src==="outlook"?"#7C3AED":"#94A3B8";return <div key={ei} onClick={()=>openCalEvent(ev,day)} style={{background:bg,color:"#fff",borderRadius:4,padding:"3px 5px",fontSize:9,lineHeight:1.3,marginTop:1,overflow:"hidden",textOverflow:"ellipsis",opacity:isPP?1:0.65,cursor:isPP?"pointer":"default"}}><div style={{fontWeight:700,whiteSpace:"nowrap",overflow:"hidden",textOverflow:"ellipsis"}}>{ev.l}</div><div style={{fontSize:8,fontWeight:600,opacity:0.95,whiteSpace:"nowrap",overflow:"hidden",textOverflow:"ellipsis",letterSpacing:"0.01em"}}>{facilityFull[ev.a]||ev.a}</div><div style={{opacity:.7,fontSize:7}}>{ev.t}</div></div>})}
+                <span style={{fontSize:11,fontWeight:isToday?800:500,color:isToday?"#fff":C.g600,background:isToday?C.blue:"none",borderRadius:isToday?"50%":"5px",padding:isToday?"1px 0":"0",display:"inline-flex",alignItems:"center",justifyContent:"center",marginBottom:1,...(isToday?{width:22,height:22,boxShadow:`0 0 0 3px ${C.blue}25`}:{})}}>{day}</span>
+                {evts.slice(0,3).map((ev,ei)=>{const isPP=ev.src==="pp";const bg=isPP?C.blue:ev.src==="google"?C.green:ev.src==="outlook"?"#7C3AED":"#94A3B8";const noAdmin=isUnassigned(ev,day);return <div key={ei} onClick={()=>openCalEvent(ev,day)} style={{background:bg,color:"#fff",borderRadius:4,padding:"3px 5px",fontSize:9,lineHeight:1.3,marginTop:1,overflow:"hidden",textOverflow:"ellipsis",opacity:isPP?1:0.65,cursor:isPP?"pointer":"default",position:"relative"}}>{noAdmin&&<span title="No site admin assigned" style={{position:"absolute",top:1,right:1,display:"flex",alignItems:"center",justifyContent:"center",width:10,height:10,borderRadius:5,background:"#F59E0B",border:"1px solid rgba(255,255,255,0.9)"}}><svg width="6" height="6" viewBox="0 0 24 24" fill="none" stroke="#fff" strokeWidth="3.5" strokeLinecap="round" strokeLinejoin="round"><path d="M20 21v-2a4 4 0 00-4-4H8a4 4 0 00-4 4v2"/><circle cx="12" cy="7" r="4"/></svg></span>}<div style={{fontWeight:700,whiteSpace:"nowrap",overflow:"hidden",textOverflow:"ellipsis"}}>{ev.l}</div><div style={{fontSize:8,fontWeight:600,opacity:0.95,whiteSpace:"nowrap",overflow:"hidden",textOverflow:"ellipsis",letterSpacing:"0.01em"}}>{facilityFull[ev.a]||ev.a}</div><div style={{opacity:.7,fontSize:7}}>{ev.t}</div></div>})}
                 {evts.length>3&&<div style={{fontSize:9,color:C.g400,fontWeight:700,marginTop:1,paddingLeft:2}}>+{evts.length-3} more</div>}
               </div>}</td>})}</tr>)}</tbody>
         </table>
         </div>
         {/* Mobile: agenda view */}
         <div className="pp-cal-agenda">
-          <div style={{display:"flex",gap:2,padding:"10px 12px",overflowX:"auto",WebkitOverflowScrolling:"touch",borderBottom:`1px solid ${C.cardBorder}`}}>
+          <div style={{display:"flex",gap:2,padding:"12px 16px",overflowX:"auto",WebkitOverflowScrolling:"touch",borderBottom:`1px solid ${C.cardBorder}`}}>
             {Array.from({length:28},(_,i)=>i+1).map(day=>{
               let evts=filterEvts(calEvents[day]||[]);
-              const isT=day===6;const hasEvts=evts.length>0;const dayIdx=(day+6-1)%7;
-              return <div key={day} style={{display:"flex",flexDirection:"column",alignItems:"center",gap:1,minWidth:34,padding:"5px 3px",borderRadius:R.sm,background:isT?C.blueL:"transparent"}}>
+              const isToday=day===11;const hasEvts=evts.length>0;const dayIdx=(day+6-1)%7;
+              return <div key={day} data-today={isToday?"true":undefined} style={{display:"flex",flexDirection:"column",alignItems:"center",gap:2,minWidth:38,padding:"6px 4px",borderRadius:R.sm,background:isToday?C.blueL:"transparent"}}>
                 <span style={{fontSize:9,fontWeight:600,color:C.g400}}>{["M","T","W","T","F","S","S"][dayIdx]}</span>
-                <span style={{fontSize:13,fontWeight:isT?800:hasEvts?700:500,color:isT?C.blue:hasEvts?C.g800:C.g400}}>{day}</span>
-                {hasEvts&&<div style={{display:"flex",gap:2}}>{evts.slice(0,3).map((ev,ei)=><span key={ei} style={{width:4,height:4,borderRadius:2,background:ev.src==="pp"?C.blue:C.g400}}/>)}</div>}
+                <span style={{fontSize:14,fontWeight:isToday?800:hasEvts?700:500,color:isToday?"#fff":hasEvts?C.g800:C.g400,...(isToday?{background:C.blue,borderRadius:"50%",width:24,height:24,display:"inline-flex",alignItems:"center",justifyContent:"center"}:{})}}>{day}</span>
+                {hasEvts&&<div style={{display:"flex",gap:2,marginTop:1}}>{evts.slice(0,3).map((ev,ei)=><span key={ei} style={{width:4,height:4,borderRadius:2,background:ev.src==="pp"?C.blue:ev.src==="google"?C.green:ev.src==="outlook"?"#7C3AED":"#94A3B8"}}/>)}</div>}
               </div>
             })}
           </div>
-          <div style={{padding:"6px 12px 12px"}}>
+          <div style={{padding:"8px 16px 16px"}}>
             {Array.from({length:28},(_,i)=>i+1).map(day=>{
               let evts=filterEvts(calEvents[day]||[]);
               if(evts.length===0)return null;
-              const dayIdx=(day+6-1)%7;const isT=day===6;
-              return <div key={day} style={{display:"flex",gap:12,padding:"10px 0",borderBottom:`1px solid ${C.g100}`}}>
-                <div style={{width:38,textAlign:"center",flexShrink:0,paddingTop:2}}>
-                  <div style={{fontSize:9,fontWeight:700,color:C.g400,textTransform:"uppercase"}}>{dw[dayIdx]}</div>
-                  <div style={{fontSize:20,fontWeight:800,color:isT?C.blue:C.g800,lineHeight:1.2}}>{day}</div>
+              const dayIdx=(day+6-1)%7;const isToday=day===11;
+              return <div key={day} data-today={isToday?"true":undefined} style={{display:"flex",gap:14,padding:"14px 0",borderBottom:`1px solid ${C.g100}`}}>
+                <div style={{width:42,textAlign:"center",flexShrink:0,paddingTop:2}}>
+                  <div style={{fontSize:9,fontWeight:700,color:C.g400,textTransform:"uppercase",letterSpacing:"0.04em"}}>{dw[dayIdx]}</div>
+                  <div style={{fontSize:22,fontWeight:800,color:isToday?"#fff":C.g800,lineHeight:1.2,...(isToday?{background:C.blue,borderRadius:"50%",width:32,height:32,display:"inline-flex",alignItems:"center",justifyContent:"center",boxShadow:`0 0 0 3px ${C.blue}25`}:{})}}>{day}</div>
                 </div>
-                <div style={{flex:1,display:"flex",flexDirection:"column",gap:4,minWidth:0}}>
-                  {evts.map((ev,ei)=>{const isPP=ev.src==="pp";const srcClr=isPP?C.blue:ev.src==="google"?C.green:ev.src==="outlook"?"#7C3AED":"#94A3B8";return <div key={ei} onClick={()=>openCalEvent(ev,day)} style={{display:"flex",alignItems:"center",gap:8,padding:"7px 10px",background:isPP?`${C.blue}08`:C.g50,borderRadius:R.sm,borderLeft:`3px solid ${srcClr}`,cursor:isPP?"pointer":"default"}}>
+                <div style={{flex:1,display:"flex",flexDirection:"column",gap:6,minWidth:0}}>
+                  {evts.map((ev,ei)=>{const isPP=ev.src==="pp";const srcClr=isPP?C.blue:ev.src==="google"?C.green:ev.src==="outlook"?"#7C3AED":"#94A3B8";const noAdmin=isUnassigned(ev,day);return <div key={ei} onClick={()=>openCalEvent(ev,day)} style={{display:"flex",alignItems:"center",gap:10,padding:"10px 14px",background:isPP?`${C.blue}08`:C.g50,borderRadius:10,borderLeft:`3px solid ${srcClr}`,cursor:isPP?"pointer":"default",transition:"background .12s"}}>
                     <div style={{flex:1,minWidth:0}}>
-                      <div style={{fontSize:12,fontWeight:600,color:C.g800,overflow:"hidden",textOverflow:"ellipsis",whiteSpace:"nowrap"}}>{ev.l}</div>
-                      <div style={{fontSize:11,color:C.g600,marginTop:2,fontWeight:500}}>{facilityFull[ev.a]||ev.a}</div>
-                      <div style={{fontSize:10,color:C.g400,marginTop:1}}>{ev.t}</div>
+                      <div style={{fontSize:13,fontWeight:600,color:C.g800,overflow:"hidden",textOverflow:"ellipsis",whiteSpace:"nowrap"}}>{ev.l}</div>
+                      <div style={{fontSize:11,color:C.g600,marginTop:3,fontWeight:500}}>{facilityFull[ev.a]||ev.a}</div>
+                      <div style={{fontSize:10,color:C.g400,marginTop:2}}>{ev.t}</div>
                     </div>
-                    {isPP&&<span style={{fontSize:8,fontWeight:800,color:C.blue,background:C.blueL,padding:"2px 5px",borderRadius:3,flexShrink:0}}>PP</span>}
+                    <div style={{display:"flex",flexDirection:"column",alignItems:"flex-end",gap:4,flexShrink:0}}>
+                      {isPP&&<span style={{fontSize:9,fontWeight:800,color:C.blue,background:C.blueL,padding:"3px 8px",borderRadius:4,letterSpacing:"0.02em"}}>PP</span>}
+                      {noAdmin&&<span style={{display:"inline-flex",alignItems:"center",gap:3,fontSize:8,fontWeight:700,color:C.amber,background:C.amberL,padding:"2px 6px",borderRadius:4}}>{I.user(8,C.amber)} No Admin Assigned</span>}
+                    </div>
                   </div>})}
                 </div>
               </div>
             })}
           </div>
         </div>
+        {/* Empty state for filtered views */}
+        {(()=>{const totalVisible=Object.values(calEvents).flat().filter(e=>filterEvts([e]).length>0).length;return totalVisible===0?<div style={{padding:"40px 20px",textAlign:"center",color:C.g400}}>
+          <div style={{fontSize:32,marginBottom:8}}>📅</div>
+          <div style={{fontSize:14,fontWeight:600,color:C.g600}}>No events found</div>
+          <div style={{fontSize:12,marginTop:4}}>No {srcFilt==="pp"?"PracticePlan bookings":srcFilt==="synced"?"synced events":"events"} match the current filters{campusFilt!=="all"?` for ${campusFilt}`:""}{facilityFilt!=="all"?` at ${facilityFull[facilityFilt]||facilityFilt}`:""}.</div>
+        </div>:null})()}
       </div></Card>
 
       :<Card np><div style={{overflowX:"auto",WebkitOverflowScrolling:"touch"}}>
@@ -1094,23 +1443,22 @@ function Rentals(){
 
     {/* ============ APPROVALS TAB ============ */}
     {subTab==="approvals"&&<>
-      <div className="pp-r-toolbar" style={{display:"flex",justifyContent:"space-between",alignItems:"center",gap:12,flexWrap:"wrap"}}>
-        <div className="pp-r-filters" style={{display:"flex",gap:10,alignItems:"center",flexWrap:"wrap"}}>
-          <div className="pp-r-pills" style={{display:"flex",gap:3,background:C.g100,borderRadius:10,padding:3}}>{[["all","All"],["pending","Pending"],["approved","Approved"],["denied","Denied"]].map(([k,l])=><button key={k} onClick={()=>setApprovalFilt(k)} style={pill(approvalFilt===k)}>{l}</button>)}</div>
-          <div className="pp-r-search" style={{position:"relative"}}><span style={{position:"absolute",left:10,top:"50%",transform:"translateY(-50%)"}}>{I.search(13,C.g400)}</span><input type="text" placeholder="Search..." style={{padding:"8px 14px 8px 30px",border:`1px solid ${C.cardBorder}`,borderRadius:R.sm,fontSize:12,fontFamily:font,width:160,background:C.g50,color:C.g700,boxSizing:"border-box"}}/></div>
+      {/* Pending approvals - main content */}
+      {pendingApprovals.length>0?<>
+        <div style={{display:"flex",alignItems:"center",justifyContent:"space-between",marginBottom:4}}>
+          <div style={{display:"flex",alignItems:"center",gap:8}}>
+            <span style={{fontSize:14,fontWeight:700,color:C.g800}}>Pending Requests</span>
+            <span style={{background:C.amber,color:"#fff",fontSize:10,fontWeight:800,padding:"2px 8px",borderRadius:8}}>{pendingApprovals.length}</span>
+          </div>
         </div>
-        <ExportBtns/>
-      </div>
-
-      {/* Approval cards */}
       <div style={{display:"flex",flexDirection:"column",gap:12}}>
-      {filteredApprovals.map((a)=>{
+      {pendingApprovals.map((a)=>{
         const totalRev=a.bk.reduce((s,b)=>s+b.rev,0);
         const totalHrs=a.bk.reduce((s,b)=>s+b.hours,0);
-        const isPending=a.status==="pending";
-        const isUrgent=isPending&&a.expiresIn==="0 Days";
-        const stColor=a.status==="approved"?C.green:a.status==="denied"?C.red:C.amber;
-        const stBg=a.status==="approved"?C.greenL:a.status==="denied"?C.redL:C.amberL;
+        const isPending=true;
+        const isUrgent=a.expiresIn==="0 Days";
+        const stColor=C.amber;
+        const stBg=C.amberL;
         return <div key={a.id} className="pp-appr" style={{background:C.cardBg,borderRadius:R.lg,border:isUrgent?`1.5px solid ${C.red}30`:`1px solid ${C.cardBorder}`,boxShadow:C.cardShadow,overflow:"hidden"}}>
 
           {/* Status accent bar */}
@@ -1131,13 +1479,13 @@ function Rentals(){
                 <span style={{fontSize:10,color:C.blue,fontFamily:"monospace"}}>{a.id}</span>
                 <span style={{fontSize:10,color:C.g300}}>-</span>
                 {a.insActive?
-                  <span style={{display:"inline-flex",alignItems:"center",gap:3,fontSize:9,fontWeight:700,color:C.green}}>{I.check(9,C.green)} COI Active</span>:
-                  <span style={{display:"inline-flex",alignItems:"center",gap:3,fontSize:9,fontWeight:700,color:C.red}}>⚠ COI Expired</span>
+                  <span style={{display:"inline-flex",alignItems:"center",gap:3,fontSize:9,fontWeight:700,color:C.green,background:C.greenL,padding:"1px 7px",borderRadius:8}}>{I.check(9,C.green)} Insured</span>:
+                  <span style={{display:"inline-flex",alignItems:"center",gap:3,fontSize:9,fontWeight:700,color:C.red,background:C.redL,padding:"1px 7px",borderRadius:8}}>⚠ No Insurance</span>
                 }
               </div>
             </div>
             <div style={{textAlign:"right",flexShrink:0}}>
-              <div style={{fontSize:18,fontWeight:800,color:C.g800}}>${totalRev.toLocaleString()}</div>
+              <div style={{fontSize:18,fontWeight:800,color:C.g800,fontFamily:numFont}}>${totalRev.toLocaleString()}</div>
               <div style={{fontSize:10,color:C.g400}}>{totalHrs}h total</div>
             </div>
           </div>
@@ -1165,22 +1513,55 @@ function Rentals(){
             {a.notes&&<div style={{fontSize:10,color:C.g400,fontStyle:"italic",flex:1,minWidth:0,overflow:"hidden",textOverflow:"ellipsis",whiteSpace:"nowrap"}}>"{a.notes}"</div>}
             {!a.notes&&<div style={{flex:1}}/>}
             <div className="pp-appr-btns" style={{display:"flex",gap:6,flexShrink:0}}>
-              <button onClick={()=>setSelApproval(a)} style={{...btnO,fontSize:11,padding:"7px 14px"}}>Details</button>
+              <button onClick={()=>setSelApproval(a)} style={{...btnO,fontSize:11,padding:"7px 14px"}}>Full Review</button>
               {isPending&&<button onClick={()=>triggerApproval(a.id)} style={{background:C.blue,color:"#fff",border:"none",borderRadius:R.sm,padding:"7px 14px",fontSize:11,fontWeight:700,cursor:"pointer",fontFamily:font}}>Quick Review</button>}
             </div>
           </div>
         </div>})}
       </div>
-      {filteredApprovals.length===0&&<Card><div style={{padding:"40px 0",textAlign:"center",color:C.g400}}><div style={{fontSize:36,marginBottom:8}}>✓</div><div style={{fontSize:14,fontWeight:600,color:C.g600}}>All caught up</div><div style={{fontSize:12,marginTop:4}}>No approvals match the current filter.</div></div></Card>}
+      </>:<Card><div style={{padding:"40px 0",textAlign:"center",color:C.g400}}><div style={{fontSize:36,marginBottom:8}}>✓</div><div style={{fontSize:14,fontWeight:600,color:C.g600}}>All caught up</div><div style={{fontSize:12,marginTop:4}}>No pending approval requests.</div></div></Card>}
+
+      {/* History - collapsible */}
+      {(()=>{const resolved=approvalsData.filter(a=>a.status!=="pending");
+        if(resolved.length===0)return null;
+        return <>
+          <div onClick={()=>setApprovalFilt(approvalFilt==="history"?"all":"history")} style={{display:"flex",alignItems:"center",justifyContent:"space-between",cursor:"pointer",padding:"12px 0",marginTop:4}}>
+            <div style={{display:"flex",alignItems:"center",gap:8}}>
+              <span style={{fontSize:13,fontWeight:700,color:C.g600}}>History</span>
+              <span style={{fontSize:10,fontWeight:600,color:C.g400,background:C.g100,padding:"2px 8px",borderRadius:6}}>{resolved.length}</span>
+            </div>
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke={C.g400} strokeWidth="2" strokeLinecap="round" style={{transform:approvalFilt==="history"?"rotate(180deg)":"none",transition:"transform .2s"}}><path d="M6 9l6 6 6-6"/></svg>
+          </div>
+          {approvalFilt==="history"&&<div style={{display:"flex",flexDirection:"column",gap:0}}>
+            {resolved.map((a,i)=>{
+              const totalRev=a.bk.reduce((s,b)=>s+b.rev,0);
+              const stColor=a.status==="approved"?C.green:C.red;
+              return <div key={a.id} onClick={()=>setSelApproval(a)} style={{display:"flex",alignItems:"center",gap:12,padding:"12px 4px",borderBottom:i<resolved.length-1?`1px solid ${C.g100}`:"none",cursor:"pointer",borderRadius:6,transition:"background .12s"}} onMouseEnter={e=>e.currentTarget.style.background=C.g50} onMouseLeave={e=>e.currentTarget.style.background="transparent"}>
+                <div style={{width:6,height:6,borderRadius:3,background:stColor,flexShrink:0}}/>
+                <div style={{flex:1,minWidth:0}}>
+                  <div style={{fontSize:13,fontWeight:600,color:C.g700}}>{a.org}</div>
+                  <div style={{fontSize:11,color:C.g400}}>{a.bk.length} booking{a.bk.length>1?"s":""} - {a.bk[0]?.asset||"N/A"}</div>
+                </div>
+                <div style={{textAlign:"right",flexShrink:0}}>
+                  <div style={{fontSize:12,fontWeight:700,color:C.g700}}>${totalRev.toLocaleString()}</div>
+                  <span style={{fontSize:9,fontWeight:700,color:stColor,textTransform:"uppercase"}}>{a.status}</span>
+                </div>
+                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke={C.g300} strokeWidth="2" strokeLinecap="round"><path d="M9 18l6-6-6-6"/></svg>
+              </div>
+            })}
+          </div>}
+        </>
+      })()}
     </>}
   </div>
 }
 
 /* ======== ORGANIZATION ======== */
 function Org(){
+  const {dark}=useContext(ThemeCtx);
   const [orgTab,setOrgTab]=useState("overview");
   const [editMode,setEditMode]=useState(false);
-  const orgTabs=[["overview","Overview"],["amenities","Amenities"],["integrations","Integrations"],["team","Team"],["billing","Billing & Plan"],["activity","Activity Log"]];
+  const orgTabs=[["overview","Overview"],["amenities","Amenities"],["integrations","Integrations"],["team","Team"],["activity","Activity Log"]];
   const [amenSearch,setAmenSearch]=useState("");
   const [amenCat,setAmenCat]=useState("All");
   const [amenView,setAmenView]=useState("library");
@@ -1191,11 +1572,11 @@ function Org(){
 
   const integrations=[
     {name:"RankOne",desc:"Athletic scheduling & eligibility",status:"connected",lastSync:"2 min ago",abbr:"R1",abbrBg:"#1B4D3E",color:C.green,events:347},
+    {name:"DragonFly",desc:"Athletic scheduling & facility management",status:"disconnected",lastSync:"--",abbr:"DF",abbrBg:"#B8860B",color:"#B8860B",events:null},
     {name:"Google Calendar",desc:"District calendar sync",status:"connected",lastSync:"5 min ago",abbr:"GC",abbrBg:"#4285F4",color:C.blue,events:89},
     {name:"Outlook 365",desc:"Staff calendar integration",status:"connected",lastSync:"12 min ago",abbr:"O3",abbrBg:"#0078D4",color:"#0078D4",events:24},
-    {name:"Stripe",desc:"Payment processing",status:"connected",lastSync:"Real-time",abbr:"S",abbrBg:"#635BFF",color:"#635BFF",events:null},
     {name:"QuickBooks",desc:"Accounting & invoicing",status:"disconnected",lastSync:"--",abbr:"QB",abbrBg:C.g400,color:C.g400,events:null},
-    {name:"Notify",desc:"SMS & push notifications",status:"connected",lastSync:"Real-time",abbr:"N",abbrBg:C.orange,color:C.orange,events:null},
+    {name:"Custom API",desc:"Connect your own system via webhook or REST API",status:"disconnected",lastSync:"--",abbr:"{ }",abbrBg:C.g500,color:C.g500,events:null},
   ];
 
   const teamMembers=[
@@ -1220,7 +1601,7 @@ function Org(){
     {action:"New Customer",detail:"Louisiana Tigers AAU completed onboarding and uploaded COI",user:"System",time:"3d ago",icon:I.user(12,C.green),color:C.greenL},
   ];
 
-  return <div style={{display:"flex",flexDirection:"column",gap:16}}>
+  return <div style={{display:"flex",flexDirection:"column",gap:20}}>
     {/* Sub-tabs */}
     <div className="pp-sub-tabs" style={{display:"flex",gap:0,borderBottom:`1px solid ${C.cardBorder}`,overflowX:"auto"}}>
       {orgTabs.map(([k,l])=>
@@ -1230,7 +1611,25 @@ function Org(){
 
     {/* OVERVIEW TAB */}
     {orgTab==="overview"&&<>
+      <Div>District Profile</Div>
+      {/* Map + District Info row */}
       <div style={{display:"flex",gap:16,flexWrap:"wrap"}}>
+        <Card style={{flex:1.2,minWidth:280,padding:0,overflow:"hidden",position:"relative"}}>
+          <iframe
+            title="District Location"
+            src={"https://www.google.com/maps/embed/v1/place?key=AIzaSyBFw0Qbyq9zTFTd-tUY6dZWTgaQzuU17R8&q=1100+Webster+St,+Donaldsonville,+LA+70346&zoom=13"+(dark?"&maptype=roadmap":"&maptype=roadmap")}
+            style={{width:"100%",height:"100%",minHeight:260,border:"none",display:"block",filter:dark?"invert(90%) hue-rotate(180deg) brightness(0.95) contrast(0.9)":"none"}}
+            loading="lazy"
+            referrerPolicy="no-referrer-when-downgrade"
+          />
+          <div style={{position:"absolute",bottom:0,left:0,right:0,padding:"12px 16px",background:`linear-gradient(transparent, ${dark?"rgba(15,19,24,0.95)":"rgba(0,0,0,0.7)"})`,display:"flex",alignItems:"center",gap:10}}>
+            <div style={{width:28,height:28,borderRadius:8,background:"rgba(255,255,255,0.15)",backdropFilter:"blur(8px)",display:"flex",alignItems:"center",justifyContent:"center",flexShrink:0}}>{I.link(13,"#fff")}</div>
+            <div>
+              <div style={{fontSize:12,fontWeight:700,color:"#fff",lineHeight:1.3}}>1100 Webster St</div>
+              <div style={{fontSize:10,color:"rgba(255,255,255,0.7)"}}>Donaldsonville, LA 70346</div>
+            </div>
+          </div>
+        </Card>
         <Card style={{flex:2,minWidth:320}}>
           <Sec action={<button onClick={()=>{setEditMode(!editMode);if(editMode&&globalShowToast)globalShowToast({type:"success",title:"Changes Saved",msg:"District information updated",color:C.green})}} style={editMode?{...btnP}:btnO}>{editMode?<>{I.check(12,"#fff")} Save</>:<>{I.edit(12,C.g500)} Edit</>}</button>}>District Information</Sec>
           <div style={{display:"grid",gridTemplateColumns:"1fr 1fr",gap:14}}>
@@ -1241,60 +1640,94 @@ function Org(){
             </div>)}
           </div>
         </Card>
-        <Card style={{flex:1,minWidth:240}}>
+      </div>
+      <Card>
           <Sec action={<button onClick={()=>{if(globalShowToast)globalShowToast({type:"success",title:"Account Added",msg:"New payment account configured",color:C.green})}} style={{...btnO,fontSize:12,padding:"5px 12px"}}>+ Add</button>}>Payment Accounts</Sec>
-          {campuses.map((c,ci)=><div key={c.id} style={{padding:"12px 0",borderBottom:ci<campuses.length-1?`1px solid ${C.g100}`:"none",display:"flex",justifyContent:"space-between",alignItems:"center"}}>
+          <div style={{display:"grid",gridTemplateColumns:"repeat(auto-fill,minmax(200px,1fr))",gap:10}}>
+          {campuses.map((c,ci)=><div key={c.id} style={{padding:"12px 14px",borderRadius:8,border:`1px solid ${C.cardBorder}`,background:C.g50,display:"flex",justifyContent:"space-between",alignItems:"center"}}>
             <div><div style={{fontSize:12,fontWeight:600,color:C.g700}}>{c.short}</div><div style={{fontSize:11,color:C.g400,marginTop:2,fontFamily:"monospace"}}>**** **** **** {["4821","7293","3018","5547","1962"][ci]}</div></div>
-            <span style={{...statusBadge("completed")}}><span style={{width:5,height:5,borderRadius:"50%",background:"currentColor"}}/>Active</span>
+            <span style={{...statusBadge("completed"),fontSize:9}}><span style={{width:4,height:4,borderRadius:"50%",background:"currentColor"}}/>Active</span>
           </div>)}
-        </Card>
-      </div>
+          </div>
+      </Card>
 
-      {/* Quick Stats */}
-      <div style={{display:"flex",gap:12,flexWrap:"wrap"}}>
-        <Card style={{flex:1,minWidth:140,textAlign:"center"}}><div style={{fontSize:10,fontWeight:700,color:C.g400,textTransform:"uppercase",letterSpacing:"0.06em"}}>Team Members</div><div style={{fontSize:26,fontWeight:900,color:C.g800,marginTop:4}}>{teamMembers.length}</div><div style={{fontSize:11,color:C.g400,marginTop:2}}>{teamMembers.filter(t=>t.status==="active").length} active</div></Card>
-        <Card style={{flex:1,minWidth:140,textAlign:"center"}}><div style={{fontSize:10,fontWeight:700,color:C.g400,textTransform:"uppercase",letterSpacing:"0.06em"}}>Integrations</div><div style={{fontSize:26,fontWeight:900,color:C.green,marginTop:4}}>{integrations.filter(i=>i.status==="connected").length}/{integrations.length}</div><div style={{fontSize:11,color:C.g400,marginTop:2}}>connected</div></Card>
-        <Card style={{flex:1,minWidth:140,textAlign:"center"}}><div style={{fontSize:10,fontWeight:700,color:C.g400,textTransform:"uppercase",letterSpacing:"0.06em"}}>Enrolled Assets</div><div style={{fontSize:26,fontWeight:900,color:C.blue,marginTop:4}}>12</div><div style={{fontSize:11,color:C.g400,marginTop:2}}>across 5 campuses</div></Card>
-        <Card style={{flex:1,minWidth:140,textAlign:"center"}}><div style={{fontSize:10,fontWeight:700,color:C.g400,textTransform:"uppercase",letterSpacing:"0.06em"}}>Plan</div><div style={{fontSize:20,fontWeight:900,color:C.g800,marginTop:4}}>Enterprise</div><div style={{fontSize:11,color:C.green,marginTop:2,fontWeight:700}}>Active</div></Card>
-      </div>
 
+      <Div>Services & Amenities</Div>
       <Card><Sec action={<button onClick={()=>setOrgTab("amenities")} style={{...btnO,fontSize:12,padding:"5px 14px",color:C.blue,borderColor:`${C.blue}30`}}>Manage All ({amenityLib.length}) →</button>}>Amenities & Add-ons</Sec><div style={{display:"grid",gridTemplateColumns:"repeat(auto-fill,minmax(190px,1fr))",gap:10}}>{amenityLib.filter(a=>enabledAmens.has(a.id)).slice(0,8).map(a=><div key={a.id} style={{display:"flex",justifyContent:"space-between",alignItems:"center",padding:"11px 14px",background:C.g50,borderRadius:10,border:`1px solid ${C.cardBorder}`}}><span style={{fontSize:13,color:C.g700,fontWeight:600}}>{a.n}</span><span style={{fontSize:13,fontWeight:800,color:C.blue}}>${amenPrices[a.id]||a.p}</span></div>)}{enabledAmens.size>8&&<div style={{display:"flex",alignItems:"center",justifyContent:"center",padding:"11px 14px",background:C.g50,borderRadius:10,border:`1px dashed ${C.cardBorder}`,color:C.g400,fontSize:12,fontWeight:600,cursor:"pointer"}} onClick={()=>setOrgTab("amenities")}>+{enabledAmens.size-8} more</div>}</div></Card>
-      <div style={{display:"flex",gap:16,flexWrap:"wrap"}}>
+      <Div>Settings</Div>
+      <div style={{display:"flex",gap:20,flexWrap:"wrap"}}>
         <Card style={{flex:1}}><Sec>Notification Preferences</Sec>
           {[["Email - New Reservations",true],["Email - Payment Confirmations",true],["Email - Insurance Alerts",true],["SMS - Urgent Approvals",true],["SMS - Payment Failures",false],["Weekly Digest Report",true]].map(([n,on])=><div key={n} style={{display:"flex",justifyContent:"space-between",alignItems:"center",padding:"10px 0",borderBottom:`1px solid ${C.g100}`}}>
             <span style={{fontSize:13,color:C.g600}}>{n}</span>
             <div style={{width:42,height:22,borderRadius:11,background:on?C.green:C.g300,cursor:"pointer",position:"relative",transition:"background .2s"}}><div style={{width:16,height:16,borderRadius:"50%",background:"#fff",position:"absolute",top:3,...(on?{right:3}:{left:3}),boxShadow:"0 1px 3px rgba(0,0,0,.2)",transition:"all .15s"}}/></div>
           </div>)}
         </Card>
-        <Card style={{flex:1}}><Sec>Tax & Fee Settings</Sec>
+        <div style={{flex:1,display:"flex",flexDirection:"column",gap:20}}>
+          <Card><Sec>Workflow Settings</Sec>
+            {(()=>{const {requireSiteAdmin,setRequireSiteAdmin}=useSiteAdmin();return <>
+              <div style={{display:"flex",justifyContent:"space-between",alignItems:"flex-start",padding:"10px 0",borderBottom:`1px solid ${C.g100}`}}>
+                <div style={{flex:1,marginRight:16}}>
+                  <div style={{fontSize:13,fontWeight:600,color:C.g700}}>Site Admin Tracking</div>
+                  <div style={{fontSize:11,color:C.g400,marginTop:3,lineHeight:1.5}}>When enabled, PP bookings without an assigned site admin are flagged on the calendar. Disable if your district manages on-site supervision outside of PracticePlan.</div>
+                </div>
+                <div onClick={()=>setRequireSiteAdmin(!requireSiteAdmin)} style={{width:42,height:22,borderRadius:11,background:requireSiteAdmin?C.green:C.g300,cursor:"pointer",position:"relative",transition:"background .2s",flexShrink:0,marginTop:2}}><div style={{width:16,height:16,borderRadius:"50%",background:"#fff",position:"absolute",top:3,...(requireSiteAdmin?{right:3}:{left:3}),boxShadow:"0 1px 3px rgba(0,0,0,.2)",transition:"all .15s"}}/></div>
+              </div>
+              <div style={{display:"flex",justifyContent:"space-between",alignItems:"flex-start",padding:"10px 0"}}>
+                <div style={{flex:1,marginRight:16}}>
+                  <div style={{fontSize:13,fontWeight:600,color:C.g700}}>Require Approval for Rentals</div>
+                  <div style={{fontSize:11,color:C.g400,marginTop:3,lineHeight:1.5}}>All rental requests must be reviewed and approved before being confirmed. Disable for auto-approval of qualifying bookings.</div>
+                </div>
+                <div style={{width:42,height:22,borderRadius:11,background:C.green,cursor:"pointer",position:"relative",transition:"background .2s",flexShrink:0,marginTop:2}}><div style={{width:16,height:16,borderRadius:"50%",background:"#fff",position:"absolute",top:3,right:3,boxShadow:"0 1px 3px rgba(0,0,0,.2)",transition:"all .15s"}}/></div>
+              </div>
+            </>})()}
+          </Card>
+          <Card><Sec>Booking Settings</Sec>
           <div style={{display:"flex",flexDirection:"column",gap:14}}>
-            {[["Sales Tax Rate","0"],["Processing Fee","2.9"],["Platform Fee","5.0"]].map(([l,v])=><div key={l} style={{display:"flex",justifyContent:"space-between",alignItems:"center"}}>
-              <span style={{fontSize:13,color:C.g600}}>{l}</span>
-              <div style={{display:"flex",alignItems:"center",gap:6}}><input type="text" defaultValue={v} style={{width:56,padding:"8px 10px",border:`1px solid ${C.cardBorder}`,borderRadius:8,fontSize:14,fontWeight:700,textAlign:"center",fontFamily:font,background:C.g50,color:C.g700}}/><span style={{fontSize:14,color:C.g400,fontWeight:700}}>%</span></div>
-            </div>)}
+            <div style={{display:"flex",justifyContent:"space-between",alignItems:"center"}}>
+              <div><span style={{fontSize:13,fontWeight:600,color:C.g700}}>Sales Tax Rate</span><div style={{fontSize:10,color:C.g400,marginTop:1}}>Applied to all rental invoices</div></div>
+              <div style={{display:"flex",alignItems:"center",gap:6}}><input type="text" defaultValue="0" style={{width:56,padding:"8px 10px",border:`1px solid ${C.cardBorder}`,borderRadius:8,fontSize:14,fontWeight:700,textAlign:"center",fontFamily:font,background:C.g50,color:C.g700}}/><span style={{fontSize:14,color:C.g400,fontWeight:700}}>%</span></div>
+            </div>
+            <div style={{height:1,background:C.g100}}/>
+            <div style={{display:"flex",justifyContent:"space-between",alignItems:"center"}}>
+              <div><span style={{fontSize:13,fontWeight:600,color:C.g700}}>Minimum Booking Duration</span><div style={{fontSize:10,color:C.g400,marginTop:1}}>Shortest rental block allowed</div></div>
+              <select defaultValue="1" style={{...sel,width:100,textAlign:"center"}}><option value="1">1 hour</option><option value="2">2 hours</option><option value="3">3 hours</option><option value="4">4 hours</option></select>
+            </div>
+            <div style={{height:1,background:C.g100}}/>
+            <div style={{display:"flex",justifyContent:"space-between",alignItems:"center"}}>
+              <div><span style={{fontSize:13,fontWeight:600,color:C.g700}}>Advance Booking Window</span><div style={{fontSize:10,color:C.g400,marginTop:1}}>How far ahead renters can book</div></div>
+              <select defaultValue="90" style={{...sel,width:100,textAlign:"center"}}><option value="30">30 days</option><option value="60">60 days</option><option value="90">90 days</option><option value="180">180 days</option><option value="365">1 year</option></select>
+            </div>
+            <div style={{height:1,background:C.g100}}/>
+            <div style={{display:"flex",justifyContent:"space-between",alignItems:"center"}}>
+              <div><span style={{fontSize:13,fontWeight:600,color:C.g700}}>Auto-Approve Returning Orgs</span><div style={{fontSize:10,color:C.g400,marginTop:1}}>Skip approval for orgs with 3+ completed bookings</div></div>
+              <div style={{width:38,height:20,borderRadius:10,background:C.g300,cursor:"pointer",position:"relative"}}><div style={{width:14,height:14,borderRadius:"50%",background:"#fff",position:"absolute",top:3,left:3,boxShadow:"0 1px 2px rgba(0,0,0,.2)"}}/></div>
+            </div>
           </div>
         </Card>
+        </div>
       </div>
     </>}
 
     {/* AMENITIES TAB */}
     {orgTab==="amenities"&&<>
-      {/* Summary stats */}
-      <div style={{display:"flex",gap:12,flexWrap:"wrap"}}>
-        <Card style={{flex:1,minWidth:130,textAlign:"center"}}><div style={{fontSize:10,fontWeight:700,color:C.g400,textTransform:"uppercase",letterSpacing:"0.06em"}}>Total Available</div><div style={{fontSize:26,fontWeight:900,color:C.g800,marginTop:4}}>{amenityLib.length}</div></Card>
-        <Card style={{flex:1,minWidth:130,textAlign:"center"}}><div style={{fontSize:10,fontWeight:700,color:C.g400,textTransform:"uppercase",letterSpacing:"0.06em"}}>Enabled</div><div style={{fontSize:26,fontWeight:900,color:C.green,marginTop:4}}>{enabledAmens.size}</div></Card>
-        <Card style={{flex:1,minWidth:130,textAlign:"center"}}><div style={{fontSize:10,fontWeight:700,color:C.g400,textTransform:"uppercase",letterSpacing:"0.06em"}}>Categories</div><div style={{fontSize:26,fontWeight:900,color:C.blue,marginTop:4}}>{amenityCats.length-1}</div></Card>
-        <Card style={{flex:1,minWidth:130,textAlign:"center"}}><div style={{fontSize:10,fontWeight:700,color:C.g400,textTransform:"uppercase",letterSpacing:"0.06em"}}>Venues Using</div><div style={{fontSize:26,fontWeight:900,color:C.g800,marginTop:4}}>{Object.keys(venueAssign).length}</div></Card>
+      {/* Compact summary */}
+      <div className="pp-amen-summary" style={{display:"flex",justifyContent:"center",gap:0,marginBottom:4}}>
+        <div style={{display:"flex",gap:0,background:C.cardBg,border:`1px solid ${C.cardBorder}`,borderRadius:R.lg,overflow:"hidden",width:"100%",maxWidth:600}}>
+          {[["Available",amenityLib.length,C.g800],["Enabled",enabledAmens.size,C.green],["Categories",amenityCats.length-1,C.blue],["Venues",Object.keys(venueAssign).length,C.g800]].map(([l,v,clr],i,arr)=><div key={l} style={{flex:1,padding:"16px 24px",textAlign:"center",borderRight:i<arr.length-1?`1px solid ${C.cardBorder}`:"none"}}>
+            <div className="pp-amen-label" style={{fontSize:10,fontWeight:700,color:C.g400,textTransform:"uppercase",letterSpacing:"0.06em"}}>{l}</div>
+            <div className="pp-amen-value" style={{fontSize:28,fontWeight:900,color:clr,marginTop:4,fontFamily:numFont}}>{v}</div>
+          </div>)}
+        </div>
       </div>
 
-      {/* View toggle */}
-      <div style={{display:"flex",justifyContent:"space-between",alignItems:"center",gap:12,flexWrap:"wrap"}}>
+      {/* View toggle - centered */}
+      <div style={{display:"flex",flexDirection:"column",alignItems:"center",gap:12}}>
         <div style={{display:"flex",gap:0,border:`1px solid ${C.cardBorder}`,borderRadius:R.sm,overflow:"hidden"}}>
           {[["library","Amenity Library"],["venues","Venue Assignments"]].map(([k,l])=><button key={k} onClick={()=>setAmenView(k)} style={{padding:"8px 18px",fontSize:12,fontWeight:600,cursor:"pointer",fontFamily:font,border:"none",background:amenView===k?C.blue:C.cardBg,color:amenView===k?"#fff":C.g500,transition:"all .15s"}}>{l}</button>)}
         </div>
-        {amenView==="library"&&<div style={{display:"flex",gap:8,alignItems:"center",flexWrap:"wrap"}}>
+        {amenView==="library"&&<div style={{display:"flex",gap:8,alignItems:"center",flexWrap:"wrap",justifyContent:"center"}}>
           <div style={{position:"relative"}}><span style={{position:"absolute",left:10,top:"50%",transform:"translateY(-50%)"}}>{I.search(13,C.g400)}</span><input type="text" value={amenSearch} onChange={e=>setAmenSearch(e.target.value)} placeholder="Search amenities..." style={{padding:"8px 14px 8px 30px",border:`1px solid ${C.cardBorder}`,borderRadius:R.sm,fontSize:12,fontFamily:font,width:180,background:C.g50,color:C.g700,boxSizing:"border-box"}}/></div>
-          <div className="pp-r-pills" style={{display:"flex",gap:3,background:C.g100,borderRadius:10,padding:3}}>{amenityCats.map(cat=><button key={cat} onClick={()=>setAmenCat(cat)} style={pill(amenCat===cat)}>{cat}</button>)}</div>
+          <div className="pp-r-pills pp-amen-pills" style={{display:"flex",gap:3,background:C.g100,borderRadius:10,padding:3}}>{amenityCats.map(cat=><button key={cat} onClick={()=>setAmenCat(cat)} style={pill(amenCat===cat)}>{cat}</button>)}</div>
         </div>}
       </div>
 
@@ -1405,60 +1838,153 @@ function Org(){
 
     {/* INTEGRATIONS TAB */}
     {orgTab==="integrations"&&<>
+      {/* Active Integrations */}
+      <Div>Active Integrations</Div>
       <div style={{display:"grid",gridTemplateColumns:"repeat(auto-fill,minmax(300px,1fr))",gap:14}}>
-        {integrations.map(ig=>{
-          const connected=ig.status==="connected";
-          return <div key={ig.name} style={{background:C.cardBg,borderRadius:R.lg,border:`1px solid ${C.cardBorder}`,boxShadow:C.cardShadow,overflow:"hidden"}}>
-          {/* Colored top accent */}
-          <div style={{height:3,background:connected?ig.abbrBg:C.g200}}/>
-          <div style={{padding:"16px 18px"}}>
-            {/* Header row */}
+        {integrations.filter(ig=>ig.status==="connected").map(ig=>
+          <div key={ig.name} style={{background:C.cardBg,borderRadius:R.lg,border:`1px solid ${C.cardBorder}`,boxShadow:C.cardShadow,overflow:"hidden",display:"flex",flexDirection:"column"}}>
+          <div style={{height:3,background:ig.abbrBg}}/>
+          <div style={{padding:"16px 18px",display:"flex",flexDirection:"column",flex:1}}>
             <div style={{display:"flex",alignItems:"center",gap:12,marginBottom:14}}>
-              <div style={{width:40,height:40,borderRadius:10,background:connected?ig.abbrBg:C.g200,display:"flex",alignItems:"center",justifyContent:"center",color:"#fff",fontWeight:800,fontSize:ig.abbr.length>2?10:13,flexShrink:0}}>{ig.abbr}</div>
+              <div style={{width:40,height:40,borderRadius:10,background:ig.abbrBg,display:"flex",alignItems:"center",justifyContent:"center",color:"#fff",fontWeight:800,fontSize:ig.abbr.length>2?10:13,flexShrink:0}}>{ig.abbr}</div>
               <div style={{flex:1,minWidth:0}}>
                 <div style={{display:"flex",alignItems:"center",gap:8}}>
                   <span style={{fontSize:14,fontWeight:700,color:C.g800}}>{ig.name}</span>
-                  {connected&&<span style={{width:6,height:6,borderRadius:3,background:C.green,flexShrink:0}}/>}
-                  {!connected&&<span style={{width:6,height:6,borderRadius:3,background:C.g300,flexShrink:0}}/>}
+                  <span className="pp-pulse-dot" style={{width:8,height:8,borderRadius:4,background:C.green,flexShrink:0}}/>
                 </div>
                 <div style={{fontSize:11,color:C.g400,marginTop:1}}>{ig.desc}</div>
               </div>
             </div>
-
-            {connected?<>
-              {/* Status bar - single clean row */}
-              <div style={{display:"flex",alignItems:"center",gap:0,borderRadius:8,overflow:"hidden",border:`1px solid ${C.g100}`,marginBottom:14}}>
+            <div style={{flex:1,marginBottom:14}}>
+              <div style={{display:"flex",alignItems:"center",gap:0,borderRadius:8,overflow:"hidden",border:`1px solid ${C.g100}`,height:"100%",minHeight:42}}>
                 <div style={{flex:1,padding:"8px 12px",borderRight:`1px solid ${C.g100}`}}>
                   <div style={{fontSize:9,fontWeight:700,color:C.g400,textTransform:"uppercase",letterSpacing:"0.05em"}}>Last sync</div>
                   <div style={{fontSize:12,fontWeight:700,color:C.g700,marginTop:1}}>{ig.lastSync}</div>
                 </div>
-                {ig.events!=null&&<div style={{flex:1,padding:"8px 12px",borderRight:`1px solid ${C.g100}`}}>
+                <div style={{flex:1,padding:"8px 12px",borderRight:`1px solid ${C.g100}`}}>
                   <div style={{fontSize:9,fontWeight:700,color:C.g400,textTransform:"uppercase",letterSpacing:"0.05em"}}>Events</div>
-                  <div style={{fontSize:12,fontWeight:700,color:C.g700,marginTop:1}}>{ig.events}</div>
-                </div>}
+                  <div style={{fontSize:12,fontWeight:700,color:C.g700,marginTop:1}}>{ig.events!=null?ig.events:"--"}</div>
+                </div>
                 <div style={{padding:"8px 12px",display:"flex",alignItems:"center",gap:5}}>
-                  <span style={{width:6,height:6,borderRadius:3,background:C.green}}/>
+                  <span className="pp-pulse-dot" style={{width:6,height:6,borderRadius:3,background:C.green}}/>
                   <span style={{fontSize:11,fontWeight:700,color:C.green}}>Healthy</span>
                 </div>
               </div>
+            </div>
+            <div style={{display:"flex",gap:8}}>
+              <button onClick={()=>{if(globalShowToast)globalShowToast({type:"info",title:`${ig.name} Synced`,msg:"Integration synced successfully",color:C.blue})}} style={{flex:1,background:C.g50,color:C.g700,border:`1px solid ${C.cardBorder}`,borderRadius:R.sm,padding:"10px 14px",fontSize:12,fontWeight:700,cursor:"pointer",fontFamily:font,display:"flex",alignItems:"center",justifyContent:"center",gap:6}}>{I.sync(13,C.g500)} Sync Now</button>
+              <button style={{flex:1,background:C.g50,color:C.g500,border:`1px solid ${C.cardBorder}`,borderRadius:R.sm,padding:"10px 14px",fontSize:12,fontWeight:600,cursor:"pointer",fontFamily:font,display:"flex",alignItems:"center",justifyContent:"center",gap:6}}><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke={C.g400} strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg> Settings</button>
+            </div>
+          </div>
+        </div>)}
+      </div>
 
-              {/* Actions */}
-              <div style={{display:"flex",gap:8}}>
-                <button onClick={()=>{if(globalShowToast)globalShowToast({type:"info",title:`${ig.name} Synced`,msg:"Integration synced successfully",color:C.blue})}} style={{flex:1,background:C.g50,color:C.g700,border:`1px solid ${C.cardBorder}`,borderRadius:R.sm,padding:"10px 14px",fontSize:12,fontWeight:700,cursor:"pointer",fontFamily:font,display:"flex",alignItems:"center",justifyContent:"center",gap:6}}>{I.sync(13,C.g500)} Sync Now</button>
-                <button style={{flex:1,background:C.g50,color:C.g500,border:`1px solid ${C.cardBorder}`,borderRadius:R.sm,padding:"10px 14px",fontSize:12,fontWeight:600,cursor:"pointer",fontFamily:font,display:"flex",alignItems:"center",justifyContent:"center",gap:6}}><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke={C.g400} strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg> Settings</button>
+      {/* Available Integrations */}
+      <Div>Available Integrations</Div>
+      <div style={{display:"grid",gridTemplateColumns:"repeat(auto-fill,minmax(300px,1fr))",gap:14}}>
+        {integrations.filter(ig=>ig.status!=="connected").map(ig=>
+          <div key={ig.name} style={{background:C.cardBg,borderRadius:R.lg,border:`1px solid ${C.cardBorder}`,boxShadow:C.cardShadow,overflow:"hidden",display:"flex",flexDirection:"column"}}>
+          <div style={{height:3,background:C.g200}}/>
+          <div style={{padding:"16px 18px",display:"flex",flexDirection:"column",flex:1}}>
+            <div style={{display:"flex",alignItems:"center",gap:12,marginBottom:14}}>
+              <div style={{width:40,height:40,borderRadius:10,background:C.g200,display:"flex",alignItems:"center",justifyContent:"center",color:C.g500,fontWeight:800,fontSize:ig.abbr.length>2?10:13,flexShrink:0}}>{ig.abbr}</div>
+              <div style={{flex:1,minWidth:0}}>
+                <div style={{display:"flex",alignItems:"center",gap:8}}>
+                  <span style={{fontSize:14,fontWeight:700,color:C.g800}}>{ig.name}</span>
+                  <span style={{width:6,height:6,borderRadius:3,background:C.g300,flexShrink:0}}/>
+                </div>
+                <div style={{fontSize:11,color:C.g400,marginTop:1}}>{ig.desc}</div>
               </div>
-            </>:<>
-              {/* Disconnected state */}
-              <div style={{padding:"12px 14px",background:C.g50,borderRadius:8,border:`1px dashed ${C.g200}`,marginBottom:14,textAlign:"center"}}>
+            </div>
+            <div style={{flex:1,marginBottom:14}}>
+              <div style={{padding:"12px 14px",background:C.g50,borderRadius:8,border:`1px dashed ${C.g200}`,textAlign:"center",display:"flex",alignItems:"center",justifyContent:"center",height:"100%",minHeight:42}}>
                 <div style={{fontSize:12,color:C.g400}}>Not connected</div>
               </div>
-              <div style={{display:"flex",gap:8}}>
-                <button style={{flex:2,background:C.blue,color:"#fff",border:"none",borderRadius:R.sm,padding:"10px 14px",fontSize:12,fontWeight:700,cursor:"pointer",fontFamily:font,display:"flex",alignItems:"center",justifyContent:"center",gap:6}}>Connect {ig.name}</button>
-                <button style={{flex:1,background:C.g50,color:C.g500,border:`1px solid ${C.cardBorder}`,borderRadius:R.sm,padding:"10px 14px",fontSize:12,fontWeight:600,cursor:"pointer",fontFamily:font}}>Learn More</button>
-              </div>
-            </>}
+            </div>
+            <div style={{display:"flex",gap:8}}>
+              <button style={{flex:2,background:C.blue,color:"#fff",border:"none",borderRadius:R.sm,padding:"10px 14px",fontSize:12,fontWeight:700,cursor:"pointer",fontFamily:font,display:"flex",alignItems:"center",justifyContent:"center",gap:6}}>Connect {ig.name}</button>
+              <button style={{flex:1,background:C.g50,color:C.g500,border:`1px solid ${C.cardBorder}`,borderRadius:R.sm,padding:"10px 14px",fontSize:12,fontWeight:600,cursor:"pointer",fontFamily:font}}>Learn More</button>
+            </div>
           </div>
-        </div>})}
+        </div>)}
+      </div>
+
+      {/* Suggest an integration CTA */}
+      <div style={{display:"flex",alignItems:"center",justifyContent:"center",padding:"16px 0 4px"}}>
+        <button onClick={()=>globalShowSuggest()} style={{background:"none",border:"none",cursor:"pointer",fontFamily:font,display:"flex",alignItems:"center",gap:6,padding:"8px 16px",borderRadius:8,transition:"background .15s"}} onMouseEnter={e=>e.currentTarget.style.background=C.g100} onMouseLeave={e=>e.currentTarget.style.background="transparent"}>
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke={C.g400} strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M12 2v4M12 18v4M4.93 4.93l2.83 2.83M16.24 16.24l2.83 2.83M2 12h4M18 12h4M4.93 19.07l2.83-2.83M16.24 7.76l2.83-2.83"/></svg>
+          <span style={{fontSize:12,fontWeight:600,color:C.g400}}>Need a different integration? <span style={{color:C.blue,fontWeight:700}}>Suggest one</span></span>
+        </button>
+      </div>
+
+      {/* Payout Accounts */}
+      <Div>Payout Accounts</Div>
+      <Card>
+        <Sec>Primary Account</Sec>
+        <div style={{display:"flex",alignItems:"center",gap:12,marginBottom:14}}>
+          <div style={{width:40,height:40,borderRadius:10,background:C.green,display:"flex",alignItems:"center",justifyContent:"center",flexShrink:0}}>
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#fff" strokeWidth="2" strokeLinecap="round"><path d="M21 12V7H5a2 2 0 0 1 0-4h14v4"/><path d="M3 5v14a2 2 0 0 0 2 2h16v-5"/><path d="M18 12a2 2 0 0 0 0 4h4v-4h-4z"/></svg>
+          </div>
+          <div style={{flex:1,minWidth:0}}>
+            <div style={{fontSize:14,fontWeight:700,color:C.g800}}>Ascension Parish School Board</div>
+            <div style={{fontSize:11,color:C.g400,marginTop:1}}>Default account for all facility revenue</div>
+          </div>
+          <span style={{display:"inline-flex",alignItems:"center",gap:4,background:C.greenL,color:C.green,padding:"3px 10px",borderRadius:6,fontSize:10,fontWeight:700}}><span className="pp-pulse-dot" style={{width:5,height:5,borderRadius:"50%",background:"currentColor"}}/>Verified</span>
+        </div>
+        <div style={{padding:"12px 16px",background:C.g50,borderRadius:8,border:`1px solid ${C.cardBorder}`,marginBottom:12}}>
+          <div style={{display:"flex",justifyContent:"space-between",alignItems:"center"}}>
+            <div>
+              <div style={{fontSize:12,fontWeight:600,color:C.g600}}>JPMorgan Chase - ****7291</div>
+              <div style={{fontSize:10,color:C.g400,marginTop:1}}>ACH Direct Deposit - Bi-monthly schedule</div>
+            </div>
+            <button style={{...btnO,fontSize:11,padding:"5px 12px"}}>Edit</button>
+          </div>
+        </div>
+        <div style={{display:"flex",alignItems:"center",gap:6,fontSize:11,color:C.g400,marginBottom:4}}>
+          <span>Receives revenue from:</span>
+          <span style={{fontWeight:700,color:C.g600}}>All campuses (default)</span>
+        </div>
+      </Card>
+
+      {/* Facility-specific accounts */}
+      <Card>
+        <Sec action={<button onClick={()=>{if(globalShowToast)globalShowToast({type:"success",title:"Account Added",msg:"New payout account created. Map it to a campus or facility below.",color:C.green})}} style={{...btnP,fontSize:11,padding:"6px 14px"}}><span style={{fontSize:14,lineHeight:1}}>+</span> Add Account</button>}>Facility-Specific Accounts</Sec>
+        <div style={{fontSize:12,color:C.g500,lineHeight:1.5,marginBottom:16}}>
+          Route revenue from specific campuses or facilities to separate bank accounts. Any facility not mapped will use the primary account above.
+        </div>
+
+        {/* Existing mapped accounts */}
+        {[
+          {name:"Dutchtown Athletic Fund",bank:"Regions Bank - ****4182",campus:"Dutchtown High School",facilities:["Dutchtown Gymnasium","Dutchtown Stadium","Dutchtown Fields"],verified:true},
+          {name:"EA Booster Club Account",bank:"Capital One - ****6530",campus:"East Ascension High School",facilities:["East Ascension Gym","Spartan Stadium"],verified:true},
+        ].map((acct,i)=><div key={i} style={{padding:"14px 16px",background:C.g50,borderRadius:10,border:`1px solid ${C.cardBorder}`,marginBottom:10}}>
+          <div style={{display:"flex",justifyContent:"space-between",alignItems:"flex-start",marginBottom:10}}>
+            <div>
+              <div style={{fontSize:13,fontWeight:700,color:C.g700}}>{acct.name}</div>
+              <div style={{fontSize:11,color:C.g400,marginTop:2}}>{acct.bank} - ACH</div>
+            </div>
+            <div style={{display:"flex",gap:6,alignItems:"center"}}>
+              {acct.verified&&<span style={{fontSize:9,fontWeight:700,color:C.green,background:C.greenL,padding:"2px 7px",borderRadius:4}}>Verified</span>}
+              <button style={{...btnO,fontSize:10,padding:"4px 10px"}}>Edit</button>
+            </div>
+          </div>
+          <div style={{display:"flex",alignItems:"flex-start",gap:8}}>
+            <div style={{fontSize:10,fontWeight:700,color:C.g400,textTransform:"uppercase",letterSpacing:"0.05em",marginTop:2,whiteSpace:"nowrap"}}>Mapped to</div>
+            <div style={{display:"flex",gap:4,flexWrap:"wrap"}}>
+              {acct.facilities.map(f=><span key={f} style={{fontSize:10,fontWeight:600,color:C.blue,background:C.blueL,padding:"3px 8px",borderRadius:4}}>{f}</span>)}
+            </div>
+          </div>
+        </div>)}
+
+        {/* Add new account form placeholder */}
+        <div style={{padding:"14px 16px",borderRadius:10,border:`1px dashed ${C.g200}`,display:"flex",alignItems:"center",justifyContent:"center",gap:8,cursor:"pointer"}} onClick={()=>{if(globalShowToast)globalShowToast({type:"success",title:"Account Added",msg:"New payout account created. Map it to a campus or facility below.",color:C.green})}}>
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke={C.g400} strokeWidth="2" strokeLinecap="round"><path d="M12 5v14M5 12h14"/></svg>
+          <span style={{fontSize:12,fontWeight:600,color:C.g400}}>Add another payout account</span>
+        </div>
+      </Card>
+
+      <div style={{padding:"10px 14px",background:`${C.blue}06`,borderRadius:8,border:`1px solid ${C.blue}15`}}>
+        <div style={{fontSize:11,color:C.g500,lineHeight:1.5}}>Revenue is deposited on a bi-monthly schedule after processing fees are deducted. Next payout estimated <span style={{fontWeight:700,color:C.g700}}>March 1, 2026</span>. Facility-specific accounts receive only the revenue from their mapped locations.</div>
       </div>
     </>}
 
@@ -1486,70 +2012,6 @@ function Org(){
       </Card>
     </>}
 
-    {/* BILLING TAB */}
-    {orgTab==="billing"&&<>
-      <Card>
-        <div style={{display:"flex",justifyContent:"space-between",alignItems:"flex-start",marginBottom:20}}>
-          <div>
-            <div style={{fontSize:10,fontWeight:700,color:C.g400,textTransform:"uppercase",letterSpacing:"0.08em",marginBottom:6}}>Your Plan</div>
-            <div style={{fontSize:24,fontWeight:900,color:C.g800}}>PracticePlan</div>
-            <div style={{fontSize:13,color:C.g500,marginTop:4}}>Free for K-12 school districts, colleges, and municipalities</div>
-          </div>
-          <span style={{display:"inline-flex",alignItems:"center",gap:4,background:C.greenL,color:C.green,padding:"5px 14px",borderRadius:10,fontSize:11,fontWeight:700}}><span style={{width:6,height:6,borderRadius:"50%",background:"currentColor"}}/>Active</span>
-        </div>
-        <div style={{padding:"16px 20px",background:`${C.blue}06`,borderRadius:10,border:`1px solid ${C.blue}15`,marginBottom:20}}>
-          <div style={{fontSize:13,fontWeight:700,color:C.blue,marginBottom:4}}>No cost to your district</div>
-          <div style={{fontSize:12,color:C.g500,lineHeight:1.5}}>PracticePlan is provided at no charge to schools. Revenue is generated through a small transaction fee on each rental booking, paid by the renting organization - not the district.</div>
-        </div>
-        <div style={{display:"grid",gridTemplateColumns:"repeat(auto-fill, minmax(160px, 1fr))",gap:12}}>
-          {[["Campuses","5 active"],["Assets","12 facilities"],["Team Members","6 users"],["Reservations","192 YTD"],["Revenue Processed","$61,011 YTD"],["Payouts","Bi-monthly"]].map(([l,v])=><div key={l} style={{padding:"12px 14px",background:C.g50,borderRadius:8,border:`1px solid ${C.cardBorder}`}}>
-            <div style={{fontSize:10,fontWeight:700,color:C.g400,textTransform:"uppercase",letterSpacing:"0.06em"}}>{l}</div>
-            <div style={{fontSize:14,fontWeight:700,color:C.g700,marginTop:4}}>{v}</div>
-          </div>)}
-        </div>
-      </Card>
-
-      <Card>
-        <Sec>Payout Account</Sec>
-        <div style={{padding:"16px",background:C.g50,borderRadius:10,border:`1px solid ${C.cardBorder}`,marginBottom:14}}>
-          <div style={{display:"flex",justifyContent:"space-between",alignItems:"center"}}>
-            <div>
-              <div style={{fontSize:13,fontWeight:700,color:C.g700}}>Ascension Parish School Board</div>
-              <div style={{fontSize:11,color:C.g400,marginTop:2}}>JPMorgan Chase - ****7291 - ACH Direct Deposit</div>
-            </div>
-            <span style={{fontSize:10,fontWeight:700,color:C.green,background:C.greenL,padding:"3px 8px",borderRadius:6}}>Verified</span>
-          </div>
-        </div>
-        <div style={{display:"flex",gap:8}}>
-          <button style={{...btnO,fontSize:12,padding:"7px 14px"}}>Update Account</button>
-          <button style={{...btnO,fontSize:12,padding:"7px 14px"}}>View Payout History</button>
-        </div>
-      </Card>
-
-      <Card>
-        <Sec action={<ExportBtns/>}>Transaction Fee History</Sec>
-        <div style={{padding:"12px 16px",background:C.g50,borderRadius:8,border:`1px solid ${C.cardBorder}`,marginBottom:14,fontSize:12,color:C.g500}}>
-          Transaction fees are deducted automatically from each booking payment before payout. Your district receives the net amount.
-        </div>
-        <table style={{width:"100%",borderCollapse:"collapse",fontSize:13}}>
-          <thead><tr>{["Date","Description","Gross","Fee","Net Payout","Status"].map(h=><th key={h} style={TH}>{h}</th>)}</tr></thead>
-          <tbody>{[
-            {date:"Feb 1, 2026",desc:"Payout - February 2026",gross:"$8,761",fee:"$438.06",net:"$8,322.94",status:"paid"},
-            {date:"Jan 1, 2026",desc:"Payout - January 2026",gross:"$7,110",fee:"$355.50",net:"$6,754.50",status:"paid"},
-            {date:"Dec 1, 2025",desc:"Payout - December 2025",gross:"$5,840",fee:"$292.00",net:"$5,548.00",status:"paid"},
-            {date:"Nov 1, 2025",desc:"Payout - November 2025",gross:"$4,840",fee:"$242.00",net:"$4,598.00",status:"paid"},
-            {date:"Oct 1, 2025",desc:"Payout - October 2025",gross:"$5,620",fee:"$281.00",net:"$5,339.00",status:"paid"},
-          ].map((b,i)=><tr key={b.date} style={{background:i%2===0?C.g50:C.cardBg}}>
-            <td style={{...TD,color:C.g500}}>{b.date}</td>
-            <td style={{...TD,fontWeight:600,color:C.g700}}>{b.desc}</td>
-            <td style={{...TD,color:C.g600}}>{b.gross}</td>
-            <td style={{...TD,color:C.red,fontSize:12}}>{b.fee}</td>
-            <td style={{...TD,fontWeight:700,color:C.g800}}>{b.net}</td>
-            <td style={TD}><span style={statusBadge("completed")}><span style={{width:5,height:5,borderRadius:"50%",background:"currentColor"}}/>Paid</span></td>
-          </tr>)}</tbody>
-        </table>
-      </Card>
-    </>}
 
     {/* ACTIVITY LOG TAB */}
     {orgTab==="activity"&&<Card>
@@ -1592,11 +2054,13 @@ const sentimentColors={positive:C.blue,mixed:C.g400,negative:C.red};
 
 function Reporting(){
   const [rt,setRt]=useState(0);
+  globalSetRt=setRt;
   const [ratingsView,setRatingsView]=useState("overview");
   const [ratingsCampus,setRatingsCampus]=useState("all");
   const [ratingSentiment,setRatingSentiment]=useState("all");
   const [expandedReview,setExpandedReview]=useState(null);
-  const rTabs=["Ratings & Reviews","Revenue - Campus","Revenue - Facility","Revenue - Participant","Payouts Report"];
+  const [payStatusFilt,setPayStatusFilt]=useState("all");
+  const rTabs=["Ratings & Reviews","Revenue - Campus","Revenue - Facility","Revenue - Participant","Payouts Report","Bulk Payments"];
 
   const filteredRatings=ratingsData.filter(r=>{
     if(ratingsCampus!=="all"&&r.campus!==ratingsCampus)return false;
@@ -1607,14 +2071,33 @@ function Reporting(){
   const distrib=[1,2,3,4,5].map(s=>filteredRatings.filter(r=>r.rating===s).length);
   const maxDistrib=Math.max(...distrib,1);
 
-  return <div style={{display:"flex",flexDirection:"column",gap:16}}>
-    <div className="pp-report-tabs" style={{display:"flex",gap:8,flexWrap:"wrap"}}>{rTabs.map((t,i)=><button key={t} onClick={()=>setRt(i)} style={{...btnO,...(rt===i?{background:C.blue,color:"#fff",border:"none"}:{})}}>{t}</button>)}</div>
+  return <div style={{display:"flex",flexDirection:"column",gap:20}}>
+    {/* Report tabs - horizontal scroll pills */}
+    <div className="pp-report-tabs" style={{display:"flex",gap:0,borderBottom:`1px solid ${C.cardBorder}`,justifyContent:"center"}}>
+      {rTabs.map((t,i)=>{
+        const short=t.replace("Revenue - ","").replace("Ratings & Reviews","Reviews").replace("Payouts Report","Payouts").replace("Bulk Payments","Bulk");
+        return <button key={t} onClick={()=>setRt(i)} style={{padding:"10px 16px",fontSize:12,fontWeight:rt===i?700:500,color:rt===i?C.g800:C.g400,background:"none",border:"none",borderBottom:rt===i?`2px solid ${C.blue}`:"2px solid transparent",marginBottom:-1,cursor:"pointer",fontFamily:font,whiteSpace:"nowrap",letterSpacing:"-0.01em"}}><span className="pp-tab-full">{t}</span><span className="pp-tab-short" style={{display:"none"}}>{short}</span></button>
+      })}
+    </div>
+
+    {/* Report controls */}
+    <div className="pp-report-controls" style={{display:"flex",alignItems:"center",justifyContent:"space-between",gap:12,flexWrap:"wrap"}}>
+      <div className="pp-report-range" style={{display:"flex",gap:6,alignItems:"center"}}>
+        <select style={{...sel,minWidth:130}}><option>This Month</option><option>Last Month</option><option>This Quarter</option><option>Last Quarter</option><option>Year to Date</option><option>Last Year</option><option>Custom Range</option></select>
+        <span style={{fontSize:12,color:C.g400,fontWeight:500,whiteSpace:"nowrap"}}>Feb 1 - Feb 28, 2026</span>
+      </div>
+      <div className="pp-report-actions" style={{display:"flex",gap:4}}>
+        <button onClick={()=>{if(globalShowToast)globalShowToast({type:"success",title:"Report Exported",msg:`${rTabs[rt]} exported as CSV`,color:C.green})}} style={{padding:"7px 14px",borderRadius:6,border:"none",background:C.g800,color:"#fff",fontSize:11,fontWeight:600,cursor:"pointer",fontFamily:font,display:"flex",alignItems:"center",gap:5,transition:"opacity .15s"}} onMouseEnter={e=>e.currentTarget.style.opacity="0.85"} onMouseLeave={e=>e.currentTarget.style.opacity="1"}>{I.link(11,"#fff")} Export</button>
+        <button onClick={()=>{if(globalShowToast)globalShowToast({type:"success",title:"Report Scheduled",msg:"Weekly email report scheduled for Mondays at 8 AM",color:C.blue})}} style={{padding:"7px 14px",borderRadius:6,border:`1px solid ${C.cardBorder}`,background:C.cardBg,color:C.g600,fontSize:11,fontWeight:600,cursor:"pointer",fontFamily:font,display:"flex",alignItems:"center",gap:5}}>{I.mail(11,C.g400)} Schedule</button>
+      </div>
+    </div>
 
     {rt===0&&<>
+      <Div>Overview</Div>
       {/* Ratings header metrics */}
       <div style={{display:"flex",gap:14,flexWrap:"wrap"}}>
         <Card style={{flex:1,minWidth:160,textAlign:"center"}}>
-          <div style={{fontSize:42,fontWeight:900,color:C.g800,lineHeight:1}}>{avgRating}</div>
+          <div style={{fontSize:42,fontWeight:900,color:C.g800,lineHeight:1,fontFamily:numFont}}>{avgRating}</div>
           <div style={{margin:"6px 0 4px"}}>{Array(5).fill(0).map((_,j)=><span key={j} style={{color:j<Math.round(parseFloat(avgRating))?"#FBBF24":C.g300,fontSize:18}}>★</span>)}</div>
           <div style={{fontSize:11,color:C.g400,fontWeight:600}}>{filteredRatings.length} total reviews</div>
         </Card>
@@ -1645,6 +2128,7 @@ function Reporting(){
         </Card>
       </div>
 
+      <Div>Trends & Analysis</Div>
       {/* Rating trend chart */}
       <Card>
         <Sec action={<div style={{display:"flex",gap:4}}>{[["overview","Overview"],["reviews","All Reviews"]].map(([k,l])=><button key={k} onClick={()=>setRatingsView(k)} style={pill(ratingsView===k)}>{l}</button>)}</div>}>Rating Trends</Sec>
@@ -1655,7 +2139,14 @@ function Reporting(){
               <Area type="monotone" dataKey="avg" name="Avg Rating" stroke="#FBBF24" strokeWidth={2.5} fill="url(#ratingGr)" dot={{r:5,fill:"#FBBF24",strokeWidth:2,stroke:C.cardBg}} activeDot={{r:7,stroke:"#FBBF24",strokeWidth:2,fill:C.cardBg}}/>
             </AreaChart>
           </ResponsiveContainer>
-          <div style={{display:"flex",gap:10,marginTop:12,flexWrap:"wrap"}}>{ratingTrendData.map(d=><div key={d.m} style={{flex:1,minWidth:70,padding:"8px 10px",background:C.g50,borderRadius:8,textAlign:"center",border:`1px solid ${C.g200}`}}><div style={{fontSize:10,color:C.g400,fontWeight:700}}>{d.m}</div><div style={{fontSize:16,fontWeight:800,color:C.g800}}>{d.avg}</div><div style={{fontSize:10,color:C.g400}}>{d.count} reviews</div></div>)}</div>
+          <div className="pp-rating-months" style={{display:"flex",gap:0,marginTop:12,borderTop:`1px solid ${C.g100}`,paddingTop:12}}>
+            {ratingTrendData.map((d,i)=><div key={d.m} style={{flex:1,textAlign:"center",padding:"4px 0",borderRight:i<ratingTrendData.length-1?`1px solid ${C.g100}`:"none"}}>
+              <div style={{fontSize:9,color:C.g400,fontWeight:700,textTransform:"uppercase",letterSpacing:"0.04em"}}>{d.m}</div>
+              <div style={{fontSize:15,fontWeight:800,color:C.g800,margin:"2px 0",fontFamily:numFont}}>{d.avg}</div>
+              <div style={{display:"flex",justifyContent:"center",gap:1}}>{Array(5).fill(0).map((_,j)=><span key={j} style={{color:j<Math.round(d.avg)?"#FBBF24":C.g200,fontSize:8}}>★</span>)}</div>
+              <div style={{fontSize:8,color:C.g400,marginTop:1}}>{d.count}</div>
+            </div>)}
+          </div>
         </>}
       </Card>
 
@@ -1679,10 +2170,9 @@ function Reporting(){
       </Card>
 
       {/* Individual Reviews Feed */}
-      {ratingsView==="reviews"&&<Card>
+      {ratingsView==="reviews"&&<><Div>Reviews</Div><Card>
         <Sec action={<div style={{display:"flex",gap:8,alignItems:"center"}}>
           <div style={{display:"flex",gap:4,background:C.g100,borderRadius:10,padding:3}}>{[["all","All"],["positive","Positive"],["mixed","Mixed"],["negative","Needs Attn"]].map(([k,l])=><button key={k} onClick={()=>setRatingSentiment(k)} style={pill(ratingSentiment===k)}>{l}</button>)}</div>
-          <ExportBtns/>
         </div>}>Individual Reviews ({filteredRatings.length})</Sec>
         <div style={{display:"flex",flexDirection:"column",gap:0}}>
           {filteredRatings.map((r,i)=><div key={r.id} style={{padding:"16px 0",borderBottom:i<filteredRatings.length-1?`1px solid ${C.g100}`:"none"}}>
@@ -1729,11 +2219,11 @@ function Reporting(){
             </div>}
           </div>)}
         </div>
-        {filteredRatings.length===0&&<div style={{padding:"40px 0",textAlign:"center",color:C.g400,fontSize:13}}>No reviews match the current filters.</div>}
-      </Card>}
+        {filteredRatings.length===0&&<Empty icon={I.chart(22,C.g300)} title="No reviews match" desc="Try adjusting your campus or sentiment filters." action="Clear Filters" onAction={()=>{setRatingSentiment("all");setRatingsCampus("all")}}/>}
+      </Card></>}
 
       {/* Negative reviews summary - always visible on overview */}
-      {ratingsView==="overview"&&ratingsData.filter(r=>r.rating<=2).length>0&&<Card style={{border:`1px solid ${C.red}20`,background:`linear-gradient(135deg,${C.red}04,${C.cardBg})`}}>
+      {ratingsView==="overview"&&ratingsData.filter(r=>r.rating<=2).length>0&&<><Div>Action Required</Div><Card style={{border:`1px solid ${C.red}20`,background:`linear-gradient(135deg,${C.red}04,${C.cardBg})`}}>
         <Sec action={<button onClick={()=>{setRatingSentiment("negative");setRatingsView("reviews")}} style={{...btnO,fontSize:12,padding:"6px 14px",color:C.red,borderColor:`${C.red}40`}}>View All →</button>}>Reviews Requiring Attention</Sec>
         {ratingsData.filter(r=>r.rating<=2).map(r=><div key={r.id} style={{padding:"14px 0",borderBottom:`1px solid ${C.g100}`,display:"flex",gap:12,alignItems:"flex-start"}}>
           <div style={{width:36,height:36,borderRadius:10,background:C.red+"15",display:"flex",alignItems:"center",justifyContent:"center",flexShrink:0}}>{I.alert(16,C.red)}</div>
@@ -1752,13 +2242,69 @@ function Reporting(){
             </div>
           </div>
         </div>)}
-      </Card>}
+      </Card></>}
     </>}
 
     {rt===1&&<RevByCampus/>}
     {rt===2&&<RevByFacility/>}
     {rt===3&&<RevByParticipant/>}
     {rt===4&&<PayoutsReport/>}
+
+    {/* BULK PAYMENTS TAB */}
+    {rt===5&&<>{(()=>{
+      const filtered=payStatusFilt==="all"?paymentsData:paymentsData.filter(p=>p.status===payStatusFilt);
+      const totalRev=paymentsData.reduce((s,p)=>s+p.rev,0);
+      const completedRev=paymentsData.filter(p=>p.status==="completed").reduce((s,p)=>s+p.rev,0);
+      const failedRev=paymentsData.filter(p=>p.status==="failed").reduce((s,p)=>s+p.rev,0);
+      const pendingRev=paymentsData.filter(p=>p.status==="pending").reduce((s,p)=>s+p.rev,0);
+      return <>
+        <div style={{padding:"14px 18px",background:`${C.blue}06`,borderRadius:10,border:`1px solid ${C.blue}15`,marginBottom:16}}>
+          <div style={{fontSize:12,color:C.g500,lineHeight:1.6}}>Bulk payments are created when an organization books a facility for multiple days or extended hours at a negotiated rate. These may differ from the standard hourly rate.</div>
+        </div>
+
+        {/* Summary stats row */}
+        <div style={{display:"flex",justifyContent:"center",marginBottom:16}}>
+          <div style={{display:"flex",gap:0,background:C.cardBg,border:`1px solid ${C.cardBorder}`,borderRadius:R.lg,overflow:"hidden"}}>
+            {[["Total Processed","$"+totalRev.toLocaleString(),C.g800],["Completed","$"+completedRev.toLocaleString(),C.green],["Pending","$"+pendingRev.toLocaleString(),C.amber],["Failed","$"+failedRev.toLocaleString(),C.red]].map(([l,v,clr],i,arr)=><div key={l} style={{padding:"12px 20px",textAlign:"center",borderRight:i<arr.length-1?`1px solid ${C.cardBorder}`:"none"}}>
+              <div style={{fontSize:9,fontWeight:700,color:C.g400,textTransform:"uppercase",letterSpacing:"0.06em"}}>{l}</div>
+              <div style={{fontSize:18,fontWeight:800,color:clr,marginTop:3,fontFamily:numFont}}>{v}</div>
+            </div>)}
+          </div>
+        </div>
+
+        {/* Volume chart */}
+        <Card style={{marginBottom:16}}><Sec>Monthly Volume</Sec>
+          <ResponsiveContainer width="100%" height={180}><BarChart data={[{m:"Sep",v:4200,f:180},{m:"Oct",v:5800,f:0},{m:"Nov",v:6100,f:220},{m:"Dec",v:3900,f:0},{m:"Jan",v:8200,f:475},{m:"Feb",v:5100,f:0}]} margin={{left:-10}}>
+            <CartesianGrid strokeDasharray="3 3" stroke={C.g200} vertical={false}/>
+            <XAxis dataKey="m" axisLine={false} tickLine={false} tick={{fontSize:11,fill:C.g400,fontFamily:numFont}}/>
+            <YAxis axisLine={false} tickLine={false} tick={{fontSize:11,fill:C.g400,fontFamily:numFont}} tickFormatter={v=>`$${(v/1000).toFixed(0)}k`}/>
+            <Tooltip content={<Tip/>}/>
+            <Bar dataKey="v" name="Completed" fill={C.green} radius={[4,4,0,0]} barSize={16}/>
+            <Bar dataKey="f" name="Failed" fill={C.red} radius={[4,4,0,0]} barSize={16}/>
+          </BarChart></ResponsiveContainer>
+        </Card>
+
+        {/* Filters */}
+        <div className="pp-pay-filters" style={{display:"flex",justifyContent:"space-between",alignItems:"center",flexWrap:"wrap",gap:12,marginBottom:14}}>
+          <div style={{display:"flex",gap:4,background:C.g100,borderRadius:10,padding:3}}>
+            {["all","completed","pending","failed"].map(s=><button key={s} onClick={()=>setPayStatusFilt(s)} style={pill(payStatusFilt===s)}>{s==="all"?"All":s.charAt(0).toUpperCase()+s.slice(1)}</button>)}
+          </div>
+          <input type="text" placeholder="Search organization..." style={{padding:"8px 14px",border:`1px solid ${C.cardBorder}`,borderRadius:R.sm,fontSize:12,fontFamily:font,width:190,background:C.g50,color:C.g700,boxSizing:"border-box"}}/>
+        </div>
+
+        {/* Transactions table */}
+        <Card np><div className="pp-table-wrap"><table style={{width:"100%",borderCollapse:"collapse",fontSize:13}}><thead><tr>{["Date","Facility","Organization","Bookings","Amount","Status"].map(h=><th key={h} style={TH}>{h}</th>)}</tr></thead>
+          <tbody>{filtered.length===0?<tr><td colSpan={6}><Empty icon={I.wallet(22,C.g300)} title="No transactions found" desc="No bulk payments match the current filter." action="Show All" onAction={()=>setPayStatusFilt("all")}/></td></tr>:filtered.map((p,i)=><tr key={i} onClick={()=>globalSetShowPay(p)} style={{background:i%2===0?C.g50:C.cardBg,cursor:"pointer",transition:"background .12s"}} onMouseEnter={e=>e.currentTarget.style.background=C.blueL} onMouseLeave={e=>e.currentTarget.style.background=i%2===0?C.g50:C.cardBg}>
+            <td style={{...TD,color:C.g500}}><div style={{fontWeight:600,color:C.g700}}>{p.date}</div><div style={{fontSize:11}}>{p.time}</div></td>
+            <td style={{...TD,color:C.g500,fontSize:12}}>{p.fac}</td>
+            <td style={{...TD,fontWeight:600,color:C.g700}}>{p.user}</td>
+            <td style={{...TD,color:C.g600,fontFamily:numFont}}>{p.count} ({p.dur})</td>
+            <td style={{...TD,fontWeight:700,fontFamily:numFont}}>${p.rev.toFixed(2)}</td>
+            <td style={TD}><span style={statusBadge(p.status)}><span style={{width:6,height:6,borderRadius:"50%",background:"currentColor"}}/>{p.status}</span></td>
+          </tr>)}</tbody>
+        </table></div></Card>
+      </>
+    })()}</>}
   </div>
 }
 
@@ -1776,19 +2322,19 @@ const campusRevDetail=[
 function RevByCampus(){
   const [expanded,setExpanded]=useState(null);
   const totalRev=campusRevDetail.reduce((s,c)=>s+c.rev,0);
-  return <div style={{display:"flex",flexDirection:"column",gap:16}}>
-    {/* Summary metrics */}
-    <div style={{display:"flex",gap:12,flexWrap:"wrap"}}>
-      <Card style={{flex:1,minWidth:130,textAlign:"center"}}><div style={{fontSize:10,fontWeight:700,color:C.g400,textTransform:"uppercase",letterSpacing:"0.06em"}}>Total Revenue</div><div style={{fontSize:26,fontWeight:900,color:C.g800,marginTop:4}}>${totalRev.toLocaleString()}</div></Card>
-      <Card style={{flex:1,minWidth:130,textAlign:"center"}}><div style={{fontSize:10,fontWeight:700,color:C.g400,textTransform:"uppercase",letterSpacing:"0.06em"}}>Total Bookings</div><div style={{fontSize:26,fontWeight:900,color:C.g800,marginTop:4}}>{campusRevDetail.reduce((s,c)=>s+c.bookings,0)}</div></Card>
-      <Card style={{flex:1,minWidth:130,textAlign:"center"}}><div style={{fontSize:10,fontWeight:700,color:C.g400,textTransform:"uppercase",letterSpacing:"0.06em"}}>Avg Utilization</div><div style={{fontSize:26,fontWeight:900,color:C.g800,marginTop:4}}>{Math.round(campusRevDetail.reduce((s,c)=>s+c.util,0)/5)}%</div></Card>
-      <Card style={{flex:1,minWidth:130,textAlign:"center"}}><div style={{fontSize:10,fontWeight:700,color:C.g400,textTransform:"uppercase",letterSpacing:"0.06em"}}>Avg / Booking</div><div style={{fontSize:26,fontWeight:900,color:C.g800,marginTop:4}}>${Math.round(totalRev/campusRevDetail.reduce((s,c)=>s+c.bookings,0))}</div></Card>
+  return <div style={{display:"flex",flexDirection:"column",gap:20}}>
+    <Div>Summary</Div>
+    <div className="pp-report-stat-row" style={{display:"grid",gridTemplateColumns:"repeat(4,1fr)",gap:12}}>
+      <Card style={{textAlign:"center"}}><div style={{fontSize:10,fontWeight:700,color:C.g400,textTransform:"uppercase",letterSpacing:"0.06em"}}>Total Revenue</div><div style={{fontSize:24,fontWeight:900,color:C.g800,marginTop:4}}>${totalRev.toLocaleString()}</div></Card>
+      <Card style={{textAlign:"center"}}><div style={{fontSize:10,fontWeight:700,color:C.g400,textTransform:"uppercase",letterSpacing:"0.06em"}}>Total Bookings</div><div style={{fontSize:24,fontWeight:900,color:C.g800,marginTop:4}}>{campusRevDetail.reduce((s,c)=>s+c.bookings,0)}</div></Card>
+      <Card style={{textAlign:"center"}}><div style={{fontSize:10,fontWeight:700,color:C.g400,textTransform:"uppercase",letterSpacing:"0.06em"}}>Avg Utilization</div><div style={{fontSize:24,fontWeight:900,color:C.g800,marginTop:4}}>{Math.round(campusRevDetail.reduce((s,c)=>s+c.util,0)/5)}%</div></Card>
+      <Card style={{textAlign:"center"}}><div style={{fontSize:10,fontWeight:700,color:C.g400,textTransform:"uppercase",letterSpacing:"0.06em"}}>Avg / Booking</div><div style={{fontSize:24,fontWeight:900,color:C.g800,marginTop:4}}>${Math.round(totalRev/campusRevDetail.reduce((s,c)=>s+c.bookings,0))}</div></Card>
     </div>
-    {/* Chart */}
-    <Card><Sec action={<ExportBtns/>}>Revenue by Campus (6 Months)</Sec>
-      <ResponsiveContainer width="100%" height={320}><BarChart data={revByFacData} margin={{bottom:20}}><CartesianGrid strokeDasharray="3 3" stroke={C.g200} vertical={false}/><XAxis dataKey="m" axisLine={false} tickLine={false} tick={{fontSize:11,fill:C.g400,fontFamily:font}}/><YAxis axisLine={false} tickLine={false} tick={{fontSize:11,fill:C.g400,fontFamily:font}} tickFormatter={v=>`$${(v/1000).toFixed(0)}k`}/><Tooltip content={<Tip/>}/><Legend wrapperStyle={{fontSize:11,fontFamily:font,paddingTop:16}} iconSize={10} iconType="square"/><Bar dataKey="dt" name="Dutchtown" fill="#0076BB" radius={[3,3,0,0]} barSize={12}/><Bar dataKey="ea" name="East Ascension" fill="#00A84F" radius={[3,3,0,0]} barSize={12}/><Bar dataKey="sa" name="St. Amant" fill="#F59E0B" radius={[3,3,0,0]} barSize={12}/><Bar dataKey="pv" name="Prairieville" fill="#7C3AED" radius={[3,3,0,0]} barSize={12}/><Bar dataKey="dn" name="Donaldsonville" fill="#F15A29" radius={[3,3,0,0]} barSize={12}/></BarChart></ResponsiveContainer>
+    <Div>Revenue Breakdown</Div>
+    <Card><Sec>Revenue by Campus (6 Months)</Sec>
+      <ResponsiveContainer width="100%" height={320}><BarChart data={revByFacData} margin={{bottom:20}}><CartesianGrid strokeDasharray="3 3" stroke={C.g200} vertical={false}/><XAxis dataKey="m" axisLine={false} tickLine={false} tick={{fontSize:11,fill:C.g400,fontFamily:font}}/><YAxis axisLine={false} tickLine={false} tick={{fontSize:11,fill:C.g400,fontFamily:font}} tickFormatter={v=>`$${(v/1000).toFixed(0)}k`}/><Tooltip content={<Tip/>}/><Legend wrapperStyle={{fontSize:11,fontFamily:font,paddingTop:16,color:C.g500}} iconSize={10} iconType="square"/><Bar dataKey="dt" name="Dutchtown" fill="#0076BB" radius={[3,3,0,0]} barSize={12}/><Bar dataKey="ea" name="East Ascension" fill="#00A84F" radius={[3,3,0,0]} barSize={12}/><Bar dataKey="sa" name="St. Amant" fill="#F59E0B" radius={[3,3,0,0]} barSize={12}/><Bar dataKey="pv" name="Prairieville" fill="#7C3AED" radius={[3,3,0,0]} barSize={12}/><Bar dataKey="dn" name="Donaldsonville" fill="#F15A29" radius={[3,3,0,0]} barSize={12}/></BarChart></ResponsiveContainer>
     </Card>
-    {/* Campus detail table with expandable rows */}
+    <Div>Campus Detail</Div>
     <Card><Sec>Campus Detail</Sec>
       <table style={{width:"100%",borderCollapse:"collapse",fontSize:13}}><thead><tr>{["","Campus","Revenue","Bookings","Assets","Utilization","Avg Rate","Top Asset","Trend",""].map(h=><th key={h} style={TH}>{h}</th>)}</tr></thead>
         <tbody>{campusRevDetail.map((c,i)=><React.Fragment key={c.id}>
@@ -1837,21 +2383,24 @@ function RevByFacility(){
   const [expanded,setExpanded]=useState(null);
   const filtered=locFilt==="all"?facilityRevDetail:facilityRevDetail.filter(f=>f.c===locFilt);
   const totalRev=filtered.reduce((s,f)=>s+f.rev,0);const totalBook=filtered.reduce((s,f)=>s+f.bookings,0);
-  return <div style={{display:"flex",flexDirection:"column",gap:16}}>
+  return <div style={{display:"flex",flexDirection:"column",gap:20}}>
+    <Div>Filters</Div>
     <Card>
-      <div style={{display:"flex",gap:16,flexWrap:"wrap",alignItems:"flex-end"}}>
-        <div><div style={{fontSize:10,fontWeight:700,color:C.g400,textTransform:"uppercase",letterSpacing:"0.06em",marginBottom:5}}>Campus</div>
-          <select value={locFilt} onChange={e=>setLocFilt(e.target.value)} style={sel}><option value="all">All Campuses</option>{campuses.map(c=><option key={c.id} value={c.short}>{c.short}</option>)}</select></div>
-        <button style={{...btnP,height:38}}>Search</button>
+      <div style={{display:"flex",gap:10,alignItems:"flex-end"}}>
+        <div style={{flex:1}}><div style={{fontSize:10,fontWeight:700,color:C.g400,textTransform:"uppercase",letterSpacing:"0.06em",marginBottom:5}}>Campus</div>
+          <select value={locFilt} onChange={e=>setLocFilt(e.target.value)} style={{...sel,width:"100%"}}><option value="all">All Campuses</option>{campuses.map(c=><option key={c.id} value={c.short}>{c.short}</option>)}</select></div>
+        <button style={{...btnP,height:38,flexShrink:0,whiteSpace:"nowrap"}}>Search</button>
       </div>
     </Card>
-    <div style={{display:"flex",gap:12,flexWrap:"wrap"}}>
-      <Card style={{flex:1,minWidth:160,textAlign:"center"}}><div style={{fontSize:10,fontWeight:700,color:C.g400,textTransform:"uppercase"}}>Total Reservations</div><div style={{fontSize:28,fontWeight:900,color:C.g800,marginTop:4}}>{totalBook}</div></Card>
-      <Card style={{flex:1,minWidth:160,textAlign:"center"}}><div style={{fontSize:10,fontWeight:700,color:C.g400,textTransform:"uppercase"}}>Total Revenue</div><div style={{fontSize:28,fontWeight:900,color:C.g800,marginTop:4}}>${totalRev.toLocaleString()}</div></Card>
+    <Div>Summary</Div>
+    <div className="pp-report-stat-row" style={{display:"grid",gridTemplateColumns:"1fr 1fr",gap:12}}>
+      <Card style={{textAlign:"center"}}><div style={{fontSize:10,fontWeight:700,color:C.g400,textTransform:"uppercase"}}>Total Reservations</div><div style={{fontSize:28,fontWeight:900,color:C.g800,marginTop:4}}>{totalBook}</div></Card>
+      <Card style={{textAlign:"center"}}><div style={{fontSize:10,fontWeight:700,color:C.g400,textTransform:"uppercase"}}>Total Revenue</div><div style={{fontSize:28,fontWeight:900,color:C.g800,marginTop:4}}>${totalRev.toLocaleString()}</div></Card>
     </div>
+    <Div>Results</Div>
     <Card>
-      <div style={{display:"flex",justifyContent:"space-between",alignItems:"center",marginBottom:16}}><div><span style={{fontSize:15,fontWeight:800,color:C.g800}}>Results Found: {filtered.length}</span></div><ExportBtns/></div>
-      <table style={{width:"100%",borderCollapse:"collapse",fontSize:13}}><thead><tr>{["Facility","Campus","Bookings","Revenue","Utilization","Avg Rate","Top Participant","% of Total",""].map(h=><th key={h} style={TH}>{h}</th>)}</tr></thead>
+      <div className="pp-report-results-hdr" style={{display:"flex",justifyContent:"space-between",alignItems:"center",marginBottom:16,gap:8,flexWrap:"wrap"}}><div><span style={{fontSize:15,fontWeight:800,color:C.g800}}>Results Found: {filtered.length}</span></div></div>
+      <div className="pp-table-wrap"><table style={{width:"100%",borderCollapse:"collapse",fontSize:13,minWidth:700}}><thead><tr>{["Facility","Campus","Bookings","Revenue","Utilization","Avg Rate","Top Participant","% of Total",""].map(h=><th key={h} style={TH}>{h}</th>)}</tr></thead>
         <tbody>{filtered.map((f,i)=><React.Fragment key={f.a}>
           <tr style={{background:i%2===0?C.g50:C.cardBg,cursor:"pointer"}} onClick={()=>setExpanded(expanded===f.a?null:f.a)}>
             <td style={{...TD,fontWeight:600,color:C.g700}}>{f.a}</td>
@@ -1872,13 +2421,13 @@ function RevByFacility(){
                 <div style={{fontSize:16,fontWeight:800,color:C.g800,marginTop:2}}>${rev.toLocaleString()}</div>
                 <div style={{fontSize:10,color:C.g500}}>{Math.round(rev/f.rev*100)}% of facility</div>
               </div>)}</div>
-              <div style={{display:"grid",gridTemplateColumns:"1fr 1fr 1fr 1fr",gap:12}}>
+              <div className="pp-report-stat-row" style={{display:"grid",gridTemplateColumns:"1fr 1fr 1fr 1fr",gap:12}}>
                 {[["Top Participant",f.topParticipant],["Participant Revenue","$"+f.topRev.toLocaleString()],["Revenue Per Booking","$"+f.avgRate],["Capacity Utilization",f.util+"%"]].map(([l,v])=><div key={l}><div style={{fontSize:9,fontWeight:700,color:C.g400,textTransform:"uppercase",letterSpacing:"0.06em"}}>{l}</div><div style={{fontSize:13,fontWeight:700,color:C.g800,marginTop:2}}>{v}</div></div>)}
               </div>
             </div>
           </td></tr>}
         </React.Fragment>)}</tbody>
-      </table>
+      </table></div>
     </Card>
   </div>
 }
@@ -1890,34 +2439,35 @@ function RevByParticipant(){
   const filtered=partFilt==="all"?topCustData:topCustData.filter(c=>c.n===partFilt);
   const totalRev=filtered.reduce((s,c)=>s+c.s,0);const totalBook=filtered.reduce((s,c)=>s+c.b,0);
   const partColors=["#0076BB","#00A84F","#F59E0B","#7C3AED","#F15A29","#EC4899","#06B6D4"];
-  return <div style={{display:"flex",flexDirection:"column",gap:16}}>
+  return <div style={{display:"flex",flexDirection:"column",gap:20}}>
+    <Div>Filters</Div>
     <Card>
-      <div style={{display:"flex",gap:16,flexWrap:"wrap",alignItems:"flex-end"}}>
+      <div className="pp-report-filter-bar" style={{display:"grid",gridTemplateColumns:"1fr 1fr auto",gap:12,alignItems:"end"}}>
         <div><div style={{fontSize:10,fontWeight:700,color:C.g400,textTransform:"uppercase",letterSpacing:"0.06em",marginBottom:5}}>From</div>
-          <input type="text" defaultValue="October 09, 2025" style={{...sel,width:150}} readOnly/></div>
+          <input type="text" defaultValue="October 09, 2025" style={{...sel,width:"100%"}} readOnly/></div>
         <div><div style={{fontSize:10,fontWeight:700,color:C.g400,textTransform:"uppercase",letterSpacing:"0.06em",marginBottom:5}}>To</div>
-          <input type="text" defaultValue="February 06, 2026" style={{...sel,width:150}} readOnly/></div>
-        <div><div style={{fontSize:10,fontWeight:700,color:C.g400,textTransform:"uppercase",letterSpacing:"0.06em",marginBottom:5}}>Participant</div>
-          <select value={partFilt} onChange={e=>setPartFilt(e.target.value)} style={sel}><option value="all">All Participants</option>{topCustData.map(c=><option key={c.n} value={c.n}>{c.n}</option>)}</select></div>
-        <button style={{...btnP,height:38}}>Search</button>
+          <input type="text" defaultValue="February 06, 2026" style={{...sel,width:"100%"}} readOnly/></div>
+        <div style={{gridColumn:"1/-1"}}><div style={{fontSize:10,fontWeight:700,color:C.g400,textTransform:"uppercase",letterSpacing:"0.06em",marginBottom:5}}>Participant</div>
+          <div style={{display:"flex",gap:8}}><select value={partFilt} onChange={e=>setPartFilt(e.target.value)} style={{...sel,flex:1}}><option value="all">All Participants</option>{topCustData.map(c=><option key={c.n} value={c.n}>{c.n}</option>)}</select>
+          <button style={{...btnP,height:38}}>Search</button></div></div>
       </div>
     </Card>
 
-    {/* Summary metrics - more structured */}
+    <Div>Summary</Div>
     <div style={{display:"grid",gridTemplateColumns:"repeat(auto-fit,minmax(160px,1fr))",gap:12}}>
       {[["Total Reservations",totalBook,C.g800,null],["Total Revenue",`$${totalRev.toLocaleString()}`,C.g800,null],["Avg per Booking",`$${totalBook?Math.round(totalRev/totalBook):0}`,C.blue,null],["Active Participants",filtered.length,C.green,null]].map(([l,v,clr])=><Card key={l} style={{textAlign:"center",padding:"18px 14px"}}>
         <div style={{fontSize:10,fontWeight:700,color:C.g400,textTransform:"uppercase",letterSpacing:"0.06em"}}>{l}</div>
-        <div style={{fontSize:26,fontWeight:900,color:clr,marginTop:6}}>{v}</div>
+        <div style={{fontSize:26,fontWeight:900,color:clr,marginTop:6,fontFamily:numFont}}>{v}</div>
       </Card>)}
     </div>
 
+    <Div>Participant Breakdown</Div>
     <Card>
       <div style={{display:"flex",justifyContent:"space-between",alignItems:"center",marginBottom:16}}>
         <div style={{display:"flex",alignItems:"baseline",gap:10}}>
           <span style={{fontSize:15,fontWeight:800,color:C.g800}}>Participant Breakdown</span>
           <span style={{fontSize:12,color:C.g400}}>{filtered.length} {filtered.length===1?"result":"results"}</span>
         </div>
-        <ExportBtns/>
       </div>
       <div className="pp-table-wrap">
       <table style={{width:"100%",borderCollapse:"collapse",fontSize:13,minWidth:800}}>
@@ -2000,25 +2550,25 @@ function PayoutsReport(){
   const shown=filtered.slice(0,perPage);
   const allAssets=[...new Set(txnData.map(t=>t.asset))];
 
-  return <div style={{display:"flex",flexDirection:"column",gap:16}}>
-    {/* Filters bar */}
+  return <div style={{display:"flex",flexDirection:"column",gap:20}}>
+    <Div>Filters</Div>
     <Card>
-      <div style={{display:"flex",gap:16,flexWrap:"wrap",alignItems:"flex-end"}}>
+      <div className="pp-report-filter-bar" style={{display:"grid",gridTemplateColumns:"1fr 1fr",gap:12,alignItems:"end"}}>
         <div><div style={{fontSize:10,fontWeight:700,color:C.g400,textTransform:"uppercase",letterSpacing:"0.06em",marginBottom:5}}>Campus</div>
-          <select value={locFilt} onChange={e=>{setLocFilt(e.target.value);setAssetFilt("all")}} style={sel}><option value="all">All</option>{campuses.map(c=><option key={c.id} value={c.name}>{c.short}</option>)}</select></div>
+          <select value={locFilt} onChange={e=>{setLocFilt(e.target.value);setAssetFilt("all")}} style={{...sel,width:"100%"}}><option value="all">All</option>{campuses.map(c=><option key={c.id} value={c.name}>{c.short}</option>)}</select></div>
         <div><div style={{fontSize:10,fontWeight:700,color:C.g400,textTransform:"uppercase",letterSpacing:"0.06em",marginBottom:5}}>Asset</div>
-          <select value={assetFilt} onChange={e=>setAssetFilt(e.target.value)} style={sel}><option value="all">{locFilt==="all"?"All Assets":`All at ${campuses.find(c=>c.name===locFilt)?.short||"campus"}`}</option>{(locFilt==="all"?allAssets:allAssets.filter(a=>txnData.some(t=>t.asset===a&&t.facility===locFilt))).map(a=><option key={a} value={a}>{a}</option>)}</select></div>
+          <select value={assetFilt} onChange={e=>setAssetFilt(e.target.value)} style={{...sel,width:"100%"}}><option value="all">{locFilt==="all"?"All Assets":"All"}</option>{(locFilt==="all"?allAssets:allAssets.filter(a=>txnData.some(t=>t.asset===a&&t.facility===locFilt))).map(a=><option key={a} value={a}>{a}</option>)}</select></div>
         <div><div style={{fontSize:10,fontWeight:700,color:C.g400,textTransform:"uppercase",letterSpacing:"0.06em",marginBottom:5}}>From</div>
-          <input type="text" defaultValue="October 09, 2025" style={{...sel,width:150,cursor:"text"}} readOnly/></div>
+          <input type="text" defaultValue="Oct 09, 2025" style={{...sel,width:"100%",cursor:"text"}} readOnly/></div>
         <div><div style={{fontSize:10,fontWeight:700,color:C.g400,textTransform:"uppercase",letterSpacing:"0.06em",marginBottom:5}}>To</div>
-          <input type="text" defaultValue="February 06, 2026" style={{...sel,width:150,cursor:"text"}} readOnly/></div>
+          <input type="text" defaultValue="Feb 06, 2026" style={{...sel,width:"100%",cursor:"text"}} readOnly/></div>
         <div><div style={{fontSize:10,fontWeight:700,color:C.g400,textTransform:"uppercase",letterSpacing:"0.06em",marginBottom:5}}>Status</div>
-          <select value={statusFilt} onChange={e=>setStatusFilt(e.target.value)} style={sel}><option value="all">All</option><option value="success">Success</option><option value="failed">Failed</option></select></div>
-        <button style={{...btnP,height:38}}>Search</button>
+          <select value={statusFilt} onChange={e=>setStatusFilt(e.target.value)} style={{...sel,width:"100%"}}><option value="all">All</option><option value="success">Success</option><option value="failed">Failed</option></select></div>
+        <button style={{...btnP,height:38,width:"100%"}}>Search</button>
       </div>
     </Card>
 
-    {/* Summary metrics - financial dashboard style */}
+    <Div>Summary</Div>
     <div style={{display:"grid",gridTemplateColumns:"repeat(auto-fit,minmax(180px,1fr))",gap:12}}>
       <Card style={{padding:"20px 18px",background:`linear-gradient(135deg,${C.blue}08,${C.cardBg})`}}>
         <div style={{fontSize:10,fontWeight:700,color:C.g400,textTransform:"uppercase",letterSpacing:"0.06em"}}>Total Transactions</div>
@@ -2043,8 +2593,9 @@ function PayoutsReport(){
     </div>
 
     {/* Monthly payout summary */}
+    <Div>Monthly Payouts</Div>
     <Card>
-      <Sec action={<ExportBtns/>}>Monthly Payout Summary</Sec>
+      <Sec>Monthly Payout Summary</Sec>
       <div className="pp-table-wrap">
       <table style={{width:"100%",borderCollapse:"collapse",fontSize:13,minWidth:600}}>
         <thead><tr>{["Month","Gross Amount","Fee (5%)","Net Payout","Transactions","Status","Deposit Date"].map(h=><th key={h} style={{...TH,padding:"10px 12px"}}>{h}</th>)}</tr></thead>
@@ -2070,14 +2621,13 @@ function PayoutsReport(){
       </div>
     </Card>
 
-    {/* Transaction detail table */}
+    <Div>Transaction Detail</Div>
     <Card>
       <div style={{display:"flex",justifyContent:"space-between",alignItems:"center",marginBottom:16}}>
         <div style={{display:"flex",alignItems:"baseline",gap:10}}>
           <span style={{fontSize:15,fontWeight:800,color:C.g800}}>Transaction Details</span>
           <span style={{fontSize:12,color:C.g400}}>{filtered.length} {filtered.length===1?"transaction":"transactions"}</span>
         </div>
-        <ExportBtns/>
       </div>
       <div style={{overflowX:"auto"}}>
         <table style={{width:"100%",borderCollapse:"collapse",fontSize:12,minWidth:900}}>
@@ -2163,7 +2713,7 @@ function Users(){
   const campusLabel=(c)=>c==="all"?"All Campuses":campuses.find(x=>x.id===c)?.short||c;
   const togglePerm=(feat,perm)=>{if(!editPerms)return;const cur=editPerms[feat]||[];setEditPerms({...editPerms,[feat]:cur.includes(perm)?cur.filter(p=>p!==perm):[...cur,perm]})};
 
-  return <div style={{display:"flex",flexDirection:"column",gap:16}}>
+  return <div style={{display:"flex",flexDirection:"column",gap:20}}>
     {/* Role Editor Slideout */}
     {editRole!==null&&<SlidePanel open={true} onClose={()=>{setEditRole(null);setEditPerms(null)}} width={560}>
       <div style={{padding:"24px 30px",borderBottom:`1px solid ${C.g200}`}}>
@@ -2217,20 +2767,20 @@ function Users(){
     </SlidePanel>}
 
     {/* Header */}
-    <div style={{display:"flex",justifyContent:"space-between",alignItems:"center",flexWrap:"wrap",gap:12}}>
-      <div style={{display:"flex",gap:10,alignItems:"center",flexWrap:"wrap"}}>
-        <div style={{position:"relative"}}><span style={{position:"absolute",left:10,top:"50%",transform:"translateY(-50%)"}}>{I.search(14,C.g400)}</span><input type="text" value={search} onChange={e=>setSearch(e.target.value)} placeholder="Search staff..." style={{padding:"9px 14px 9px 32px",border:`1px solid ${C.g200}`,borderRadius:8,fontSize:13,width:220,fontFamily:font}}/></div>
+    <div className="pp-users-toolbar" style={{display:"flex",justifyContent:"space-between",alignItems:"center",flexWrap:"wrap",gap:12}}>
+      <div className="pp-users-filters" style={{display:"flex",gap:10,alignItems:"center",flexWrap:"wrap",flex:1,minWidth:0}}>
+        <div style={{position:"relative",flex:"1 1 180px",maxWidth:280}}><span style={{position:"absolute",left:10,top:"50%",transform:"translateY(-50%)"}}>{I.search(14,C.g400)}</span><input type="text" value={search} onChange={e=>setSearch(e.target.value)} placeholder="Search staff..." style={{padding:"9px 14px 9px 32px",border:`1px solid ${C.g200}`,borderRadius:8,fontSize:13,width:"100%",fontFamily:font,boxSizing:"border-box",background:C.g50,color:C.g700}}/></div>
         <select value={roleFilter} onChange={e=>setRoleFilter(e.target.value)} style={sel}><option value="all">All Roles</option>{roleDefinitions.map(r=><option key={r.role} value={r.role}>{r.role}</option>)}</select>
-        <span style={{fontSize:12,color:C.g400}}>{filtered.length} staff member{filtered.length!==1?"s":""}</span>
+        <span style={{fontSize:12,color:C.g400,whiteSpace:"nowrap"}}>{filtered.length} staff member{filtered.length!==1?"s":""}</span>
       </div>
-      <div style={{display:"flex",gap:10}}>
+      <div style={{display:"flex",gap:8}}>
         <button onClick={()=>setShowRoles(!showRoles)} style={{...btnO,color:C.blue,borderColor:`${C.blue}40`,background:showRoles?C.blueL:C.cardBg}}>{showRoles?"Hide":"Manage"} Roles</button>
         <button style={btnP}><span style={{fontSize:15}}>+</span> Invite Staff</button>
       </div>
     </div>
 
     {/* Role Management Panel */}
-    {showRoles&&<Card style={{border:`1px solid ${C.blue}20`,background:`linear-gradient(135deg,${C.blueL}40,${C.cardBg})`}}>
+    {showRoles&&<><Div>Role Definitions</Div><Card style={{border:`1px solid ${C.blue}20`,background:`linear-gradient(135deg,${C.blueL}40,${C.cardBg})`}}>
       <Sec action={<button style={{...btnP,fontSize:12,padding:"6px 14px"}}>+ Create Role</button>}>Role Definitions</Sec>
       <div style={{display:"grid",gridTemplateColumns:"repeat(auto-fill,minmax(240px,1fr))",gap:12}}>
         {roleDefinitions.map(rd=>{const count=staffData.filter(s=>s.role===rd.role).length;const permCount=Object.values(rd.perms).flat().length;
@@ -2267,8 +2817,9 @@ function Users(){
           </tr>)}</tbody>
         </table>
       </div>
-    </Card>}
+    </Card></>}
 
+    <Div>Staff Directory</Div>
     {/* Info banner */}
     <div style={{padding:"10px 16px",background:C.g50,borderRadius:10,border:`1px solid ${C.g200}`,display:"flex",alignItems:"center",gap:10}}>
       <span>{I.alert(14,C.g400)}</span>
@@ -2276,10 +2827,11 @@ function Users(){
     </div>
 
     {/* Staff table */}
-    <Card>
-      <table style={{width:"100%",borderCollapse:"collapse",fontSize:13}}>
+    <Card np>
+      <div className="pp-table-wrap">
+      <table style={{width:"100%",borderCollapse:"collapse",fontSize:13,minWidth:700}}>
         <thead><tr>{["","Staff Member","Email","Role","Campus","Phone","Last Active",""].map(h=><th key={h} style={TH}>{h}</th>)}</tr></thead>
-        <tbody>{filtered.map((u,i)=><tr key={u.name} style={{background:i%2===0?C.g50:C.cardBg}}>
+        <tbody>{filtered.length===0?<tr><td colSpan={8}><Empty icon={I.user(22,C.g300)} title="No staff members found" desc="Try adjusting your search or role filter." action="Clear Filters" onAction={()=>{setSearch("");setRoleFilter("all")}}/></td></tr>:filtered.map((u,i)=><tr key={u.name} style={{background:i%2===0?C.g50:C.cardBg}}>
           <td style={TD}><div style={{width:38,height:20,borderRadius:10,background:u.status?C.green:C.g300,position:"relative",cursor:"pointer"}}><div style={{width:14,height:14,borderRadius:"50%",background:"#fff",position:"absolute",top:3,...(u.status?{right:3}:{left:3}),boxShadow:"0 1px 2px rgba(0,0,0,.2)",transition:"all .15s"}}/></div></td>
           <td style={TD}><div style={{display:"flex",alignItems:"center",gap:10}}><div style={{width:32,height:32,borderRadius:8,background:u.color,display:"flex",alignItems:"center",justifyContent:"center",color:"#fff",fontWeight:800,fontSize:10}}>{u.initials}</div><div><span style={{fontWeight:700,color:C.g700,display:"block"}}>{u.name}</span><span style={{fontSize:11,color:C.g400}}>{campusLabel(u.campus)}</span></div></div></td>
           <td style={{...TD,color:C.g500,fontSize:12}}>{u.email}</td>
@@ -2290,42 +2842,254 @@ function Users(){
           <td style={TD}><button style={{...btnO,padding:"4px 12px",fontSize:12,color:C.blue,borderColor:`${C.blue}40`}}>Edit</button></td>
         </tr>)}</tbody>
       </table>
+      </div>
     </Card>
   </div>
 }
 
 /* ======== PAYMENTS (more rows, mixed statuses) ======== */
-function Payments(){
-  const [statusFilt,setStatusFilt]=useState("all");
-  const filtered=statusFilt==="all"?paymentsData:paymentsData.filter(p=>p.status===statusFilt);
-  const totalRev=paymentsData.reduce((s,p)=>s+p.rev,0);
-  const failedRev=paymentsData.filter(p=>p.status==="failed").reduce((s,p)=>s+p.rev,0);
-  return <div style={{display:"flex",flexDirection:"column",gap:16}}>
-    <div className="pp-pay-metrics" style={{display:"flex",gap:12,flexWrap:"wrap"}}>
-      <Card style={{flex:1,minWidth:150}}><div style={{fontSize:10,fontWeight:700,color:C.g400,textTransform:"uppercase",letterSpacing:"0.08em",marginBottom:6}}>Total Processed</div><div style={{fontSize:22,fontWeight:800,color:C.g800}}>${totalRev.toLocaleString()}</div></Card>
-      <Card style={{flex:1,minWidth:150}}><div style={{fontSize:10,fontWeight:700,color:C.g400,textTransform:"uppercase",letterSpacing:"0.08em",marginBottom:6}}>Successful</div><div style={{fontSize:22,fontWeight:800,color:C.green}}>${(totalRev-failedRev).toLocaleString()}</div></Card>
-      <Card style={{flex:1,minWidth:150}}><div style={{fontSize:10,fontWeight:700,color:C.g400,textTransform:"uppercase",letterSpacing:"0.08em",marginBottom:6}}>Failed / At Risk</div><div style={{fontSize:22,fontWeight:800,color:C.red}}>${failedRev.toLocaleString()}</div></Card>
-      <Card style={{flex:1,minWidth:150}}><div style={{fontSize:10,fontWeight:700,color:C.g400,textTransform:"uppercase",letterSpacing:"0.08em",marginBottom:6}}>Transactions</div><div style={{fontSize:22,fontWeight:800,color:C.g800}}>{paymentsData.length}</div></Card>
-    </div>
-    <div className="pp-pay-filters" style={{display:"flex",justifyContent:"space-between",alignItems:"center",flexWrap:"wrap",gap:12}}>
-      <div style={{display:"flex",gap:4,background:C.g100,borderRadius:10,padding:3}}>
-        {["all","completed","pending","failed"].map(s=><button key={s} onClick={()=>setStatusFilt(s)} style={pill(statusFilt===s)}>{s==="all"?"All":s.charAt(0).toUpperCase()+s.slice(1)}</button>)}
+/* ======== PROMOTE / GROWTH TOOLS ======== */
+function Promote(){
+  const [showShare,setShowShare]=useState(false);
+  const [copied,setCopied]=useState(false);
+  const ppUrl="https://book.practiceplan.com/ascension-parish";
+  const shareMsg="Reserve Ascension Parish facilities on PracticePlan - gyms, fields, and auditoriums available for your team or organization. Book online instantly!";
+
+  const doCopy=()=>{setCopied(true);setTimeout(()=>setCopied(false),2000);if(globalShowToast)globalShowToast({type:"success",title:"Link Copied",msg:"Booking URL copied to clipboard",color:C.green})};
+
+  const tools=[
+    {icon:I.share(20,C.blue),title:"Share to Social",desc:"Post your booking link on social media, email, or messaging apps",action:()=>setShowShare(true),accent:C.blue},
+    {icon:I.mail(20,C.green),title:"Email Templates",desc:"Pre-written outreach emails for youth leagues, churches, and community orgs",accent:C.green},
+    {icon:I.download(20,"#8B5CF6"),title:"Marketing Assets",desc:"QR codes, printable flyers, digital graphics, and signage templates",accent:"#8B5CF6"},
+    {icon:I.link(20,C.amber),title:"Embed on Website",desc:"Add a booking widget or badge to your district website",accent:C.amber},
+    {icon:I.bulb(20,C.blue),title:"AI Growth Coach",desc:"Personalized suggestions to increase bookings and revenue",accent:C.blue},
+    {icon:I.calendar(20,C.green),title:"Seasonal Playbook",desc:"Maximize revenue with seasonal strategies - spring sports, summer camps, fall leagues",accent:C.green},
+  ];
+
+  const bestPractices=[
+    {title:"Add your booking link to the district website",desc:"Districts that link PracticePlan from their facilities page see 3x more organic bookings.",done:true},
+    {title:"Share with local youth sports leagues",desc:"Email your top 10 local organizations with your direct booking link and QR code.",done:true},
+    {title:"Post on community boards",desc:"Share on Nextdoor, local Facebook Groups, and your district's social accounts.",done:false},
+    {title:"Display QR codes at facilities",desc:"Print and post QR code flyers at each gym entrance and field gate.",done:false},
+    {title:"Set competitive weekday rates",desc:"Weekday evenings are underutilized - a lower rate can fill empty slots.",done:false},
+    {title:"Respond to inquiries within 24 hours",desc:"Fast response time is the #1 factor in converting first-time renters to repeat bookers.",done:true},
+  ];
+
+  const assets=[
+    {name:"Booking QR Code",type:"PNG",size:"42 KB",icon:"QR"},
+    {name:"Facility Rental Flyer",type:"PDF",size:"1.2 MB",icon:"FL"},
+    {name:"Social Media Graphics Pack",type:"ZIP",size:"3.8 MB",icon:"SM"},
+    {name:"Email Header Banner",type:"PNG",size:"186 KB",icon:"EM"},
+    {name:"Parking Lot Signage",type:"PDF",size:"890 KB",icon:"SN"},
+    {name:"Rate Card Template",type:"DOCX",size:"245 KB",icon:"RC"},
+  ];
+
+  return <div style={{display:"flex",flexDirection:"column",gap:20}}>
+    {/* Hero / CTA */}
+    <div style={{background:`linear-gradient(135deg, ${C.blue}, ${C.green})`,borderRadius:R.lg,padding:"28px 28px 24px",position:"relative",overflow:"hidden"}}>
+      <div style={{position:"absolute",top:-20,right:-20,width:120,height:120,borderRadius:60,background:"rgba(255,255,255,0.08)"}}/>
+      <div style={{position:"absolute",bottom:-30,right:60,width:80,height:80,borderRadius:40,background:"rgba(255,255,255,0.05)"}}/>
+      <div style={{position:"relative"}}>
+        <div style={{fontSize:22,fontWeight:800,color:"#fff",lineHeight:1.3,marginBottom:6}}>Promote Your Facilities</div>
+        <div style={{fontSize:13,color:"rgba(255,255,255,0.85)",lineHeight:1.6,maxWidth:480,marginBottom:18}}>Help community organizations find and book your spaces. The more visibility your facilities get, the more revenue they generate.</div>
+        <div style={{display:"flex",gap:10,flexWrap:"wrap"}}>
+          <button onClick={()=>setShowShare(true)} style={{background:"#fff",color:C.blue,border:"none",borderRadius:R.sm,padding:"11px 20px",fontSize:13,fontWeight:700,cursor:"pointer",fontFamily:font,display:"flex",alignItems:"center",gap:8}}>{I.share(14,C.blue)} Share Booking Link</button>
+          <button onClick={()=>{doCopy()}} style={{background:"rgba(255,255,255,0.15)",color:"#fff",border:"1px solid rgba(255,255,255,0.3)",borderRadius:R.sm,padding:"11px 20px",fontSize:13,fontWeight:600,cursor:"pointer",fontFamily:font,display:"flex",alignItems:"center",gap:8,backdropFilter:"blur(4px)"}}>{I.copy(14,"#fff")} Copy Link</button>
+        </div>
       </div>
-      <div style={{display:"flex",gap:10}}>
-        <input type="text" placeholder="Search customer..." style={{padding:"9px 14px",border:`1px solid ${C.g200}`,borderRadius:8,fontSize:13,width:190,fontFamily:font}}/>
-        <button style={{...btnO,color:C.blue,borderColor:`${C.blue}40`}}>Export CSV</button>
+    </div>
+
+    {/* Quick URL bar */}
+    <Card>
+      <div style={{display:"flex",alignItems:"center",gap:10}}>
+        <div style={{flex:1,padding:"10px 14px",background:C.g50,borderRadius:R.sm,border:`1px solid ${C.cardBorder}`,fontSize:12,color:C.g600,fontFamily:numFont,overflow:"hidden",textOverflow:"ellipsis",whiteSpace:"nowrap"}}>{ppUrl}</div>
+        <button onClick={doCopy} style={{...btnP,padding:"10px 16px",flexShrink:0}}>{copied?<>{I.check(13,"#fff")} Copied</>:<>{I.copy(13,"#fff")} Copy</>}</button>
+      </div>
+    </Card>
+
+    {/* Growth Tools grid */}
+    <Div>Growth Tools</Div>
+    <div style={{display:"grid",gridTemplateColumns:"repeat(auto-fill,minmax(280px,1fr))",gap:12}}>
+      {tools.map((t,i)=><div key={i} onClick={t.action||undefined} style={{background:C.cardBg,borderRadius:R.lg,border:`1px solid ${C.cardBorder}`,padding:"18px 20px",cursor:t.action?"pointer":"default",transition:"all .15s",boxShadow:C.cardShadow}} onMouseEnter={e=>{if(t.action)e.currentTarget.style.borderColor=`${t.accent}40`}} onMouseLeave={e=>e.currentTarget.style.borderColor=C.cardBorder}>
+        <div style={{display:"flex",alignItems:"flex-start",gap:14}}>
+          <div style={{width:40,height:40,borderRadius:10,background:`${t.accent}12`,display:"flex",alignItems:"center",justifyContent:"center",flexShrink:0}}>{t.icon}</div>
+          <div style={{flex:1}}>
+            <div style={{fontSize:14,fontWeight:700,color:C.g800,marginBottom:3}}>{t.title}</div>
+            <div style={{fontSize:12,color:C.g500,lineHeight:1.5}}>{t.desc}</div>
+          </div>
+          {t.action&&<span style={{color:C.g300,fontSize:16,marginTop:2}}>›</span>}
+        </div>
+      </div>)}
+    </div>
+
+    {/* Best Practices checklist */}
+    <Div>Best Practices</Div>
+    <Card>
+      <div style={{display:"flex",alignItems:"center",justifyContent:"space-between",marginBottom:16}}>
+        <div style={{fontSize:13,fontWeight:700,color:C.g800}}>Onboarding Checklist</div>
+        <span style={{fontSize:11,fontWeight:600,color:C.green}}>{bestPractices.filter(b=>b.done).length} of {bestPractices.length} complete</span>
+      </div>
+      <div style={{display:"flex",gap:3,marginBottom:18}}>
+        {bestPractices.map((b,i)=><div key={i} style={{flex:1,height:3,borderRadius:2,background:b.done?C.green:C.g200,transition:"all .3s"}}/>)}
+      </div>
+      {bestPractices.map((b,i)=><div key={i} style={{display:"flex",alignItems:"flex-start",gap:12,padding:"12px 0",borderBottom:i<bestPractices.length-1?`1px solid ${C.g100}`:"none"}}>
+        <div style={{width:22,height:22,borderRadius:6,background:b.done?C.green:`${C.g200}`,border:b.done?"none":`2px solid ${C.g300}`,display:"flex",alignItems:"center",justifyContent:"center",flexShrink:0,marginTop:1,cursor:"pointer"}}>{b.done&&I.check(12,"#fff")}</div>
+        <div>
+          <div style={{fontSize:13,fontWeight:600,color:b.done?C.g500:C.g800,textDecoration:b.done?"line-through":"none"}}>{b.title}</div>
+          <div style={{fontSize:11,color:C.g400,marginTop:2,lineHeight:1.5}}>{b.desc}</div>
+        </div>
+      </div>)}
+    </Card>
+
+    {/* Marketing Assets / File Repository */}
+    <Div>Marketing Assets</Div>
+    <Card>
+      <Sec action={<button onClick={()=>{if(globalShowToast)globalShowToast({type:"success",title:"All Assets Downloaded",msg:"Marketing pack saved to your device",color:C.green})}} style={{...btnO,fontSize:11,padding:"6px 14px"}}>{I.download(12,C.g500)} Download All</button>}>Toolkit</Sec>
+      <div style={{display:"grid",gridTemplateColumns:"repeat(auto-fill,minmax(260px,1fr))",gap:8}}>
+        {assets.map((a,i)=><div key={i} style={{display:"flex",alignItems:"center",gap:12,padding:"12px 14px",background:C.g50,borderRadius:R.sm,border:`1px solid ${C.cardBorder}`,cursor:"pointer",transition:"all .12s"}} onMouseEnter={e=>e.currentTarget.style.borderColor=C.blue} onMouseLeave={e=>e.currentTarget.style.borderColor=C.cardBorder} onClick={()=>{if(globalShowToast)globalShowToast({type:"success",title:"Downloaded",msg:`${a.name}.${a.type.toLowerCase()} saved`,color:C.green})}}>
+          <div style={{width:36,height:36,borderRadius:8,background:C.blueL,display:"flex",alignItems:"center",justifyContent:"center",flexShrink:0}}>
+            <span style={{fontSize:9,fontWeight:800,color:C.blue,letterSpacing:"0.03em"}}>{a.icon}</span>
+          </div>
+          <div style={{flex:1,minWidth:0}}>
+            <div style={{fontSize:13,fontWeight:600,color:C.g700,whiteSpace:"nowrap",overflow:"hidden",textOverflow:"ellipsis"}}>{a.name}</div>
+            <div style={{fontSize:10,color:C.g400,marginTop:1}}>{a.type} - {a.size}</div>
+          </div>
+          {I.download(13,C.g400)}
+        </div>)}
+      </div>
+    </Card>
+
+    {/* Video Tutorials */}
+    <Div>Video Tutorials</Div>
+    <div style={{display:"grid",gridTemplateColumns:"repeat(auto-fill,minmax(240px,1fr))",gap:12}}>
+      {[
+        {title:"Getting Started with PracticePlan",duration:"3:24",desc:"Set up your district, add campuses, and publish your first facility",views:"1.2K"},
+        {title:"Managing Bookings & Approvals",duration:"4:51",desc:"Review requests, approve or decline, and communicate with renters",views:"847"},
+        {title:"Setting Rates & Availability",duration:"2:38",desc:"Configure hourly rates, blackout dates, and day-of-week availability",views:"634"},
+        {title:"Reading Your Revenue Reports",duration:"3:12",desc:"Understand your dashboard metrics, payout schedule, and growth trends",views:"521"},
+        {title:"Promoting Your Facilities",duration:"2:55",desc:"Share your booking page, use QR codes, and reach community organizations",views:"389"},
+        {title:"Adding Amenities & Add-ons",duration:"2:10",desc:"Offer equipment, AV, event staff, and concessions as bookable extras",views:"312"},
+      ].map((v,i)=><div key={i} style={{background:C.cardBg,borderRadius:R.lg,border:`1px solid ${C.cardBorder}`,overflow:"hidden",cursor:"pointer",transition:"all .15s",boxShadow:C.cardShadow}} onMouseEnter={e=>e.currentTarget.style.borderColor=`${C.blue}40`} onMouseLeave={e=>e.currentTarget.style.borderColor=C.cardBorder}>
+        {/* Video thumbnail placeholder */}
+        <div style={{height:120,background:`linear-gradient(135deg, ${C.g100}, ${C.g200})`,display:"flex",alignItems:"center",justifyContent:"center",position:"relative"}}>
+          <div style={{width:44,height:44,borderRadius:22,background:"rgba(0,0,0,0.6)",display:"flex",alignItems:"center",justifyContent:"center",backdropFilter:"blur(4px)"}}>
+            <div style={{width:0,height:0,borderTop:"8px solid transparent",borderBottom:"8px solid transparent",borderLeft:"14px solid #fff",marginLeft:3}}/>
+          </div>
+          <span style={{position:"absolute",bottom:8,right:8,background:"rgba(0,0,0,0.7)",color:"#fff",fontSize:10,fontWeight:700,padding:"2px 6px",borderRadius:4}}>{v.duration}</span>
+        </div>
+        <div style={{padding:"12px 14px"}}>
+          <div style={{fontSize:13,fontWeight:700,color:C.g800,lineHeight:1.3,marginBottom:4}}>{v.title}</div>
+          <div style={{fontSize:11,color:C.g400,lineHeight:1.4}}>{v.desc}</div>
+          <div style={{fontSize:10,color:C.g400,marginTop:6}}>{v.views} views</div>
+        </div>
+      </div>)}
+    </div>
+
+    {/* Success Stories */}
+    <Div>Success Stories</Div>
+    <div style={{display:"grid",gridTemplateColumns:"repeat(auto-fill,minmax(300px,1fr))",gap:12}}>
+      {[
+        {district:"Katy ISD",state:"Texas",stat:"$127K",label:"first-year revenue",quote:"PracticePlan turned our empty weekend gyms into a real revenue stream. Setup took less than a week.",person:"Mike Torres, Athletic Director"},
+        {district:"Gwinnett County Schools",state:"Georgia",stat:"340%",label:"booking increase",quote:"We went from managing rentals in spreadsheets to fully automated. The community loves how easy it is to book.",person:"Sarah Lin, Facilities Coordinator"},
+        {district:"City of Frisco",state:"Texas",stat:"$84K",label:"in 6 months",quote:"Our parks and rec facilities were underutilized. PracticePlan helped us fill evenings and weekends with zero added staff.",person:"James Okafor, Parks Director"},
+      ].map((s,i)=><Card key={i}>
+        <div style={{display:"flex",alignItems:"center",gap:8,marginBottom:12}}>
+          <div style={{width:36,height:36,borderRadius:10,background:`linear-gradient(135deg, ${C.blue}15, ${C.green}15)`,display:"flex",alignItems:"center",justifyContent:"center",flexShrink:0}}>
+            <span style={{fontSize:10,fontWeight:800,color:C.blue}}>{s.district.split(" ")[0].slice(0,2).toUpperCase()}</span>
+          </div>
+          <div>
+            <div style={{fontSize:13,fontWeight:700,color:C.g800}}>{s.district}</div>
+            <div style={{fontSize:10,color:C.g400}}>{s.state}</div>
+          </div>
+        </div>
+        <div style={{display:"flex",alignItems:"baseline",gap:6,marginBottom:10}}>
+          <span style={{fontSize:24,fontWeight:800,color:C.blue,fontFamily:numFont}}>{s.stat}</span>
+          <span style={{fontSize:11,color:C.g400}}>{s.label}</span>
+        </div>
+        <div style={{fontSize:12,color:C.g500,lineHeight:1.6,fontStyle:"italic",marginBottom:10}}>"{s.quote}"</div>
+        <div style={{fontSize:11,fontWeight:600,color:C.g600}}>- {s.person}</div>
+      </Card>)}
+    </div>
+
+    {/* Refer & Suggest */}
+    <div style={{display:"grid",gridTemplateColumns:"repeat(auto-fill,minmax(300px,1fr))",gap:12,marginTop:4}}>
+      {/* Refer a District */}
+      <div style={{background:`linear-gradient(135deg, ${C.blue}08, ${C.green}08)`,borderRadius:R.lg,border:`1px solid ${C.green}25`,padding:"22px 24px",cursor:"pointer"}} onClick={()=>globalShowReferral()}>
+        <div style={{display:"flex",alignItems:"center",gap:12,marginBottom:12}}>
+          <div style={{width:40,height:40,borderRadius:10,background:`linear-gradient(135deg, ${C.blue}, ${C.green})`,display:"flex",alignItems:"center",justifyContent:"center",flexShrink:0}}>{I.mail(18,"#fff")}</div>
+          <div>
+            <div style={{fontSize:15,fontWeight:800,color:C.g800}}>Refer a District</div>
+            <div style={{fontSize:12,color:C.g500,marginTop:2}}>Know a school or city that could benefit?</div>
+          </div>
+        </div>
+        <div style={{fontSize:12,color:C.g500,lineHeight:1.6,marginBottom:14}}>Help another district unlock revenue from their unused facilities. We'll reach out on your behalf - they get started completely free.</div>
+        <div style={{display:"flex",alignItems:"center",gap:6,color:C.blue,fontSize:12,fontWeight:700}}>Send an Invite <span style={{fontSize:15}}>→</span></div>
+      </div>
+
+      {/* Suggest a Feature */}
+      <div style={{background:C.cardBg,borderRadius:R.lg,border:`1px solid ${C.cardBorder}`,padding:"22px 24px",cursor:"pointer",boxShadow:C.cardShadow}} onClick={()=>globalShowSuggest()}>
+        <div style={{display:"flex",alignItems:"center",gap:12,marginBottom:12}}>
+          <div style={{width:40,height:40,borderRadius:10,background:C.g100,display:"flex",alignItems:"center",justifyContent:"center",flexShrink:0}}>
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke={C.g500} strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M12 2v4M12 18v4M4.93 4.93l2.83 2.83M16.24 16.24l2.83 2.83M2 12h4M18 12h4M4.93 19.07l2.83-2.83M16.24 7.76l2.83-2.83"/></svg>
+          </div>
+          <div>
+            <div style={{fontSize:15,fontWeight:800,color:C.g800}}>Suggest a Feature</div>
+            <div style={{fontSize:12,color:C.g500,marginTop:2}}>Help us build what you need</div>
+          </div>
+        </div>
+        <div style={{fontSize:12,color:C.g500,lineHeight:1.6,marginBottom:14}}>Have an idea for a tool, integration, or workflow that would make PracticePlan even better? We read every suggestion and ship fast.</div>
+        <div style={{display:"flex",alignItems:"center",gap:6,color:C.blue,fontSize:12,fontWeight:700}}>Share Your Idea <span style={{fontSize:15}}>→</span></div>
       </div>
     </div>
-    <Card np><div className="pp-table-wrap"><table style={{width:"100%",borderCollapse:"collapse",fontSize:13}}><thead><tr>{["Date","Asset","Facility","Participant","Revenue","Status"].map(h=><th key={h} style={TH}>{h}</th>)}</tr></thead>
-      <tbody>{filtered.map((p,i)=><tr key={i} style={{background:i%2===0?C.g50:C.cardBg}}>
-        <td style={{...TD,color:C.g500}}><div style={{fontWeight:600,color:C.g700}}>{p.date}</div><div style={{fontSize:11}}>{p.time}</div></td>
-        <td style={{...TD,fontWeight:600,color:C.g700}}>{p.asset}</td>
-        <td style={{...TD,color:C.g500}}>{p.fac}</td>
-        <td style={{...TD,color:C.g600}}>{p.user}</td>
-        <td style={{...TD,fontWeight:700}}>${p.rev.toFixed(2)}</td>
-        <td style={TD}><span style={statusBadge(p.status)}><span style={{width:6,height:6,borderRadius:"50%",background:"currentColor"}}/>{p.status}</span></td>
-      </tr>)}</tbody>
-    </table></div></Card>
+
+    {/* Share Modal */}
+    {showShare&&<div style={{position:"fixed",inset:0,background:"rgba(15,23,42,0.5)",backdropFilter:"blur(6px)",zIndex:300,display:"flex",alignItems:"center",justifyContent:"center",padding:20}} onClick={()=>setShowShare(false)}>
+      <div onClick={e=>e.stopPropagation()} style={{background:C.cardBg,borderRadius:16,boxShadow:`0 24px 80px rgba(0,0,0,${C.bg==="#0F1318"?0.5:0.2})`,width:"100%",maxWidth:460,overflow:"hidden"}}>
+        {/* Header */}
+        <div style={{background:`linear-gradient(135deg, ${C.blue}, ${C.green})`,padding:"24px 28px 20px",position:"relative"}}>
+          <button onClick={()=>setShowShare(false)} style={{position:"absolute",top:14,right:14,background:"rgba(255,255,255,0.2)",border:"none",borderRadius:8,width:28,height:28,cursor:"pointer",display:"flex",alignItems:"center",justifyContent:"center"}}>{I.x(14,"#fff")}</button>
+          <div style={{fontSize:18,fontWeight:800,color:"#fff",lineHeight:1.3}}>Share Your Booking Page</div>
+          <div style={{fontSize:12,color:"rgba(255,255,255,0.8)",marginTop:6,lineHeight:1.5}}>Let your community know they can reserve Ascension Parish facilities online.</div>
+        </div>
+
+        <div style={{padding:"24px 28px"}}>
+          {/* URL + Copy */}
+          <div style={{display:"flex",gap:8,marginBottom:20}}>
+            <div style={{flex:1,padding:"10px 14px",background:C.g50,borderRadius:R.sm,border:`1px solid ${C.cardBorder}`,fontSize:12,color:C.g600,fontFamily:numFont,overflow:"hidden",textOverflow:"ellipsis",whiteSpace:"nowrap"}}>{ppUrl}</div>
+            <button onClick={doCopy} style={{...btnP,padding:"10px 14px",flexShrink:0,fontSize:12}}>{copied?"Copied!":"Copy"}</button>
+          </div>
+
+          {/* Pre-filled message */}
+          <div style={{marginBottom:20}}>
+            <label style={{fontSize:10,fontWeight:700,color:C.g400,textTransform:"uppercase",letterSpacing:"0.06em",display:"block",marginBottom:6}}>Message</label>
+            <div style={{padding:"12px 14px",background:C.g50,borderRadius:R.sm,border:`1px solid ${C.cardBorder}`,fontSize:12,color:C.g600,lineHeight:1.6}}>{shareMsg}</div>
+          </div>
+
+          {/* Social buttons */}
+          <div style={{fontSize:10,fontWeight:700,color:C.g400,textTransform:"uppercase",letterSpacing:"0.06em",marginBottom:10}}>Share via</div>
+          <div style={{display:"grid",gridTemplateColumns:"repeat(3,1fr)",gap:8,marginBottom:16}}>
+            {[
+              ["X / Twitter","#000","𝕏"],
+              ["Facebook","#1877F2","f"],
+              ["Instagram","#E4405F","ig"],
+              ["LinkedIn","#0A66C2","in"],
+              ["Email","#EA4335","@"],
+              ["Text / SMS","#25D366","✉"],
+            ].map(([name,bg,abbr])=>
+              <button key={name} onClick={()=>{if(globalShowToast)globalShowToast({type:"success",title:`Shared on ${name}`,msg:"Your booking link has been shared",color:C.green});setShowShare(false)}} style={{display:"flex",flexDirection:"column",alignItems:"center",gap:6,padding:"14px 10px",background:C.g50,border:`1px solid ${C.cardBorder}`,borderRadius:R.sm,cursor:"pointer",fontFamily:font,transition:"all .12s"}} onMouseEnter={e=>{e.currentTarget.style.background=bg;e.currentTarget.style.borderColor=bg;e.currentTarget.querySelector(".sh-icon").style.background="#fff";e.currentTarget.querySelector(".sh-icon").style.color=bg;e.currentTarget.querySelector(".sh-lbl").style.color="#fff"}} onMouseLeave={e=>{e.currentTarget.style.background=C.g50;e.currentTarget.style.borderColor=C.cardBorder;e.currentTarget.querySelector(".sh-icon").style.background=bg;e.currentTarget.querySelector(".sh-icon").style.color="#fff";e.currentTarget.querySelector(".sh-lbl").style.color=C.g600}}>
+                <div className="sh-icon" style={{width:36,height:36,borderRadius:10,background:bg,color:"#fff",display:"flex",alignItems:"center",justifyContent:"center",fontSize:abbr.length>1?11:16,fontWeight:800,transition:"all .15s"}}>{abbr}</div>
+                <span className="sh-lbl" style={{fontSize:10,fontWeight:600,color:C.g600,transition:"color .15s"}}>{name}</span>
+              </button>
+            )}
+          </div>
+
+          {/* Community boards suggestion */}
+          <div style={{padding:"12px 14px",background:`${C.blue}06`,borderRadius:8,border:`1px solid ${C.blue}15`,fontSize:11,color:C.g500,lineHeight:1.6}}>
+            <strong style={{color:C.g700}}>Tip:</strong> Post on Nextdoor, local Facebook Groups, and your district's official social accounts for maximum reach. Community boards often drive the most new bookings.
+          </div>
+        </div>
+      </div>
+    </div>}
   </div>
 }
 
@@ -2345,9 +3109,12 @@ function CmdPalette({open,onClose,onNavigate}){
     {type:"page",label:"Organization",desc:"District settings and config",icon:I.building(14,C.blue),action:()=>onNavigate("Organization")},
     {type:"page",label:"Reporting",desc:"Revenue, ratings, and payouts",icon:I.chart(14,C.blue),action:()=>onNavigate("Reporting")},
     {type:"page",label:"Users & Roles",desc:"Manage team access",icon:I.user(14,C.blue),action:()=>onNavigate("Users")},
-    {type:"page",label:"Payments",desc:"Transaction history",icon:I.wallet(14,C.blue),action:()=>onNavigate("Payments")},
+    {type:"page",label:"Bulk Payments",desc:"Bulk payment transactions",icon:I.wallet(14,C.blue),action:()=>{onNavigate("Reporting");setTimeout(()=>{if(globalSetRt)globalSetRt(5)},100)}},
+    {type:"page",label:"Promote",desc:"Growth tools, sharing, and marketing assets",icon:I.megaphone(14,C.blue),action:()=>onNavigate("Promote")},
     {type:"action",label:"Create Reservation",desc:"Open new booking form",icon:<span style={{fontSize:14}}>+</span>,action:()=>{onNavigate("Dashboard")}},
-    {type:"action",label:"Toggle Dark Mode",desc:"Switch theme",icon:I.moon(14,C.g500),action:()=>{}},
+    {type:"action",label:"Toggle Dark Mode",desc:"Switch theme",icon:I.moon(14,C.g500),action:()=>{document.querySelector(".pp-theme-toggle")?.click()}},
+    ...approvalsDataInit.filter(a=>a.status==="pending").map(a=>({type:"approval",label:`${a.id} - ${a.org}`,desc:`${a.campus} - ${a.bk.length} booking${a.bk.length>1?"s":""} - $${a.bk.reduce((s,b)=>s+b.rev,0).toLocaleString()}`,icon:I.alert(14,C.orange),action:()=>{onNavigate("Rentals");setTimeout(()=>{if(globalSetRentalsTab)globalSetRentalsTab("approvals")},100)}})),
+    ...campuses.map(c=>({type:"campus",label:c.name,desc:`${(facilities[c.short]||[]).length} facilities - ${c.city}`,icon:I.building(14,C.green),action:()=>{onNavigate("Rentals");setTimeout(()=>{if(globalSetRentalsTab)globalSetRentalsTab("locations")},100)}})),
     ...upcoming.slice(0,4).map(r=>({type:"reservation",label:`${r.id} - ${r.c}`,desc:`${r.a} - ${r.d} ${r.t}`,icon:I.key(14,C.g400),action:()=>onNavigate("Rentals")})),
     ...topCustData.map(c=>({type:"customer",label:c.n,desc:`${c.b} bookings - $${c.s.toLocaleString()}`,icon:I.user(14,C.g400),action:()=>onNavigate("Dashboard")})),
   ];
@@ -2363,7 +3130,7 @@ function CmdPalette({open,onClose,onNavigate}){
   };
 
   if(!open)return null;
-  const grouped={};capped.forEach(it=>{const g=it.type==="page"?"Navigate":it.type==="action"?"Actions":it.type==="reservation"?"Reservations":"Customers";if(!grouped[g])grouped[g]=[];grouped[g].push(it)});
+  const grouped={};capped.forEach(it=>{const g=it.type==="page"?"Navigate":it.type==="action"?"Actions":it.type==="approval"?"Pending Approvals":it.type==="campus"?"Campuses":it.type==="reservation"?"Reservations":"Customers";if(!grouped[g])grouped[g]=[];grouped[g].push(it)});
   let flatIdx=0;
 
   return <><div onClick={onClose} style={{position:"fixed",inset:0,background:"rgba(15,23,42,0.45)",backdropFilter:"blur(4px)",zIndex:500,animation:"fadeIn .15s ease"}}/>
@@ -2403,26 +3170,41 @@ function CmdPalette({open,onClose,onNavigate}){
 
 /* ======== AI INSIGHTS PANEL ======== */
 function AIInsights(){
+  const [mode,setMode]=useState("idle"); /* idle | loading | active */
   const [phase,setPhase]=useState(0);
   const [charIdx,setCharIdx]=useState(0);
-  const [autoPlay,setAutoPlay]=useState(true);
+  const [autoPlay,setAutoPlay]=useState(false);
   const [showDots,setShowDots]=useState(true);
+  const [loadStep,setLoadStep]=useState(0);
+  const [btnHover,setBtnHover]=useState(false);
 
   const insights=[
-    {icon:I.trend(14,"#fff"),color:C.blue,tag:"Peak Revenue",title:"Saturday AM is your money maker",body:"Dutchtown and Prairieville 8-10 AM slots generate 38% of total revenue from just 12% of available hours. A $50 weekend premium could add $2,400/mo.",stat:"+$2,400",statLabel:"/mo potential"},
-    {icon:I.building(14,"#fff"),color:C.orange,tag:"Underutilized",title:"2 campuses need attention",body:"Donaldsonville HS (31%) and East Ascension (29%) are well below the 52% district average. Youth soccer and church groups in the Gonzales area are untapped demand.",stat:"31%",statLabel:"utilization"},
-    {icon:I.user(14,"#fff"),color:C.green,tag:"Contract Opportunity",title:"3 customers ready for seasonal deals",body:"Bayou City VB, Gonzales FC, and LA Tigers show repeating weekly patterns. Converting to quarterly contracts could lock in ~$18,000 in guaranteed revenue.",stat:"~$18K",statLabel:"/qtr locked in"},
+    {tag:"Action Required",title:"Gonzales FC has 2 bookings at risk",body:"Insurance expired 01/15/2026 for Gonzales FC, affecting their 2/22 and 3/1 bookings at Prairieville Complex ($950 revenue at risk). Request an updated COI immediately to avoid cancellation.",stat:"$950",statLabel:"at risk",priority:"high"},
+    {tag:"Revenue Opportunity",title:"Saturday AM is your money maker",body:"Dutchtown and Prairieville 8-10 AM slots generate 38% of total revenue from just 12% of available hours. A $50 weekend premium could add $2,400/mo without impacting demand.",stat:"+$2.4k",statLabel:"/mo potential",priority:"info"},
+    {tag:"Low Utilization",title:"Donaldsonville is 21% below average",body:"Donaldsonville HS (31%) and East Ascension (29%) are well below the 52% district average. Youth soccer and church groups in the Gonzales area are untapped demand - consider a targeted email campaign.",stat:"31%",statLabel:"utilization",priority:"warn"},
+    {tag:"Retention",title:"3 customers ready for seasonal contracts",body:"Bayou City VB (weekly Fri), Gonzales FC (weekly Sat), and LA Tigers (bi-weekly Tue) show repeating patterns. Converting to quarterly contracts could lock in ~$18,000 in guaranteed revenue and reduce admin overhead by 40%.",stat:"~$18K",statLabel:"/qtr locked in",priority:"info"},
   ];
+
+  const loadSteps=["Scanning 192 bookings...","Analyzing revenue patterns...","Checking insurance compliance...","Identifying opportunities..."];
+
+  /* Loading sequence */
+  useEffect(()=>{
+    if(mode!=="loading")return;
+    if(loadStep<loadSteps.length){
+      const t=setTimeout(()=>setLoadStep(s=>s+1),600);
+      return ()=>clearTimeout(t);
+    }
+    const t=setTimeout(()=>setMode("active"),300);
+    return ()=>clearTimeout(t);
+  },[mode,loadStep]);
 
   const cur=insights[phase];
   const fullLen=cur.body.length;
-  const isTyping=charIdx<fullLen;
-  const allRevealed=!autoPlay&&charIdx>=fullLen;
+  const isTyping=mode==="active"&&charIdx<fullLen;
 
-  /* Typing + auto-advance */
   useEffect(()=>{
+    if(mode!=="active")return;
     if(charIdx<fullLen){
-      /* "Thinking" dots phase: show dots for 600ms before typing starts */
       if(charIdx===0&&showDots){
         const t=setTimeout(()=>setShowDots(false),800);
         return ()=>clearTimeout(t);
@@ -2431,13 +3213,12 @@ function AIInsights(){
       const t=setTimeout(()=>setCharIdx(c=>Math.min(c+2,fullLen)),speed);
       return ()=>clearTimeout(t);
     }
-    /* Finished typing this insight */
     if(autoPlay&&phase<insights.length-1){
       const t=setTimeout(()=>{setPhase(p=>p+1);setCharIdx(0);setShowDots(true)},2000);
       return ()=>clearTimeout(t);
     }
     if(autoPlay&&phase===insights.length-1)setAutoPlay(false);
-  },[charIdx,phase,autoPlay,fullLen,showDots]);
+  },[mode,charIdx,phase,autoPlay,fullLen,showDots]);
 
   const goTo=(i)=>{
     setAutoPlay(false);
@@ -2446,91 +3227,134 @@ function AIInsights(){
     setShowDots(false);
   };
 
-  const pct=Math.round((charIdx/fullLen)*100);
-
-  return <div className="pp-ai-wrap">
-    {/* Header */}
-    <div style={{display:"flex",alignItems:"center",justifyContent:"space-between",marginBottom:12}}>
-      <div style={{display:"flex",alignItems:"center",gap:8}}>
-        <div style={{width:26,height:26,borderRadius:8,background:`linear-gradient(135deg, ${C.blue}, ${C.blueDk})`,display:"flex",alignItems:"center",justifyContent:"center"}}>{I.bulb(13,"#fff")}</div>
-        <span style={{fontSize:13,fontWeight:800,color:C.g800}}>AI Revenue Insights</span>
-      </div>
-      <div style={{display:"flex",alignItems:"center",gap:8}}>
-        {isTyping&&<div style={{display:"flex",alignItems:"center",gap:5,padding:"3px 10px",borderRadius:20,background:`${C.blue}08`,border:`1px solid ${C.blue}15`}}>
-          <div style={{display:"flex",gap:3}}>
-            {[0,1,2].map(d=><span key={d} style={{width:4,height:4,borderRadius:2,background:C.blue,animation:`aiDot .9s ${d*0.15}s ease-in-out infinite`}}/>)}
-          </div>
-          <span style={{fontSize:10,fontWeight:600,color:C.blue}}>Analyzing</span>
-        </div>}
-        {!isTyping&&<span style={{fontSize:10,color:C.g400}}>3 insights found</span>}
+  /* ── Idle CTA ── */
+  if(mode==="idle") return <div style={{display:"flex",alignItems:"center",justifyContent:"space-between",gap:12}}>
+    <div style={{display:"flex",alignItems:"center",gap:10,minWidth:0}}>
+      <div style={{width:32,height:32,borderRadius:8,background:C.g100,display:"flex",alignItems:"center",justifyContent:"center",flexShrink:0}}>{I.bulb(15,C.g400)}</div>
+      <div style={{minWidth:0}}>
+        <div style={{fontSize:13,fontWeight:700,color:C.g800}}>AI Insights</div>
+        <div style={{fontSize:11,color:C.g400}}>Analyze your revenue, bookings, and operations</div>
       </div>
     </div>
+    <button
+      onClick={()=>setMode("loading")}
+      onMouseEnter={()=>setBtnHover(true)}
+      onMouseLeave={()=>setBtnHover(false)}
+      style={{padding:"8px 20px",borderRadius:8,background:btnHover?C.blue:C.g800,color:"#fff",border:"none",fontSize:12,fontWeight:700,cursor:"pointer",fontFamily:font,whiteSpace:"nowrap",flexShrink:0,transition:"all .2s",transform:btnHover?"translateY(-1px)":"none",boxShadow:btnHover?`0 4px 12px ${C.blue}40`:"none",display:"flex",alignItems:"center",gap:6}}>
+      {I.bulb(12,"#fff")} Generate
+    </button>
+  </div>
 
-    {/* Navigation tabs */}
-    <div className="pp-ai-tabs" style={{display:"flex",gap:6,marginBottom:16}}>
-      {insights.map((ins,i)=>{
+  /* ── Loading state ── */
+  if(mode==="loading") return <div style={{animation:"fadeIn .3s ease"}}>
+    <div style={{display:"flex",alignItems:"center",gap:8,marginBottom:16}}>
+      <span style={{fontSize:13,fontWeight:800,color:C.g800}}>Analyzing</span>
+      <div style={{display:"inline-flex",gap:3,alignItems:"center"}}>
+        {[0,1,2].map(d=><span key={d} style={{width:3,height:3,borderRadius:2,background:C.blue,animation:`aiDot .9s ${d*0.15}s ease-in-out infinite`}}/>)}
+      </div>
+    </div>
+    {/* Progress bar */}
+    <div style={{height:2,borderRadius:1,background:C.g100,marginBottom:16,overflow:"hidden"}}>
+      <div style={{height:"100%",borderRadius:1,background:C.blue,transition:"width .5s ease",width:`${Math.min((loadStep/loadSteps.length)*100,100)}%`}}/>
+    </div>
+    {/* Step list */}
+    <div style={{display:"flex",flexDirection:"column",gap:8}}>
+      {loadSteps.map((step,i)=>{
+        const done=i<loadStep;
+        const active=i===loadStep&&loadStep<loadSteps.length;
+        const pending=i>loadStep;
+        return <div key={i} style={{display:"flex",alignItems:"center",gap:10,opacity:pending?0.3:1,transition:"opacity .3s"}}>
+          <div style={{width:18,height:18,borderRadius:5,background:done?`${C.blue}15`:active?C.g100:"transparent",border:done||active?`1.5px solid ${done?C.blue:C.g300}`:`1.5px solid ${C.g200}`,display:"flex",alignItems:"center",justifyContent:"center",flexShrink:0,transition:"all .3s"}}>
+            {done&&I.check(9,C.blue)}
+            {active&&<div style={{width:6,height:6,borderRadius:3,background:C.blue,animation:"pulse 1s ease infinite"}}/>}
+          </div>
+          <span style={{fontSize:12,color:done?C.g700:active?C.g600:C.g400,fontWeight:active?600:400,transition:"all .3s"}}>{step}</span>
+        </div>
+      })}
+    </div>
+  </div>
+
+  /* ── Active insights ── */
+  return <div className="pp-ai-wrap" style={{animation:"fadeIn .4s ease"}}>
+    <div style={{display:"flex",alignItems:"center",justifyContent:"space-between",marginBottom:16}}>
+      <div style={{display:"flex",alignItems:"center",gap:8}}>
+        <span style={{fontSize:13,fontWeight:800,color:C.g800,letterSpacing:"-0.01em"}}>Insights</span>
+        {isTyping&&<div style={{display:"inline-flex",gap:3,alignItems:"center"}}>
+          {[0,1,2].map(d=><span key={d} style={{width:3,height:3,borderRadius:2,background:C.g400,animation:`aiDot .9s ${d*0.15}s ease-in-out infinite`}}/>)}
+        </div>}
+        {!isTyping&&<span style={{fontSize:9,fontWeight:600,color:C.green,background:C.greenL,padding:"2px 7px",borderRadius:4}}>4 found</span>}
+      </div>
+      <span style={{fontSize:10,color:C.g400,fontWeight:500}}>{phase+1} / {insights.length}</span>
+    </div>
+
+    <div style={{display:"flex",gap:4,marginBottom:16}}>
+      {insights.map((_,i)=>{
         const done=i<phase||(i===phase&&charIdx>=insights[i].body.length);
         const active=i===phase;
-        return <button key={i} onClick={()=>goTo(i)} style={{flex:1,display:"flex",alignItems:"center",gap:6,padding:"8px 10px",borderRadius:R.sm,border:`1px solid ${active?`${ins.color}40`:C.cardBorder}`,background:active?`${ins.color}06`:C.cardBg,cursor:"pointer",fontFamily:font,transition:"all .2s",position:"relative",overflow:"hidden"}}>
-          {/* Fill bar for active typing */}
-          {active&&isTyping&&<div style={{position:"absolute",left:0,top:0,bottom:0,width:`${pct}%`,background:`${ins.color}08`,transition:"width .1s linear"}}/>}
-          <span style={{width:18,height:18,borderRadius:5,background:done?ins.color:`${ins.color}20`,display:"flex",alignItems:"center",justifyContent:"center",flexShrink:0,transition:"background .3s"}}>
-            {done?I.check(10,"#fff"):<span style={{fontSize:9,fontWeight:800,color:active?ins.color:C.g400}}>{i+1}</span>}
-          </span>
-          <span className="pp-ai-tab-label" style={{fontSize:11,fontWeight:active?700:500,color:active?ins.color:C.g500,position:"relative",zIndex:1}}>{ins.tag}</span>
-        </button>
+        return <div key={i} onClick={()=>goTo(i)} style={{flex:1,height:3,borderRadius:2,background:active?C.blue:done?`${C.blue}40`:C.g200,cursor:"pointer",transition:"all .3s"}}/>
       })}
     </div>
 
-    {/* Active insight */}
-    <div style={{display:"flex",gap:16,alignItems:"flex-start"}} className="pp-ai-active">
-      <div className="pp-ai-body" style={{flex:1,minWidth:0}}>
-        <div style={{fontSize:15,fontWeight:800,color:C.g800,marginBottom:8,lineHeight:1.3}}>{cur.title}</div>
-        <div style={{fontSize:12,color:C.g500,lineHeight:1.7,minHeight:42}}>
-          {charIdx===0&&showDots?
-            <span style={{display:"inline-flex",gap:3,padding:"4px 0"}}>
-              {[0,1,2].map(d=><span key={d} style={{width:6,height:6,borderRadius:3,background:C.g300,animation:`aiDot .9s ${d*0.15}s ease-in-out infinite`}}/>)}
-            </span>
-          :
-            <>
-              {cur.body.slice(0,charIdx).split(/(\$[\d,]+(?:\/mo)?|\d+%|~\$[\d,]+)/).map((part,pi)=>
-                /^\$|^\d+%|^~\$/.test(part)?<strong key={pi} style={{color:C.blue,fontWeight:700}}>{part}</strong>:<span key={pi}>{part}</span>
-              )}
-              {isTyping&&<span style={{display:"inline-block",width:2,height:13,background:C.blue,marginLeft:1,animation:"blink 0.6s step-end infinite",verticalAlign:"text-bottom"}}/>}
-            </>
-          }
-        </div>
+    <div>
+      <div style={{display:"flex",alignItems:"center",gap:8,marginBottom:10}}>
+        <span style={{fontSize:9,fontWeight:700,color:cur.priority==="high"?C.red:C.g500,textTransform:"uppercase",letterSpacing:"0.06em",background:cur.priority==="high"?C.redL:C.g100,padding:"3px 8px",borderRadius:4}}>{cur.tag}</span>
       </div>
-      <div className="pp-ai-stat" style={{flexShrink:0,textAlign:"center",padding:"16px 20px",borderRadius:R.sm,border:`1px solid ${cur.color}20`,background:`${cur.color}06`,minWidth:90,transition:"border-color .3s, background .3s"}}>
-        <div style={{fontSize:26,fontWeight:900,color:cur.color,lineHeight:1,transition:"color .3s"}}>{cur.stat}</div>
-        <div style={{fontSize:9,color:C.g400,fontWeight:600,marginTop:4,textTransform:"uppercase",letterSpacing:"0.04em"}}>{cur.statLabel}</div>
+      <div style={{fontSize:15,fontWeight:800,color:C.g800,lineHeight:1.3,marginBottom:8}}>{cur.title}</div>
+      <div style={{fontSize:13,color:C.g500,lineHeight:1.7,minHeight:42}}>
+        {charIdx===0&&showDots?
+          <span style={{display:"inline-flex",gap:3,padding:"4px 0"}}>
+            {[0,1,2].map(d=><span key={d} style={{width:5,height:5,borderRadius:3,background:C.g300,animation:`aiDot .9s ${d*0.15}s ease-in-out infinite`}}/>)}
+          </span>
+        :
+          <>
+            {cur.body.slice(0,charIdx).split(/(\$[\d,]+(?:\/mo)?|\d+%|~\$[\d,]+K?)/).map((part,pi)=>
+              /^\$|^\d+%|^~\$/.test(part)?<strong key={pi} style={{color:C.g800,fontWeight:700}}>{part}</strong>:<span key={pi}>{part}</span>
+            )}
+            {isTyping&&<span style={{display:"inline-block",width:1.5,height:14,background:C.blue,marginLeft:1,animation:"blink 0.6s step-end infinite",verticalAlign:"text-bottom"}}/>}
+          </>
+        }
       </div>
     </div>
 
-    {/* Prev/Next navigation */}
-    {!autoPlay&&<div style={{display:"flex",justifyContent:"space-between",alignItems:"center",marginTop:14,paddingTop:12,borderTop:`1px solid ${C.g100}`}}>
-      <button onClick={()=>goTo(phase>0?phase-1:insights.length-1)} style={{background:"none",border:"none",fontSize:11,fontWeight:600,color:C.g400,cursor:"pointer",fontFamily:font,display:"flex",alignItems:"center",gap:4,padding:"4px 0"}}>← Prev</button>
-      <div style={{display:"flex",gap:4}}>{insights.map((_,i)=><span key={i} onClick={()=>goTo(i)} style={{width:i===phase?16:6,height:6,borderRadius:3,background:i===phase?insights[i].color:C.g200,cursor:"pointer",transition:"all .2s"}}/>)}</div>
-      <button onClick={()=>goTo(phase<insights.length-1?phase+1:0)} style={{background:"none",border:"none",fontSize:11,fontWeight:600,color:C.g400,cursor:"pointer",fontFamily:font,display:"flex",alignItems:"center",gap:4,padding:"4px 0"}}>Next →</button>
-    </div>}
+    <div style={{display:"flex",alignItems:"center",justifyContent:"space-between",marginTop:14,paddingTop:12,borderTop:`1px solid ${C.g100}`}}>
+      <div style={{display:"flex",alignItems:"baseline",gap:6}}>
+        <span style={{fontSize:22,fontWeight:800,color:C.g800,letterSpacing:"-0.02em",fontFamily:numFont}}>{cur.stat}</span>
+        <span style={{fontSize:10,color:C.g400,fontWeight:500}}>{cur.statLabel}</span>
+      </div>
+      <div style={{display:"flex",gap:6,alignItems:"center"}}>
+        <button onClick={()=>goTo(phase>0?phase-1:insights.length-1)} style={{width:28,height:28,borderRadius:6,background:C.g100,border:"none",cursor:"pointer",display:"flex",alignItems:"center",justifyContent:"center",color:C.g500,fontSize:14,fontFamily:font,transition:"background .15s"}} onMouseEnter={e=>e.currentTarget.style.background=C.g200} onMouseLeave={e=>e.currentTarget.style.background=C.g100}>‹</button>
+        <button onClick={()=>goTo(phase<insights.length-1?phase+1:0)} style={{display:"flex",alignItems:"center",gap:5,padding:"6px 14px",borderRadius:6,background:phase<insights.length-1?C.blue:C.g100,color:phase<insights.length-1?"#fff":C.g500,border:"none",cursor:"pointer",fontSize:11,fontWeight:700,fontFamily:font,transition:"all .15s",whiteSpace:"nowrap"}}>
+          {phase<insights.length-1?<>Next Insight <span style={{fontSize:13}}>›</span></>:<>Back to first</>}
+        </button>
+      </div>
+    </div>
   </div>
 }
 
-const pages={Dashboard,Rentals,Organization:Org,Reporting,Users,Payments};
-const tabIcons={Dashboard:"home",Rentals:"key",Organization:"building",Reporting:"chart",Users:"users",Payments:"wallet"};
+const pages={Dashboard,Rentals,Organization:Org,Reporting,Users,Promote};
+const tabIcons={Dashboard:"home",Rentals:"key",Organization:"building",Reporting:"chart",Users:"users",Promote:"megaphone"};
 /* shared tab setter - set by App */
 let globalSetTab=()=>{};
 let globalSetRentalsTab=()=>{};
 let globalShowToast=()=>{};
+let globalCreateRes=()=>{};
+let globalShowCust=()=>{};
+let globalShowPay=null;
+let globalSetShowPay=()=>{};
+let globalSetRt=()=>{};
+let globalShowReferral=()=>{};
+let globalShowSuggest=()=>{};
+let globalShowFacility=()=>{};
+let globalSetFacility=null;
 
 /* sparkline data for metrics */
 const sparkData={
   "YTD Revenue":[28,34,31,42,48,52,61],
   "This Month":[1.2,2.8,4.1,5.6,6.9,7.8,8.7],
-  "Reservations":[22,28,25,31,27,34,25],
-  "Avg / Booking":[265,278,290,295,301,310,318],
-  "Utilization":[38,41,43,44,46,49,52],
-  "Active Customers":[12,14,15,17,19,21,23],
+  "Bookings":[22,28,25,31,27,34,25],
+  "Avg Rate":[265,278,290,295,301,310,318],
+  "Util. Rate":[38,41,43,44,46,49,52],
+  "Customers":[12,14,15,17,19,21,23],
 };
 function Sparkline({data,color=C.blue,w=60,h=24}){
   const mn=Math.min(...data),mx=Math.max(...data),rng=mx-mn||1;
@@ -2556,6 +3380,12 @@ function ToastContainer({toasts,removeToast}){
 }
 
 export default function App(){
+  /* Prevent iOS zoom on input focus */
+  useEffect(()=>{
+    let vp=document.querySelector('meta[name="viewport"]');
+    if(!vp){vp=document.createElement('meta');vp.name='viewport';document.head.appendChild(vp)}
+    vp.content='width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no';
+  },[]);
   const [dark,setDark]=useState(false);
   const toggleDark=()=>{const next=!dark;setDark(next);Object.assign(C,next?darkC:lightC)};
   /* Apply theme immediately */
@@ -2564,6 +3394,14 @@ export default function App(){
   const [pageKey,setPageKey]=useState(0);
   const [sideOpen,setSideOpen]=useState(true);
   const [loading,setLoading]=useState(false);
+  const [showCreateRes,setShowCreateRes]=useState(false);
+  const [appSelCust,setAppSelCust]=useState(null);
+  const [appSelPay,setAppSelPay]=useState(null);
+  const [appSelFacility,setAppSelFacility]=useState(null);
+  globalCreateRes=()=>setShowCreateRes(true);
+  globalShowCust=(i)=>setAppSelCust(i);
+  globalSetShowPay=(p)=>setAppSelPay(p);
+  globalShowFacility=(i)=>setAppSelFacility(i);
   const switchTab=(t)=>{
     if(t===tab)return;
     setLoading(true);setTab(t);setPageKey(k=>k+1);
@@ -2574,13 +3412,18 @@ export default function App(){
   const [mobileNav,setMobileNav]=useState(false);
   const [approvals,setApprovals]=useState(approvalsDataInit);
   const [prompt,setPrompt]=useState(null);
+  const [requireSiteAdmin,setRequireSiteAdmin]=useState(true);
+  const [assignedAdmins,setAssignedAdmins]=useState({}); /* {reservationId: adminName} */
   const [toasts,setToasts]=useState([]);
+  const [notifs,setNotifs]=useState(notifsInit);
   const [cmdOpen,setCmdOpen]=useState(false);
   const [showReferral,setShowReferral]=useState(false);
   const [referralEmail,setReferralEmail]=useState("");
   const [referralName,setReferralName]=useState("");
   const [referralSent,setReferralSent]=useState(false);
   const [showSuggest,setShowSuggest]=useState(false);
+  globalShowReferral=()=>setShowReferral(true);
+  globalShowSuggest=()=>setShowSuggest(true);
   const [suggestText,setSuggestText]=useState("");
   const [helpOpen,setHelpOpen]=useState(false);
   const [helpMsg,setHelpMsg]=useState("");
@@ -2589,6 +3432,8 @@ export default function App(){
   const removeToast=(id)=>setToasts(ts=>ts.filter(x=>x.id!==id));
   globalShowToast=addToast;
   globalApprovals=approvals;globalSetApprovals=setApprovals;globalPrompt=prompt;globalSetPrompt=setPrompt;
+  globalRequireSiteAdmin=requireSiteAdmin;globalSetRequireSiteAdmin=setRequireSiteAdmin;globalAssignedAdmins=assignedAdmins;globalSetAssignedAdmins=setAssignedAdmins;
+  globalNotifs=notifs;
 
   /* Cmd+K listener */
   useEffect(()=>{
@@ -2600,20 +3445,43 @@ export default function App(){
   const unread=notifs.filter(n=>!n.read).length;
   const pendingApprovals=approvals.filter(a=>a.status==="pending");
 
-  /* Loading skeleton */
-  const Skeleton=()=><div style={{display:"flex",flexDirection:"column",gap:16}}>
-    <div className="pp-skeleton" style={{height:80,width:"100%"}}/>
-    <div style={{display:"flex",gap:12}}>{[1,2,3,4,5].map(i=><div key={i} className="pp-skeleton" style={{height:100,flex:1,minWidth:140}}/>)}</div>
-    <div className="pp-skeleton" style={{height:200,width:"100%"}}/>
-    <div style={{display:"flex",gap:16}}><div className="pp-skeleton" style={{height:260,flex:2}}/><div className="pp-skeleton" style={{height:260,flex:1}}/></div>
-  </div>;
+  /* Loading skeleton - page-specific */
+  const Skeleton=()=>{
+    if(tab==="Dashboard")return <div style={{display:"flex",flexDirection:"column",gap:16}}>
+      <div className="pp-skeleton" style={{height:48,width:"60%"}}/>
+      <div className="pp-skeleton" style={{height:54,width:"100%",borderRadius:12}}/>
+      <div style={{display:"grid",gridTemplateColumns:"repeat(3,1fr)",gap:12}}>{[1,2,3,4,5,6].map(i=><div key={i} className="pp-skeleton" style={{height:88}}/>)}</div>
+      <div className="pp-skeleton" style={{height:200,width:"100%"}}/>
+      <div style={{display:"flex",gap:16}}><div className="pp-skeleton" style={{height:260,flex:2}}/><div className="pp-skeleton" style={{height:260,flex:1}}/></div>
+    </div>;
+    if(tab==="Rentals")return <div style={{display:"flex",flexDirection:"column",gap:16}}>
+      <div style={{display:"flex",gap:8}}>{[1,2,3].map(i=><div key={i} className="pp-skeleton" style={{height:40,flex:1}}/>)}</div>
+      <div style={{display:"flex",gap:8,justifyContent:"space-between"}}><div className="pp-skeleton" style={{height:40,width:200}}/><div className="pp-skeleton" style={{height:40,width:160}}/></div>
+      <div className="pp-skeleton" style={{height:60,width:"100%"}}/>
+      <div className="pp-skeleton" style={{height:400,width:"100%"}}/>
+    </div>;
+    if(tab==="Reporting")return <div style={{display:"flex",flexDirection:"column",gap:16}}>
+      <div style={{display:"flex",gap:8}}>{[1,2,3,4,5].map(i=><div key={i} className="pp-skeleton" style={{height:38,width:140}}/>)}</div>
+      <div style={{display:"flex",gap:14}}>{[1,2,3,4].map(i=><div key={i} className="pp-skeleton" style={{height:120,flex:1}}/>)}</div>
+      <div className="pp-skeleton" style={{height:280,width:"100%"}}/>
+    </div>;
+    return <div style={{display:"flex",flexDirection:"column",gap:16}}>
+      <div className="pp-skeleton" style={{height:80,width:"100%"}}/>
+      <div style={{display:"flex",gap:12}}>{[1,2,3,4].map(i=><div key={i} className="pp-skeleton" style={{height:100,flex:1}}/>)}</div>
+      <div className="pp-skeleton" style={{height:200,width:"100%"}}/>
+    </div>;
+  };
 
   return <ThemeCtx.Provider value={{dark,toggle:toggleDark}}>
   <div className={`pp-shell ${dark?"pp-dark":""}`} style={{minHeight:"100vh",background:C.bg,fontFamily:font,color:C.g700,display:"flex",overflow:"hidden"}}>
-    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700;800;900&display=swap" rel="stylesheet"/>
+    <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700;800;900&family=Montserrat:wght@400;500;600;700;800;900&display=swap" rel="stylesheet"/>
     <style>{`
       *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
-      html{-webkit-font-smoothing:antialiased;-moz-osx-font-smoothing:grayscale}
+      .pp-num{font-family:'DM Sans','Montserrat',sans-serif;font-variant-numeric:tabular-nums}
+      .pp-shell td{font-family:'DM Sans','Montserrat',sans-serif;font-variant-numeric:tabular-nums}
+      .pp-shell .pp-met{font-variant-numeric:tabular-nums}
+      .pp-shell .pp-card [style*="fontWeight"]{font-variant-numeric:tabular-nums}
+      html{-webkit-font-smoothing:antialiased;-moz-osx-font-smoothing:grayscale;color-scheme:${dark?"dark":"light"}}
 
       /* ===== SIDEBAR ===== */
       .pp-sidebar{
@@ -2660,13 +3528,16 @@ export default function App(){
         height:56px;padding:0 24px;background:${C.cardBg};
         border-bottom:1px solid ${C.cardBorder};position:sticky;top:0;z-index:100;
       }
-      .pp-content{margin-left:${sideOpen?220:64}px;flex:1;min-width:0;transition:margin-left .25s cubic-bezier(.22,1,.36,1)}
+      .pp-content{margin-left:${sideOpen?220:64}px;flex:1;min-width:0;transition:margin-left .25s cubic-bezier(.22,1,.36,1);height:100vh;overflow-y:auto;-webkit-overflow-scrolling:touch;overscroll-behavior:contain}
       .pp-search{position:relative}
       .pp-search input{width:180px;border-radius:${R.sm}px;transition:border-color .15s,box-shadow .15s;background:${C.g50};color:${C.g700};border:1px solid ${C.cardBorder}}
       .pp-search input:focus{outline:none;border-color:${C.blue};box-shadow:0 0 0 3px ${C.blue}15}
       .pp-search input::placeholder{color:${C.g400}}
       .pp-shell input::placeholder,.pp-shell textarea::placeholder{color:${C.g400}}
-      .pp-main{max-width:1200px;margin:0 auto;padding:20px 24px}
+      .pp-shell input,.pp-shell textarea,.pp-shell select{background:${C.g50};color:${C.g700};border-color:${C.cardBorder}}
+      .pp-shell input:focus,.pp-shell textarea:focus,.pp-shell select:focus{outline:none;border-color:${C.blue};box-shadow:0 0 0 3px ${C.blue}15}
+      .pp-shell option{background:${C.cardBg};color:${C.g700}}
+      .pp-main{max-width:1200px;margin:0 auto;padding:24px 28px}
       .pp-notif-panel{width:360px;right:0}
 
       /* Dark mode toggle */
@@ -2688,25 +3559,53 @@ export default function App(){
       /* ===== MOBILE ===== */
       @media(max-width:768px){
         .pp-sidebar{
-          transform:${mobileNav?"translateX(0)":"translateX(-100%)"};
-          width:260px !important;
-          box-shadow:${mobileNav?`8px 0 40px rgba(0,0,0,${dark?0.4:0.15})`:"none"};
+          transform:${mobileNav?"translateX(0)":"translateX(-110%)"};
+          width:280px !important;
+          box-shadow:${mobileNav?`12px 0 60px rgba(0,0,0,${dark?0.5:0.2}), 2px 0 8px rgba(0,0,0,0.05)`:"none"};
+          transition:transform .4s cubic-bezier(.32,1.28,.54,1), box-shadow .3s ease !important;
+        }
+        .pp-sidebar .pp-side-btn{
+          opacity:${mobileNav?1:0};
+          transform:${mobileNav?"translateX(0)":"translateX(-20px)"};
+        }
+        .pp-sidebar .pp-side-nav .pp-side-btn:nth-child(1){transition:opacity .25s .08s,transform .35s .08s cubic-bezier(.22,1,.36,1),background .15s,color .15s !important}
+        .pp-sidebar .pp-side-nav .pp-side-btn:nth-child(2){transition:opacity .25s .12s,transform .35s .12s cubic-bezier(.22,1,.36,1),background .15s,color .15s !important}
+        .pp-sidebar .pp-side-nav .pp-side-btn:nth-child(3){transition:opacity .25s .16s,transform .35s .16s cubic-bezier(.22,1,.36,1),background .15s,color .15s !important}
+        .pp-sidebar .pp-side-nav .pp-side-btn:nth-child(4){transition:opacity .25s .20s,transform .35s .20s cubic-bezier(.22,1,.36,1),background .15s,color .15s !important}
+        .pp-sidebar .pp-side-nav .pp-side-btn:nth-child(5){transition:opacity .25s .24s,transform .35s .24s cubic-bezier(.22,1,.36,1),background .15s,color .15s !important}
+        .pp-sidebar .pp-side-nav .pp-side-btn:nth-child(6){transition:opacity .25s .28s,transform .35s .28s cubic-bezier(.22,1,.36,1),background .15s,color .15s !important}
+        .pp-sidebar .pp-side-nav .pp-side-btn:nth-child(7){transition:opacity .25s .32s,transform .35s .32s cubic-bezier(.22,1,.36,1),background .15s,color .15s !important}
+        .pp-sidebar .pp-side-user{
+          opacity:${mobileNav?1:0};
+          transform:${mobileNav?"translateY(0)":"translateY(10px)"};
+          transition:opacity .3s .3s,transform .4s .3s cubic-bezier(.22,1,.36,1) !important;
+        }
+        .pp-sidebar .pp-side-refer,.pp-sidebar .pp-side-refer+div{
+          opacity:${mobileNav?1:0};
+          transform:${mobileNav?"translateY(0)":"translateY(10px)"};
+          transition:opacity .3s .25s,transform .4s .25s cubic-bezier(.22,1,.36,1) !important;
         }
         .pp-sidebar-toggle{display:none !important}
         .pp-content{margin-left:0 !important}
         .pp-hamburger{display:flex !important}
-        .pp-mobile-overlay{display:${mobileNav?"block":"none"} !important}
+        .pp-mobile-overlay{
+          display:block !important;
+          opacity:${mobileNav?1:0};
+          pointer-events:${mobileNav?"auto":"none"};
+          backdrop-filter:${mobileNav?"blur(4px)":"blur(0px)"};
+          -webkit-backdrop-filter:${mobileNav?"blur(4px)":"blur(0px)"};
+          transition:opacity .35s ease, backdrop-filter .35s ease !important;
+        }
         .pp-topbar{padding:0 14px}
         .pp-main{padding:12px 10px}
-        .pp-page-header{flex-direction:column !important;align-items:center !important;text-align:center;padding:14px 14px !important;gap:8px !important}
-        .pp-page-header-left{flex-direction:column !important;align-items:center !important;gap:8px !important}
+        .pp-page-header{padding:12px 14px !important;gap:8px !important}
+        .pp-page-header-left{gap:10px !important}
         .pp-page-logo{width:32px !important;height:32px !important}
-        .pp-page-meta{text-align:center}
+        .pp-page-meta>div:first-child{font-size:14px !important}
+        .pp-page-header-right{padding-top:0}
         .pp-help-chat{right:12px !important;left:12px !important;width:auto !important;bottom:72px !important}
-        .pp-page-meta>div:first-child{font-size:15px !important}
-        .pp-page-header-right{padding-top:2px}
         .pp-search input{width:120px;font-size:12px !important}
-        .pp-notif-panel{width:calc(100vw - 24px) !important;right:-40px !important;max-height:70vh}
+        .pp-notif-panel{position:absolute !important;width:calc(100vw - 24px) !important;right:-12px !important;max-height:70vh;overflow-y:auto}
         .pp-side-label{opacity:1 !important;width:auto !important}
         .pp-side-badge{opacity:1 !important}
         .pp-side-btn{gap:12px !important;padding:10px 12px !important;justify-content:flex-start !important}
@@ -2724,14 +3623,30 @@ export default function App(){
         .pp-card{min-width:0 !important}
 
         /* Sub-tab scrolling */
-        .pp-sub-tabs{overflow-x:auto;-webkit-overflow-scrolling:touch;scrollbar-width:none}
+        .pp-sub-tabs{overflow-x:auto;-webkit-overflow-scrolling:touch;scrollbar-width:none;position:sticky;top:56px;z-index:10;background:${C.bg};margin:-16px -16px 0;padding:0 16px}
         .pp-sub-tabs::-webkit-scrollbar{display:none}
-        .pp-report-tabs{overflow-x:auto;-webkit-overflow-scrolling:touch;flex-wrap:nowrap !important;scrollbar-width:none}
+        .pp-rentals-tabs{position:sticky;top:56px;z-index:10;background:${C.bg};margin:-16px -16px 0;padding:0 16px;justify-content:center}
+        .pp-report-tabs{overflow-x:auto;-webkit-overflow-scrolling:touch;flex-wrap:nowrap !important;scrollbar-width:none;position:sticky;top:56px;z-index:10;background:${C.bg};margin:-16px -16px 0;padding:0 16px}
         .pp-report-tabs::-webkit-scrollbar{display:none}
-        .pp-report-tabs button{white-space:nowrap;flex-shrink:0}
+        .pp-report-tabs button{white-space:nowrap;flex-shrink:0;padding:10px 12px !important;font-size:11px !important}
+        .pp-report-tabs .pp-tab-full{display:none !important}
+        .pp-report-tabs .pp-tab-short{display:inline !important}
+        .pp-report-controls{flex-direction:column !important;align-items:stretch !important;gap:10px !important}
+        .pp-report-range{flex-direction:column !important;gap:6px !important}
+        .pp-report-range select{width:100% !important}
+        .pp-report-actions{flex-direction:row !important;justify-content:stretch !important}
+        .pp-report-actions button{flex:1 !important}
 
         /* Toast mobile */
         .pp-toast-container{right:12px !important;left:12px !important;bottom:12px !important}
+
+        /* Users toolbar */
+        .pp-users-toolbar{flex-direction:column !important;align-items:stretch !important;gap:10px !important}
+        .pp-users-filters{flex-direction:column !important;align-items:stretch !important;gap:8px !important}
+        .pp-users-filters>div{width:100% !important;max-width:none !important;flex:none !important}
+        .pp-users-filters input{width:100% !important;max-width:none !important;box-sizing:border-box !important}
+        .pp-users-filters select{width:100% !important}
+        .pp-users-filters>span{text-align:center}
 
         /* Welcome banner */
         .pp-welcome{padding:16px 18px !important}
@@ -2742,6 +3657,15 @@ export default function App(){
 
         /* Theme toggle */
         .pp-theme-toggle{width:32px !important;height:32px !important}
+
+        /* Mobile bottom nav */
+        .pp-bottom-nav{display:flex !important}
+        .pp-bottom-nav>div{flex-direction:row !important;justify-content:space-around !important;width:100%}
+        .pp-create-modal{width:100vw !important;max-width:100vw !important;max-height:100vh !important;height:100vh !important;border-radius:0 !important;top:0 !important;left:0 !important;transform:none !important;z-index:350 !important;overflow-y:auto !important}
+        .pp-help-fab{display:none !important}
+        .pp-help-chat{display:none !important}
+        .pp-content{padding-bottom:64px}
+        .pp-toast-container{bottom:72px !important}
       }
       @media(max-width:480px){
         .pp-main{padding:8px 6px}
@@ -2754,15 +3678,31 @@ export default function App(){
       }
 
       /* ===== KEYFRAMES ===== */
-      @keyframes pageEnter{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:translateY(0)}}
-      @keyframes cardEnter{from{opacity:0;transform:translateY(16px) scale(0.98)}to{opacity:1;transform:translateY(0) scale(1)}}
+      @keyframes pageEnter{from{opacity:0;transform:translateY(16px)}to{opacity:1;transform:translateY(0)}}
+      @keyframes cardEnter{from{opacity:0;transform:translateY(20px) scale(0.97)}to{opacity:1;transform:translateY(0) scale(1)}}
       @keyframes shimmer{from{background-position:-400px 0}to{background-position:400px 0}}
-      @keyframes notifSlide{from{opacity:0;transform:translateY(-8px) scale(0.95)}to{opacity:1;transform:translateY(0) scale(1)}}
-      @keyframes toastIn{from{opacity:0;transform:translateX(20px) scale(0.95)}to{opacity:1;transform:translateX(0) scale(1)}}
+      @keyframes notifSlide{from{opacity:0;transform:translateY(-12px) scale(0.92)}to{opacity:1;transform:translateY(0) scale(1)}}
+      @keyframes toastIn{from{opacity:0;transform:translateX(30px) scale(0.9)}to{opacity:1;transform:translateX(0) scale(1)}}
       @keyframes blink{0%,100%{opacity:1}50%{opacity:0}}
-      @keyframes pulse{0%,100%{opacity:1}50%{opacity:.4}}
+      @keyframes pulse{0%,100%{opacity:1;transform:scale(1)}50%{opacity:.4;transform:scale(0.92)}}
       @keyframes aiDot{0%,80%,100%{transform:translateY(0)}40%{transform:translateY(-5px)}}
       @keyframes slideDown{from{opacity:0;transform:translateY(-8px)}to{opacity:1;transform:translateY(0)}}
+      @keyframes bounceIn{0%{opacity:0;transform:scale(0.3)}50%{opacity:1;transform:scale(1.05)}70%{transform:scale(0.95)}100%{transform:scale(1)}}
+      @keyframes popIn{0%{opacity:0;transform:scale(0.85)}40%{transform:scale(1.04)}100%{opacity:1;transform:scale(1)}}
+      @keyframes glowPulse{0%,100%{box-shadow:0 0 0 0 ${C.blue}00}50%{box-shadow:0 0 0 6px ${C.blue}15}}
+      @keyframes statusPulse{0%,100%{opacity:1}50%{opacity:0.5}}
+      @keyframes metricPop{0%{opacity:0;transform:scale(0.7) translateY(6px)}60%{transform:scale(1.04) translateY(-1px)}100%{opacity:1;transform:scale(1) translateY(0)}}
+      @keyframes shimmer{0%{background-position:-200px 0}100%{background-position:200px 0}}
+      .pp-skel{background:linear-gradient(90deg,${C.g100} 25%,${C.g200} 50%,${C.g100} 75%) !important;background-size:400px 100%;animation:shimmer 1.5s infinite ease-in-out}
+      @keyframes ppPulse{0%,100%{opacity:1;box-shadow:0 0 0 0 ${C.green}40}50%{opacity:.7;box-shadow:0 0 0 4px ${C.green}00}}
+      .pp-pulse-dot{animation:ppPulse 2s ease-in-out infinite}
+      @keyframes rowSlideIn{from{opacity:0;transform:translateX(-8px)}to{opacity:1;transform:translateX(0)}}
+      @keyframes badgeBounce{0%{transform:scale(0)}50%{transform:scale(1.2)}100%{transform:scale(1)}}
+      @keyframes checkPop{0%{transform:scale(0) rotate(-45deg);opacity:0}50%{transform:scale(1.2) rotate(0deg)}100%{transform:scale(1) rotate(0deg);opacity:1}}
+      @keyframes progressFill{from{width:0}to{width:var(--target-w,100%)}}
+
+      .pp-btn-short{display:none}
+      .pp-btn-full{display:inline}
 
       /* ===== LOADING SKELETON ===== */
       .pp-skeleton{background:linear-gradient(90deg,${C.g100} 25%,${C.g50} 50%,${C.g100} 75%);background-size:400px 100%;animation:shimmer 1.5s infinite ease-in-out;border-radius:${R.sm}px}
@@ -2770,33 +3710,97 @@ export default function App(){
       /* ===== PAGE TRANSITIONS ===== */
       .pp-page-enter{animation:pageEnter .4s cubic-bezier(.22,1,.36,1) forwards}
       .pp-page-enter>*:nth-child(1){animation:cardEnter .45s cubic-bezier(.22,1,.36,1) both;animation-delay:.02s}
-      .pp-page-enter>*:nth-child(2){animation:cardEnter .45s cubic-bezier(.22,1,.36,1) both;animation-delay:.06s}
-      .pp-page-enter>*:nth-child(3){animation:cardEnter .45s cubic-bezier(.22,1,.36,1) both;animation-delay:.1s}
-      .pp-page-enter>*:nth-child(4){animation:cardEnter .45s cubic-bezier(.22,1,.36,1) both;animation-delay:.14s}
-      .pp-page-enter>*:nth-child(5){animation:cardEnter .45s cubic-bezier(.22,1,.36,1) both;animation-delay:.18s}
-      .pp-page-enter>*:nth-child(6){animation:cardEnter .45s cubic-bezier(.22,1,.36,1) both;animation-delay:.22s}
-      .pp-page-enter>*:nth-child(7){animation:cardEnter .45s cubic-bezier(.22,1,.36,1) both;animation-delay:.26s}
-      .pp-page-enter>*:nth-child(8){animation:cardEnter .45s cubic-bezier(.22,1,.36,1) both;animation-delay:.3s}
+      .pp-page-enter>*:nth-child(2){animation:cardEnter .45s cubic-bezier(.22,1,.36,1) both;animation-delay:.07s}
+      .pp-page-enter>*:nth-child(3){animation:cardEnter .45s cubic-bezier(.22,1,.36,1) both;animation-delay:.12s}
+      .pp-page-enter>*:nth-child(4){animation:cardEnter .45s cubic-bezier(.22,1,.36,1) both;animation-delay:.17s}
+      .pp-page-enter>*:nth-child(5){animation:cardEnter .45s cubic-bezier(.22,1,.36,1) both;animation-delay:.22s}
+      .pp-page-enter>*:nth-child(6){animation:cardEnter .45s cubic-bezier(.22,1,.36,1) both;animation-delay:.27s}
+      .pp-page-enter>*:nth-child(7){animation:cardEnter .45s cubic-bezier(.22,1,.36,1) both;animation-delay:.32s}
+      .pp-page-enter>*:nth-child(8){animation:cardEnter .45s cubic-bezier(.22,1,.36,1) both;animation-delay:.37s}
+      .pp-page-enter>*:nth-child(9){animation:cardEnter .45s cubic-bezier(.22,1,.36,1) both;animation-delay:.42s}
+      .pp-page-enter>*:nth-child(10){animation:cardEnter .45s cubic-bezier(.22,1,.36,1) both;animation-delay:.47s}
 
-      /* ===== GLOBAL POLISH ===== */
-      .pp-card{transition:box-shadow .25s cubic-bezier(.22,1,.36,1),border-color .25s,transform .25s cubic-bezier(.22,1,.36,1)}
-      .pp-card:hover{box-shadow:0 4px 16px rgba(0,0,0,${dark?0.15:0.06}),0 1px 4px rgba(0,0,0,${dark?0.08:0.03});transform:translateY(-1px)}
-      button{transition:all .2s cubic-bezier(.22,1,.36,1) !important}
-      button:hover{filter:brightness(${dark?1.15:1.05})}
-      button:active{transform:scale(0.96) !important;transition-duration:.1s !important}
+      /* ===== INTERACTIVE CARD POLISH ===== */
+      .pp-card{
+        transition:transform .25s cubic-bezier(.22,1,.36,1), box-shadow .25s ease, border-color .25s, background .3s !important;
+      }
+      .pp-card:hover{
+        box-shadow:0 6px 24px rgba(0,0,0,${dark?0.18:0.07}), 0 2px 6px rgba(0,0,0,${dark?0.1:0.03}) !important;
+        transform:translateY(-2px);
+      }
+      .pp-card:active{transform:translateY(0) !important;transition-duration:.1s !important}
+
+      /* ===== BUTTON MAGIC ===== */
+      button{transition:transform .15s cubic-bezier(.22,1,.36,1), box-shadow .15s, background .15s, color .15s, border-color .15s, opacity .15s, filter .15s !important;white-space:nowrap !important}
+      button:hover{filter:brightness(${dark?1.12:1.04})}
+      button:active{transform:scale(0.95) !important;transition-duration:.06s !important}
+
+      /* ===== FOCUS RINGS ===== */
       select:focus,input:focus{outline:none;border-color:${C.blue} !important;box-shadow:0 0 0 3px ${C.blue}20 !important;transition:all .2s !important}
       textarea:focus{outline:none;border-color:${C.blue} !important;box-shadow:0 0 0 3px ${C.blue}20 !important}
       input,select,textarea{transition:border-color .2s,box-shadow .2s !important;color:${C.g700};background:${C.g50}}
       table{border-collapse:collapse}
-      tr{transition:background .15s}
+
+      /* ===== ROW ANIMATIONS ===== */
+      tr{transition:background .15s ease, box-shadow .15s !important}
+      tbody tr:hover{box-shadow:inset 3px 0 0 ${C.blue}}
       a{transition:color .12s}
-      .pp-notif-panel{animation:notifSlide .25s cubic-bezier(.22,1,.36,1) forwards;transform-origin:top right}
-      .pp-sub-tabs button{transition:color .2s,border-color .2s,font-weight .1s !important}
-      .slide-panel{animation:slideIn .35s cubic-bezier(.16,1,.3,1) forwards !important}
+
+      /* ===== NOTIFICATION PANEL ===== */
+      .pp-notif-panel{animation:notifSlide .3s cubic-bezier(.34,1.56,.64,1) forwards;transform-origin:top right}
+
+      /* ===== TAB ANIMATIONS ===== */
+      .pp-sub-tabs button,.pp-report-tabs button,.pp-rentals-tabs button{
+        transition:color .2s, border-color .25s cubic-bezier(.22,1,.36,1), font-weight .1s, background .15s !important;
+      }
+
+      /* ===== SIDEBAR ACTIVE GLOW ===== */
+      .pp-side-btn.active{position:relative}
+      .pp-side-btn.active::before{
+        content:'';position:absolute;left:0;top:50%;transform:translateY(-50%);
+        width:3px;height:20px;border-radius:0 3px 3px 0;background:${C.blue};
+        animation:popIn .25s cubic-bezier(.22,1,.36,1) forwards;
+      }
+
+      /* ===== BADGE POP ===== */
+      .pp-side-badge{animation:badgeBounce .35s cubic-bezier(.22,1,.36,1) forwards}
+
+      /* ===== PENDING BAR GLOW ===== */
+      .pp-pending-bar{animation:glowPulse 2.5s ease-in-out infinite}
+
+      /* ===== SLIDE PANELS ===== */
+      .slide-panel{animation:slideIn .38s cubic-bezier(.16,1,.3,1) forwards !important}
       .slide-overlay{animation:fadeIn .25s ease forwards}
 
+      /* ===== TOGGLE SWITCHES - elastic snap ===== */
+      [style*="borderRadius: 11"]{transition:background .25s cubic-bezier(.22,1,.36,1) !important}
+      [style*="borderRadius: 11"]>div{transition:left .3s cubic-bezier(.34,1.56,.64,1), right .3s cubic-bezier(.34,1.56,.64,1) !important}
+
+      /* ===== METRIC NUMBERS ===== */
+      .pp-metrics .pp-card{animation:metricPop .5s cubic-bezier(.22,1,.36,1) both}
+      .pp-metrics .pp-card:nth-child(1){animation-delay:.05s}
+      .pp-metrics .pp-card:nth-child(2){animation-delay:.1s}
+      .pp-metrics .pp-card:nth-child(3){animation-delay:.15s}
+      .pp-metrics .pp-card:nth-child(4){animation-delay:.2s}
+      .pp-metrics .pp-card:nth-child(5){animation-delay:.25s}
+      .pp-metrics .pp-card:nth-child(6){animation-delay:.3s}
+
+      .pp-org-stats .pp-card{animation:metricPop .5s cubic-bezier(.22,1,.36,1) both}
+      .pp-org-stats .pp-card:nth-child(1){animation-delay:.05s}
+      .pp-org-stats .pp-card:nth-child(2){animation-delay:.1s}
+      .pp-org-stats .pp-card:nth-child(3){animation-delay:.15s}
+      .pp-org-stats .pp-card:nth-child(4){animation-delay:.2s}
+
+      /* ===== UTILIZATION BAR FILL ===== */
+      [style*="borderRadius: 3"] > div[style*="height: 100%"]{animation:progressFill .8s cubic-bezier(.22,1,.36,1) forwards}
+
       /* ===== SMOOTH THEME TRANSITION ===== */
-      .pp-shell,.pp-sidebar,.pp-topbar,.pp-card,.pp-main{transition:background .3s,border-color .3s,color .3s}
+      .pp-shell,.pp-sidebar,.pp-topbar,.pp-card,.pp-main{transition:background .35s cubic-bezier(.22,1,.36,1),border-color .35s,color .3s}
+
+      @media(hover:none){
+        .pp-card:hover{transform:none !important;box-shadow:none !important}
+        tbody tr:hover{box-shadow:none !important}
+      }
 
       /* ===== GLOBAL MOBILE FOUNDATION ===== */
       @media(max-width:768px){
@@ -2805,8 +3809,10 @@ export default function App(){
         .pp-card{padding:14px !important;border-radius:10px !important}
         .pp-card[style*="padding: 0"]{padding:0 !important}
         button{min-height:36px}
-        select{min-height:38px}
-        input[type="text"]{min-height:38px;box-sizing:border-box}
+        select{min-height:38px;font-size:16px !important}
+        input{min-height:38px;box-sizing:border-box;font-size:16px !important}
+        input[type="text"],input[type="number"],input[type="date"],input[type="email"],input[type="tel"]{min-height:38px;box-sizing:border-box;font-size:16px !important}
+        textarea{font-size:16px !important}
       }
       @media(max-width:768px){
         .pp-main{overflow-x:hidden}
@@ -2823,8 +3829,30 @@ export default function App(){
         .pp-welcome>div:first-child{font-size:16px !important}
         .pp-pending-bar{flex-wrap:wrap !important;gap:8px !important;padding:12px 14px !important}
         .pp-pending-bar button{width:100%}
-        .pp-metrics{display:grid !important;grid-template-columns:1fr 1fr !important;gap:8px !important}
+        .pp-metrics{grid-template-columns:repeat(3,1fr) !important;gap:8px !important}
+        .pp-met{padding:10px 10px !important}
+        .pp-met .pp-met-top{margin-bottom:4px !important}
+        .pp-met .pp-met-badge{font-size:8px !important;padding:1px 5px !important}
+        .pp-met div[style*="fontSize:28"]{font-size:20px !important}
+        .pp-met .pp-met-bottom{margin-top:4px !important}
+        .pp-met .pp-met-bottom div[style*="fontSize:11"]{font-size:9px !important}
         .pp-metrics .pp-card{min-width:0 !important}
+        .pp-org-stats{grid-template-columns:1fr 1fr !important;gap:8px !important}
+        .pp-org-stats .pp-card{padding:14px 10px !important}
+        /* amenity stats - scale down on mobile */
+        .pp-amen-summary>div{max-width:100% !important}
+        .pp-amen-summary>div>div{padding:10px 12px !important}
+        .pp-amen-label{font-size:8px !important}
+        .pp-amen-value{font-size:18px !important;margin-top:2px !important}
+        .pp-report-filter-bar{grid-template-columns:1fr 1fr !important;gap:8px !important}
+        .pp-report-filter-bar select,.pp-report-filter-bar input{width:100% !important;box-sizing:border-box !important}
+        .pp-report-stat-row{grid-template-columns:1fr 1fr !important;gap:8px !important}
+        .pp-report-stat-row .pp-card{padding:14px 10px !important}
+        .pp-btn-full{display:none !important}
+        .pp-btn-short{display:inline !important}
+        .pp-res-meta{display:none !important}
+        .pp-res-header{gap:6px !important}
+        .pp-report-results-hdr{flex-direction:column !important;align-items:flex-start !important}
         .pp-ai-active{flex-direction:column !important}
         .pp-ai-stat{width:100% !important;display:flex !important;align-items:center !important;justify-content:space-between !important;padding:10px 14px !important;flex-direction:row !important}
         .pp-ai-tabs{gap:4px !important}
@@ -2832,7 +3860,7 @@ export default function App(){
         .pp-ai-tabs button{padding:6px 8px !important}
       }
       }
-      @media(min-width:769px){.pp-metrics{display:grid !important;grid-template-columns:repeat(3,1fr) !important;gap:12px !important}}
+      @media(min-width:769px) and (max-width:1100px){}
       }
 
       /* ===== RENTALS - DESKTOP ===== */
@@ -2851,19 +3879,23 @@ export default function App(){
         .pp-calendar-wrap{overflow-x:visible}
         .pp-r-district{display:none !important}
 
-        .pp-r-toolbar{flex-direction:column !important;align-items:stretch !important;gap:10px !important}
-        .pp-r-filters{width:100%;flex-direction:column !important;gap:8px !important}
-        .pp-r-filters select{width:100% !important}
-        .pp-r-search{width:100%}
-        .pp-r-search input{width:100% !important}
-        .pp-r-pills{overflow-x:auto;-webkit-overflow-scrolling:touch;scrollbar-width:none}
-        .pp-r-pills::-webkit-scrollbar{display:none}
+        .pp-r-row1{flex-wrap:wrap}
+        .pp-r-row1 button{font-size:11px !important;padding:8px 12px !important}
+        .pp-r-row2{padding:12px 14px !important;gap:8px !important}
+        .pp-r-selects{width:100%;gap:6px !important}
+        .pp-r-selects select{flex:1;min-width:0 !important;font-size:12px !important;padding:8px 28px 8px 10px !important}
+        .pp-r-legend{padding:10px 14px !important;flex-direction:column !important;align-items:center !important;gap:6px !important}
+        .pp-r-legend>div{justify-content:center !important}
+        .pp-r-pills{flex-shrink:0}
         .pp-r-pills button{flex-shrink:0;font-size:11px !important;padding:6px 10px !important}
-        .pp-r-actions{display:grid !important;grid-template-columns:auto 1fr 1fr !important;gap:6px !important;width:100%}
-        .pp-r-actions>*{text-align:center;justify-content:center;display:flex !important;align-items:center}
-        .pp-r-actions>button:last-child{grid-column:1/-1}
+        .pp-amen-pills{overflow-x:auto;-webkit-overflow-scrolling:touch;max-width:calc(100vw - 48px);scrollbar-width:none}
+        .pp-amen-pills::-webkit-scrollbar{display:none}
 
-        .pp-r-legend{flex-direction:column !important;gap:6px !important;font-size:10px !important}
+        .pp-r-toolbar{flex-direction:column !important;align-items:stretch !important;gap:10px !important}
+        .pp-r-filters{width:100%;gap:8px !important}
+        .pp-r-filters select{width:auto !important}
+        .pp-r-search{width:100% !important;max-width:none !important;flex:none !important}
+        .pp-r-search input{width:100% !important;box-sizing:border-box !important}
 
         .pp-loc-desktop{display:none !important}
         .pp-loc-mobile{display:flex !important}
@@ -2874,13 +3906,8 @@ export default function App(){
         .pp-appr-btns{width:100% !important}
         .pp-appr-btns button{flex:1 !important}
       }
-      @media(max-width:420px){
-        .pp-r-actions{grid-template-columns:1fr 1fr !important}
-      }
 
       @media(max-width:768px){
-        .pp-pay-metrics{display:grid !important;grid-template-columns:1fr 1fr !important;gap:8px !important}
-        .pp-pay-metrics .pp-card{min-width:0 !important}
         .pp-pay-filters{flex-direction:column !important;align-items:stretch !important;gap:8px !important}
         .pp-pay-filters>div{width:100% !important}
         .pp-pay-filters input{width:100% !important;box-sizing:border-box}
@@ -2891,7 +3918,9 @@ export default function App(){
       @media(max-width:420px){[style*="gridTemplateColumns"]{grid-template-columns:1fr !important}}
       @media(min-width:641px) and (max-width:768px){[style*="repeat(auto-fill"]{grid-template-columns:repeat(auto-fill,minmax(140px,1fr)) !important}}
       @media(max-width:768px){
-        .pp-report-tabs{overflow-x:auto;-webkit-overflow-scrolling:touch;white-space:nowrap;flex-wrap:nowrap !important;scrollbar-width:none}
+        .pp-report-tabs{overflow-x:auto;-webkit-overflow-scrolling:touch;white-space:nowrap;flex-wrap:nowrap !important;scrollbar-width:none;position:sticky;top:56px;z-index:10;background:${C.bg};margin:-16px -16px 0;padding:0 10px}
+        .pp-report-tabs .pp-tab-full{display:none !important}
+        .pp-report-tabs .pp-tab-short{display:inline !important}
         .pp-report-tabs::-webkit-scrollbar{display:none}
         .pp-report-tabs button{flex-shrink:0 !important;white-space:nowrap}
       }
@@ -2944,14 +3973,14 @@ export default function App(){
     </div>
 
     {/* Mobile overlay */}
-    {mobileNav&&<div className="pp-mobile-overlay" onClick={()=>setMobileNav(false)} style={{position:"fixed",inset:0,background:"rgba(15,23,42,0.3)",zIndex:100}}/>}
+    <div className="pp-mobile-overlay" onClick={()=>setMobileNav(false)} style={{position:"fixed",inset:0,background:`rgba(15,23,42,${mobileNav?0.35:0})`,zIndex:100,display:"none"}}/>
 
     {/* ===== CONTENT AREA ===== */}
     <div className="pp-content">
       {/* Top bar */}
       <div className="pp-topbar">
         <div style={{display:"flex",alignItems:"center",gap:12}}>
-          <button className="pp-hamburger" onClick={()=>setMobileNav(!mobileNav)} style={{background:"none",border:`1px solid ${C.cardBorder}`,borderRadius:R.sm,width:38,height:38,cursor:"pointer",display:"flex",alignItems:"center",justifyContent:"center"}}>
+          <button className="pp-hamburger" onClick={()=>setMobileNav(!mobileNav)} style={{background:"none",border:`1px solid ${C.cardBorder}`,borderRadius:R.sm,width:38,height:38,cursor:"pointer",display:"flex",alignItems:"center",justifyContent:"center",transition:"transform .3s cubic-bezier(.22,1,.36,1), background .15s",transform:mobileNav?"rotate(90deg)":"rotate(0deg)",background:mobileNav?C.g100:"transparent"}}>
             {mobileNav?I.x(18,C.g600):I.menu(18,C.g600)}
           </button>
           <div style={{fontSize:15,fontWeight:800,color:C.g800,letterSpacing:"-0.01em"}}>{tab}</div>
@@ -2969,20 +3998,28 @@ export default function App(){
             {showNotifs&&<div className="pp-notif-panel" style={{position:"absolute",top:44,background:C.cardBg,borderRadius:R.lg,border:`1px solid ${C.cardBorder}`,boxShadow:`0 12px 40px rgba(0,0,0,${dark?0.3:0.12}), 0 2px 8px rgba(0,0,0,${dark?0.15:0.04})`,zIndex:150,overflow:"hidden"}}>
               <div style={{padding:"14px 18px",borderBottom:`1px solid ${C.g200}`,display:"flex",justifyContent:"space-between",alignItems:"center"}}><span style={{fontSize:14,fontWeight:800,color:C.g800}}>Notifications</span><div style={{display:"flex",gap:8,alignItems:"center"}}>{pendingApprovals.length>0&&<span style={{background:C.g800,color:"#fff",padding:"2px 8px",borderRadius:5,fontSize:10,fontWeight:800}}>{pendingApprovals.length} pending</span>}<span style={{fontSize:11,color:C.g400}}>{unread} unread</span></div></div>
               <div style={{maxHeight:400,overflow:"auto"}}>
-                {notifs.map((n,i)=><div key={i} style={{padding:"12px 18px",borderBottom:`1px solid ${C.g100}`,background:n.read?"transparent":n.type==="approval"?`${C.orange}08`:C.blueL+"60",display:"flex",gap:10,alignItems:"flex-start"}}>
+                {notifs.map((n,i)=><div key={i} style={{padding:"12px 18px",borderBottom:`1px solid ${C.g100}`,background:n.read?"transparent":n.type==="approval"?`${C.orange}08`:C.blueL+"60",display:"flex",gap:10,alignItems:"flex-start",cursor:"pointer",transition:"background .12s"}} onMouseEnter={e=>{if(n.read)e.currentTarget.style.background=C.g50}} onMouseLeave={e=>{if(n.read)e.currentTarget.style.background="transparent"}} onClick={()=>{
+                  setNotifs(ns=>ns.map((x,j)=>j===i?{...x,read:true}:x));
+                  if(n.type==="approval"&&n.approvalId){switchTab("Rentals");setTimeout(()=>{if(globalSetRentalsTab)globalSetRentalsTab("approvals")},100);setShowNotifs(false)}
+                  else if(n.type==="alert"){switchTab("Rentals");setShowNotifs(false)}
+                  else if(n.type==="success"&&n.msg.includes("payout")){switchTab("Payments");setShowNotifs(false)}
+                }}>
                   <span style={{marginTop:2}}>{n.type==="alert"?I.dot(8,C.red):n.type==="approval"?I.dot(8,C.orange):n.type==="success"?I.dot(8,C.green):I.dot(8,C.blue)}</span>
                   <div style={{flex:1}}>
                     <div style={{fontSize:12,fontWeight:n.read?500:600,color:C.g700,lineHeight:1.4}}>{n.msg}</div>
                     <div style={{fontSize:11,color:C.g400,marginTop:3}}>{n.time}</div>
                     {n.type==="approval"&&!n.read&&n.approvalId&&<div style={{display:"flex",gap:6,marginTop:8}}>
-                      <button onClick={()=>{triggerApproval(n.approvalId);setShowNotifs(false)}} style={{background:C.blue,color:"#fff",border:"none",borderRadius:6,padding:"4px 12px",fontSize:10,fontWeight:700,cursor:"pointer",fontFamily:font}}>Review</button>
-                      <button onClick={()=>{switchTab("Rentals");setShowNotifs(false)}} style={{background:C.cardBg,color:C.blue,border:`1px solid ${C.blue}30`,borderRadius:6,padding:"4px 12px",fontSize:10,fontWeight:700,cursor:"pointer",fontFamily:font}}>View Details</button>
+                      <button onClick={(e)=>{e.stopPropagation();triggerApproval(n.approvalId);setShowNotifs(false)}} style={{background:C.blue,color:"#fff",border:"none",borderRadius:6,padding:"4px 12px",fontSize:10,fontWeight:700,cursor:"pointer",fontFamily:font}}>Review</button>
+                      <button onClick={(e)=>{e.stopPropagation();switchTab("Rentals");setTimeout(()=>{if(globalSetRentalsTab)globalSetRentalsTab("approvals")},100);setShowNotifs(false)}} style={{background:C.cardBg,color:C.blue,border:`1px solid ${C.blue}30`,borderRadius:6,padding:"4px 12px",fontSize:10,fontWeight:700,cursor:"pointer",fontFamily:font}}>View Details</button>
                     </div>}
                   </div>
                   {!n.read&&<span style={{width:8,height:8,borderRadius:4,background:n.type==="approval"?C.orange:C.blue,flexShrink:0,marginTop:5}}/>}
                 </div>)}
               </div>
-              <div style={{padding:"10px 18px",borderTop:`1px solid ${C.g200}`,textAlign:"center"}}><button style={{background:"none",border:"none",color:C.blue,fontSize:12,fontWeight:700,cursor:"pointer",fontFamily:font}}>Mark all as read</button></div>
+              <div style={{padding:"10px 18px",borderTop:`1px solid ${C.g200}`,display:"flex",justifyContent:"space-between",alignItems:"center"}}>
+                <button onClick={()=>{setNotifs(ns=>ns.map(n=>({...n,read:true})));if(globalShowToast)globalShowToast({type:"success",title:"All Read",msg:"All notifications marked as read",color:C.green});setShowNotifs(false)}} style={{background:"none",border:"none",color:C.blue,fontSize:12,fontWeight:700,cursor:"pointer",fontFamily:font}}>Mark all as read</button>
+                <button onClick={()=>setShowNotifs(false)} style={{background:"none",border:"none",color:C.g400,fontSize:11,fontWeight:600,cursor:"pointer",fontFamily:font}}>Dismiss</button>
+              </div>
             </div>}
           </div>
         </div>
@@ -2991,14 +4028,18 @@ export default function App(){
       {/* Main content */}
       <main className="pp-main" onClick={()=>{showNotifs&&setShowNotifs(false)}}>
         <div key={pageKey} className="pp-page-enter">
-        <div className="pp-page-header" style={{display:"flex",alignItems:"center",justifyContent:"space-between",marginBottom:20,padding:"12px 20px",borderRadius:R.lg,background:C.cardBg,border:`1px solid ${C.cardBorder}`,boxShadow:C.cardShadow}}>
+        <div className="pp-page-header" style={{display:"flex",alignItems:"center",justifyContent:"space-between",marginBottom:24,padding:"14px 20px",borderRadius:R.lg,background:C.cardBg,border:`1px solid ${C.cardBorder}`,boxShadow:C.cardShadow}}>
           <div className="pp-page-header-left" style={{display:"flex",alignItems:"center",gap:12}}>
             <div className="pp-page-logo" style={{width:36,height:36,borderRadius:10,background:"#1B3A5C",display:"flex",alignItems:"center",justifyContent:"center",flexShrink:0}}>
               <img src={DISTRICT_LOGO} alt="" style={{height:22,width:"auto"}}/>
             </div>
             <div className="pp-page-meta">
               <div style={{fontSize:15,fontWeight:800,color:C.g800,letterSpacing:"-0.02em",lineHeight:1.2}}>Ascension Parish School District</div>
-              <div style={{fontSize:11,color:C.g400,marginTop:2,fontWeight:500}}>{tab==="Dashboard"?"District Overview":tab==="Rentals"?"Rentals & Scheduling":tab==="Organization"?"District Settings":tab==="Reporting"?"Reports & Analytics":tab==="Users"?"Team Management":"Payments & Billing"}</div>
+              <div style={{fontSize:11,color:C.g400,marginTop:2,fontWeight:500,display:"flex",alignItems:"center",gap:4}}>
+                <span style={{cursor:"pointer",transition:"color .12s"}} onClick={()=>switchTab("Dashboard")} onMouseEnter={e=>e.target.style.color=C.blue} onMouseLeave={e=>e.target.style.color=C.g400}>Home</span>
+                <span style={{color:C.g300}}>›</span>
+                <span style={{color:C.g600,fontWeight:600}}>{tab==="Dashboard"?"District Overview":tab==="Rentals"?"Rentals & Scheduling":tab==="Organization"?"District Settings":tab==="Reporting"?"Reports & Analytics":tab==="Users"?"Team Management":"Payments & Billing"}</span>
+              </div>
             </div>
           </div>
           <div className="pp-page-header-right" style={{display:"flex",alignItems:"center",gap:6}}>
@@ -3007,7 +4048,11 @@ export default function App(){
             <span style={{fontSize:10,color:C.green,fontWeight:700}}>Live</span>
           </div>
         </div>
-        {loading?<Skeleton/>:<Page/>}
+        {loading?<div style={{display:"flex",flexDirection:"column",gap:16}}>
+          <div style={{display:"grid",gridTemplateColumns:"repeat(3,1fr)",gap:12}}>{[1,2,3].map(i=><Card key={i}><div className="pp-skel" style={{height:14,borderRadius:4,background:C.g100,width:"60%",marginBottom:10}}/><div className="pp-skel" style={{height:28,borderRadius:6,background:C.g100,width:"40%",marginBottom:8}}/><div className="pp-skel" style={{height:10,borderRadius:4,background:C.g100,width:"50%"}}/></Card>)}</div>
+          <Card><div className="pp-skel" style={{height:14,borderRadius:4,background:C.g100,width:"30%",marginBottom:14}}/><div className="pp-skel" style={{height:160,borderRadius:8,background:C.g100}}/></Card>
+          <Skeleton rows={4}/>
+        </div>:<Page/>}
         </div>
       </main>
     </div>
@@ -3106,9 +4151,74 @@ export default function App(){
         <button onClick={()=>{if(helpMsg.trim()){const newMsg={from:"user",text:helpMsg,time:"Just now"};setHelpMessages(prev=>[...prev,newMsg]);setHelpMsg("");setTimeout(()=>setHelpMessages(prev=>[...prev,{from:"bot",text:"Thanks for reaching out! A support team member will be with you shortly. In the meantime, check our help docs at support.practiceplan.com.",time:"Just now"}]),1200)}}} style={{width:34,height:34,borderRadius:17,background:C.blue,border:"none",display:"flex",alignItems:"center",justifyContent:"center",cursor:"pointer",flexShrink:0}}><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#fff" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg></button>
       </div>
     </div>}
-    <button onClick={()=>setHelpOpen(!helpOpen)} style={{position:"fixed",bottom:24,right:24,width:52,height:52,borderRadius:26,background:helpOpen?C.g600:C.blue,color:"#fff",border:"none",boxShadow:`0 4px 16px rgba(0,0,0,${dark?0.3:0.2})`,cursor:"pointer",display:"flex",alignItems:"center",justifyContent:"center",zIndex:250,transition:"all .2s"}}>
+    <button onClick={()=>setHelpOpen(!helpOpen)} style={{position:"fixed",bottom:24,right:24,width:52,height:52,borderRadius:26,background:helpOpen?C.g600:C.blue,color:"#fff",border:"none",boxShadow:`0 4px 16px rgba(0,0,0,${dark?0.3:0.2})`,cursor:"pointer",display:"flex",alignItems:"center",justifyContent:"center",zIndex:250,transition:"all .2s"}} className="pp-help-fab">
       {helpOpen?I.x(22,"#fff"):<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#fff" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>}
     </button>
+
+    {/* App-level panels (outside pp-main for mobile z-index) */}
+    {appSelCust!==null&&<CustomerPanel cust={topCustData[appSelCust]} onClose={()=>setAppSelCust(null)}/>}
+    {appSelFacility!==null&&<FacilityPanel selFacility={appSelFacility} setSelFacility={setAppSelFacility}/>}
+    {appSelPay!==null&&(()=>{const p=appSelPay;const fee=(p.rev*0.029).toFixed(2);const platform=(p.rev*0.05).toFixed(2);const net=(p.rev-parseFloat(fee)-parseFloat(platform)).toFixed(2);const close=()=>setAppSelPay(null);return <SlidePanel open={true} onClose={close} width={440}>
+      <div style={{padding:"20px 28px",borderBottom:`1px solid ${C.g200}`}}>
+        <div style={{display:"flex",justifyContent:"space-between",alignItems:"flex-start"}}>
+          <div>
+            <div style={{fontSize:17,fontWeight:800,color:C.g800}}>Transaction Details</div>
+            <div style={{fontSize:11,color:C.g400,marginTop:3}}>INV-{String(Math.abs(p.rev*1000)).slice(-6).padStart(6,"0")}</div>
+          </div>
+          <button onClick={close} style={{background:C.g100,border:"none",width:30,height:30,borderRadius:8,cursor:"pointer",display:"flex",alignItems:"center",justifyContent:"center"}}>{I.x(14,C.g500)}</button>
+        </div>
+      </div>
+      <div style={{padding:"20px 28px"}}>
+        <div style={{display:"flex",gap:0,borderRadius:R.sm,border:`1px solid ${C.g200}`,overflow:"hidden",marginBottom:20}}>
+          {[["Status",p.status],["Date",p.date],["Amount","$"+p.rev.toFixed(2)]].map(([l,v],i)=><div key={l} style={{flex:1,padding:"12px 14px",background:C.g50,borderRight:i<2?`1px solid ${C.g200}`:"none"}}>
+            <div style={{fontSize:9,fontWeight:700,color:C.g400,textTransform:"uppercase",letterSpacing:"0.06em"}}>{l}</div>
+            <div style={{fontSize:13,fontWeight:700,color:l==="Status"?(p.status==="completed"?C.green:p.status==="failed"?C.red:C.amber):C.g800,marginTop:3,textTransform:l==="Status"?"capitalize":"none"}}>{v}</div>
+          </div>)}
+        </div>
+        <div style={{marginBottom:20}}>
+          <div style={{fontSize:11,fontWeight:700,color:C.g400,textTransform:"uppercase",letterSpacing:"0.06em",marginBottom:10}}>Booking Details</div>
+          <div style={{display:"grid",gridTemplateColumns:"1fr 1fr",gap:8}}>
+            {[["Participant",p.user],["Asset",p.asset],["Facility",p.fac],["Duration",p.dur],["Time",p.time],["Bookings",""+p.count]].map(([l,v])=><div key={l}>
+              <div style={{fontSize:9,fontWeight:700,color:C.g400,textTransform:"uppercase",letterSpacing:"0.06em"}}>{l}</div>
+              <div style={{fontSize:12,fontWeight:600,color:C.g700,marginTop:2}}>{v}</div>
+            </div>)}
+          </div>
+        </div>
+        <div style={{marginBottom:20}}>
+          <div style={{fontSize:11,fontWeight:700,color:C.g400,textTransform:"uppercase",letterSpacing:"0.06em",marginBottom:10}}>Revenue Breakdown</div>
+          <div style={{borderRadius:R.sm,border:`1px solid ${C.g200}`,overflow:"hidden"}}>
+            {[["Rental Fee","$"+p.rev.toFixed(2)],["Processing Fee (2.9%)","-$"+fee],["Platform Fee (5.0%)","-$"+platform]].map(([l,v],i)=><div key={l} style={{display:"flex",justifyContent:"space-between",padding:"10px 14px",borderBottom:i<2?`1px solid ${C.g100}`:"none",background:C.cardBg}}>
+              <span style={{fontSize:12,color:C.g600}}>{l}</span>
+              <span style={{fontSize:12,fontWeight:600,color:v.startsWith("-")?C.g500:C.g800}}>{v}</span>
+            </div>)}
+            <div style={{display:"flex",justifyContent:"space-between",padding:"12px 14px",background:C.g50,borderTop:`1px solid ${C.g200}`}}>
+              <span style={{fontSize:13,fontWeight:700,color:C.g800}}>Net to District</span>
+              <span style={{fontSize:14,fontWeight:800,color:C.green}}>${net}</span>
+            </div>
+          </div>
+        </div>
+        <div style={{display:"flex",gap:8}}>
+          <button onClick={()=>{if(globalShowToast)globalShowToast({type:"success",title:"Receipt Sent",msg:`Receipt emailed to ${p.user}`,color:C.green});close()}} style={{flex:1,padding:"10px",borderRadius:R.sm,border:`1px solid ${C.cardBorder}`,background:C.cardBg,color:C.g600,fontWeight:600,fontSize:12,cursor:"pointer",fontFamily:font}}>Email Receipt</button>
+          {p.status==="completed"&&<button onClick={()=>{if(globalShowToast)globalShowToast({type:"info",title:"Refund Initiated",msg:`$${p.rev.toFixed(2)} refund processing for ${p.user}`,color:C.orange});close()}} style={{flex:1,padding:"10px",borderRadius:R.sm,border:`1px solid ${C.red}30`,background:C.cardBg,color:C.red,fontWeight:600,fontSize:12,cursor:"pointer",fontFamily:font}}>Issue Refund</button>}
+          {p.status==="failed"&&<button onClick={()=>{if(globalShowToast)globalShowToast({type:"info",title:"Retry Sent",msg:`Payment retry initiated for ${p.user}`,color:C.blue});close()}} style={{flex:1,padding:"10px",borderRadius:R.sm,border:"none",background:C.blue,color:"#fff",fontWeight:700,fontSize:12,cursor:"pointer",fontFamily:font}}>Retry Payment</button>}
+        </div>
+      </div>
+    </SlidePanel>})()}
+    <CreateResModal open={showCreateRes} onClose={()=>setShowCreateRes(false)}/>
+
+    {/* Mobile bottom nav */}
+    <nav className="pp-bottom-nav" style={{position:"fixed",bottom:0,left:0,right:0,background:C.cardBg,borderTop:`1px solid ${C.cardBorder}`,display:"none",zIndex:200,padding:"6px 0 env(safe-area-inset-bottom, 8px)"}}>
+      <div style={{display:"flex",justifyContent:"space-around",alignItems:"center"}}>
+        {[["Dashboard",I.home],["Rentals",I.key],["Organization",I.building],["Reporting",I.chart],["Users",I.user],["Promote",I.megaphone]].map(([t,icon])=>{
+          const active=tab===t;
+          return <button key={t} onClick={()=>{switchTab(t);setMobileNav(false)}} style={{display:"flex",flexDirection:"column",alignItems:"center",gap:2,background:"none",border:"none",cursor:"pointer",fontFamily:font,padding:"6px 8px",minWidth:0,flex:1,position:"relative"}}>
+            {active&&<div style={{position:"absolute",top:-1,width:24,height:3,borderRadius:2,background:C.blue}}/>}
+            <span style={{display:"flex",alignItems:"center",justifyContent:"center",width:28,height:28,borderRadius:8,background:active?C.blueL:"transparent",transition:"background .15s"}}>{icon(18,active?C.blue:C.g400)}</span>
+            <span style={{fontSize:9,fontWeight:active?700:500,color:active?C.blue:C.g400,letterSpacing:"-0.01em"}}>{t==="Dashboard"?"Home":t==="Organization"?"Org":t==="Reporting"?"Reports":t}</span>
+          </button>
+        })}
+      </div>
+    </nav>
 
   </div>
   </ThemeCtx.Provider>
