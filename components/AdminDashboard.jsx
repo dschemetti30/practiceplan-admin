@@ -1,10 +1,11 @@
+// PracticePlan Admin Dashboard v3.2 - cache bust
+// Build timestamp: 2026-02-22T17:50:00Z
 /* PracticePlan Admin v2.8 */
 import React, { useState, createContext, useContext, useEffect, useRef } from "react";
 import { AreaChart, Area, BarChart, Bar, PieChart, Pie, Cell, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, Legend } from "recharts";
-
 /* ======== COLORS - THEME AWARE ======== */
-const lightC={blue:"#0076BB",green:"#00A84F",orange:"#F15A29",blueDk:"#005A8E",blueL:"#EDF6FC",greenL:"#E6F7ED",orangeL:"#FEF0EB",red:"#DC2626",redL:"#FEE2E2",purple:"#0076BB",purpleL:"#EDF6FC",amber:"#D97706",amberL:"#FEF3C7",g50:"#F8FAFB",g100:"#F0F2F5",g200:"#E3E8EE",g300:"#CDD4DC",g400:"#9BA5B3",g500:"#6B7684",g600:"#4A5464",g700:"#2D3540",g800:"#1A2030",w:"#fff",bg:"#F5F7FA",cardBg:"#fff",cardBorder:"#E3E8EE",cardShadow:"0 1px 2px rgba(0,0,0,0.03), 0 1px 6px rgba(0,0,0,0.02)"};
-const darkC={blue:"#3B9FD9",green:"#34C06E",orange:"#FF7A4D",blueDk:"#2A8CBF",blueL:"#0D2847",greenL:"#0D2A1A",orangeL:"#2A1A10",red:"#F87171",redL:"#3B1616",purple:"#3B9FD9",purpleL:"#0D2847",amber:"#FBBF24",amberL:"#2A2008",g50:"#1E2530",g100:"#252D38",g200:"#2F3A48",g300:"#3D4B5C",g400:"#6B7A8D",g500:"#8B97A7",g600:"#B0B9C6",g700:"#D1D7E0",g800:"#EDF0F5",w:"#161C24",bg:"#0F1318",cardBg:"#1A2030",cardBorder:"#2F3A48",cardShadow:"0 1px 2px rgba(0,0,0,0.2), 0 1px 6px rgba(0,0,0,0.1)"};
+const lightC={blue:"#2563EB",green:"#16A34A",orange:"#EA580C",blueDk:"#1D4ED8",blueL:"#EFF6FF",greenL:"#F0FDF4",orangeL:"#FFF7ED",red:"#DC2626",redL:"#FEF2F2",purple:"#7C3AED",purpleL:"#F5F3FF",amber:"#D97706",amberL:"#FFFBEB",g50:"#F8FAFC",g100:"#F1F5F9",g200:"#E2E8F0",g300:"#CBD5E1",g400:"#94A3B8",g500:"#64748B",g600:"#475569",g700:"#334155",g800:"#1E293B",w:"#fff",bg:"#F8FAFC",cardBg:"#fff",cardBorder:"#E2E8F0",cardShadow:"0 1px 3px rgba(0,0,0,0.04), 0 1px 2px rgba(0,0,0,0.02)"};
+const darkC={blue:"#60A5FA",green:"#4ADE80",orange:"#FB923C",blueDk:"#3B82F6",blueL:"#172554",greenL:"#052E16",orangeL:"#431407",red:"#F87171",redL:"#450A0A",purple:"#A78BFA",purpleL:"#2E1065",amber:"#FBBF24",amberL:"#422006",g50:"#1E293B",g100:"#283548",g200:"#334155",g300:"#475569",g400:"#64748B",g500:"#94A3B8",g600:"#CBD5E1",g700:"#E2E8F0",g800:"#F1F5F9",w:"#0F172A",bg:"#0F172A",cardBg:"#1E293B",cardBorder:"#334155",cardShadow:"0 1px 3px rgba(0,0,0,0.3), 0 1px 2px rgba(0,0,0,0.2)"};
 let C={...lightC};
 const ThemeCtx=createContext({dark:false,toggle:()=>{}});
 const LOGO=`data:image/svg+xml,${encodeURIComponent(`<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 396.37 66.7"><path fill="#f15a29" d="M.72,49.7c-.24-.04-.48-.09-.72-.14.24.05.48.09.72.14Z"/><path fill="#00a84f" stroke="#fff" stroke-miterlimit="10" stroke-width="1.4" d="M38.52,31.97l-18.72-7.88c-1.03-.43-1.86-1.68-1.86-2.8v-8.53c0-1.11.83-1.67,1.86-1.23l20.95,8.82c3.5,1.47,5.25,3.41,5.25,5.34,0,1.93-1.75,3.87-5.25,5.34l-2.23.94Z"/><path fill="#00a84f" stroke="#fff" stroke-miterlimit="10" stroke-width="1.4" d="M29.74,48.22v11.43c0,1.11-.83,2.37-1.86,2.8l-8.08,3.4c-1.03.43-1.86-.12-1.86-1.23v-21.97c0-1.11.83-2.37,1.86-2.8l20.95-8.82c3.5-1.47,5.25-3.41,5.25-5.34v10.81c0,3.03-1.75,5.61-5.25,7.09l-11.01,4.64Z"/><path fill="#0076bb" stroke="#fff" stroke-miterlimit="10" stroke-width="1.4" d="M24.43,21.29L5.71,13.41c-1.03-.43-1.86-1.68-1.86-2.8V2.08c0-1.11.83-1.67,1.86-1.23l20.95,8.82c3.5,1.47,5.25,3.41,5.25,5.34,0,1.93-1.75,3.87-5.25,5.34l-2.23.94Z"/><path fill="#0076bb" stroke="#fff" stroke-miterlimit="10" stroke-width="1.4" d="M15.65,37.54v11.43c0,1.11-.83,2.37-1.86,2.8l-8.08,3.4c-1.03.43-1.86-.12-1.86-1.23v-21.97c0-1.11.83-2.37,1.86-2.8l20.95-8.82c3.5-1.47,5.25-3.41,5.25-5.34v10.81c0,3.03-1.75,5.61-5.25,7.09l-11.01,4.64Z"/><path fill="#0076bb" d="M87.8,38.08h-11.64l-1,5.69h-6.85l2-11.38h19.16c2.39,0,3.86-1.23,3.86-2.96,0-1.3-1.03-2.13-2.96-2.13h-19.16l1.32-5.79h18.24c6.19,0,9.58,2.89,9.58,7.15,0,5.52-4.82,9.41-12.54,9.41Z"/><path fill="#0076bb" d="M130.29,43.77h-9.21l-3.92-5.89h-10.58l-1.03,5.89h-6.88l2-11.38h19.36c2.29,0,4.29-1.1,4.29-2.89,0-1.46-1.26-2.2-3.39-2.2h-19.36l1.33-5.79h18.5c4.66,0,10.18,1.43,10.18,6.75,0,4.02-2.89,7.42-7.18,8.25.63.57,1.33,1.36,2.56,2.93l3.36,4.32Z"/><path fill="#0076bb" d="M138,43.77l5.19-5.72h5.55c1.36,0,2.89,0,3.96.07-.47-.8-1.16-2.16-1.7-3.23l-2.96-5.89-13.04,14.77h-8.15l17.83-20.12c1.16-1.3,2.73-2.49,4.89-2.49s3.23,1.1,3.96,2.49l10.34,20.12h-25.88Z"/><path fill="#0076bb" d="M190.18,38.05l-5.42,5.72h-11.18c-6.95,0-11.57-4.19-11.57-9.81,0-7.32,6.98-12.44,15.5-12.44h15.6l-5.45,5.79h-11.18c-4.09,0-7.55,2.63-7.55,6.15,0,2.76,2.29,4.59,5.65,4.59h15.6Z"/><path fill="#0076bb" d="M216.65,21.52l-1.08,5.79h-8l-2.93,16.46h-6.88l2.89-16.46h-10.44l5.52-5.79h20.93Z"/><path fill="#0076bb" d="M221.18,43.77h-6.88l3.96-22.25h6.85l-3.93,22.25Z"/><path fill="#0076bb" d="M251.47,38.05l-1.64,5.72h-14.05c-6.95,0-11.57-4.19-11.57-9.81,0-7.32,6.98-12.44,15.5-12.44h14.93l-1.83,5.79h-14.14c-4.09,0-7.55,2.63-7.55,6.15,0,2.76,2.29,4.59,5.65,4.59h14.69Z"/><path fill="#0076bb" d="M278.35,38.05l-4.59,5.72h-21.42l3.96-22.25h24.88l-4.62,5.79h-14.4l-.47,2.66h16.73l-3.92,5.06h-13.7l-.53,3.03h18.09Z"/><path fill="#0076bb" d="M298.05,38.08h-11.64l-1,5.69h-6.85l2-11.38h19.16c2.39,0,3.86-1.23,3.86-2.96,0-1.3-1.03-2.13-2.96-2.13h-19.16l4.14-5.79h15.42c6.19,0,9.58,2.89,9.58,7.15,0,5.52-4.82,9.41-12.54,9.41Z"/><path fill="#0076bb" d="M334.61,38.05l-5.49,5.72h-19.66l3.96-22.25h6.85l-2.93,16.53h17.26Z"/><path fill="#0076bb" d="M342.3,43.77l5.19-5.72h5.55c1.36,0,2.89,0,3.96.07-.47-.8-1.16-2.16-1.7-3.23l-2.96-5.89-13.04,14.77h-8.15l17.83-20.12c1.16-1.3,2.73-2.49,4.89-2.49s3.23,1.1,3.96,2.49l10.34,20.12h-25.88Z"/><path fill="#0076bb" d="M386.02,42.94l-11.47-12.24-2.3,13.07h-6.25l3.23-18.46c.5-2.96,2.46-4.16,4.52-4.16.83,0,1.66.2,2.56,1.2l11.47,12.24,2.33-13.07h6.25l-3.29,18.43c-.53,2.96-2.49,4.19-4.49,4.19-.93,0-1.63-.2-2.56-1.2Z"/></svg>`)}`;
@@ -26,7 +27,7 @@ const facilities={
   "Donaldsonville HS":["DO Gym"],
 };
 const facilityFull={"DT Gym":"Dutchtown Gymnasium","DT Stadium":"Dutchtown Stadium","DT Fields":"Dutchtown Fields","EA Gym":"East Ascension Gym","EA Cafeteria":"EA Cafeteria","EA Pool":"East Ascension Pool","Spartan Stadium":"Spartan Stadium","Gator Stadium":"Gator Stadium","SA Gym":"St. Amant Gymnasium","SA Fields":"St. Amant Fields","PV Complex":"Prairieville Complex","PV Gym":"Prairieville Gymnasium","DO Gym":"Donaldsonville Gym","District Office":"District Office","District":"District","Away":"Away","All Campuses":"All Campuses"};
-const tabs=["Dashboard","Rentals","Organization","Reporting","Users","Promote"];
+const tabs=["Dashboard","Rentals","Organization","Reporting","Users","Playbook"];
 const monthlyRev=[{m:"Aug",r:3420},{m:"Sep",r:7850},{m:"Oct",r:11240},{m:"Nov",r:9680},{m:"Dec",r:5840},{m:"Jan",r:14220},{m:"Feb",r:8761}];
 const facMix=[
   {n:"Dutchtown High School",v:18296,c:"#0076BB",assets:3,bookings:62,topAsset:"Dutchtown Gymnasium"},
@@ -181,11 +182,11 @@ let approvalsDataInit=[
      {bid:"BK-1040A",asset:"Prairieville Athletic Complex",date:"02/22/2026",time:"8:00 AM - 12:00 PM",hours:4,rev:475,activity:"Soccer",people:24,amenities:"Field Lights, Concessions",created:"02/02/2026 03:30 pm"},
      {bid:"BK-1040B",asset:"Prairieville Athletic Complex",date:"03/01/2026",time:"8:00 AM - 12:00 PM",hours:4,rev:475,activity:"Soccer",people:24,amenities:"Field Lights",created:"02/02/2026 03:30 pm"},
    ]},
-  {id:"APR-0039",org:"Ascension Elite Cheer",contact:"Brittany Hebert",email:"elitecheer@ascension.org",phone:"(225) 555-0137",campus:"St. Amant High School",discount:0,expiresIn:"--",status:"approved",submitted:"01/29/2026",notes:"Competition prep. Approved by Coach Bourque.",photo:"AE",color:C.orange,insStart:"02/09/2025",insEnd:"02/09/2026",insActive:true,insLimit:"$300,000",
+  {id:"APR-0039",org:"Ascension Elite Cheer",contact:"Brittany Hebert",email:"elitecheer@ascension.org",phone:"(225) 555-0137",campus:"St. Amant High School",discount:0,expiresIn:"--",status:"approved",submitted:"01/29/2026",resolvedAt:"01/30/2026 09:14 AM",resolvedBy:"Marcus Williams",notes:"Competition prep. Approved by Coach Bourque.",photo:"AE",color:C.orange,insStart:"02/09/2025",insEnd:"02/09/2026",insActive:true,insLimit:"$300,000",
    bk:[
      {bid:"BK-1039A",asset:"St. Amant Gymnasium",date:"02/08/2026",time:"9:00 AM - 12:00 PM",hours:3,rev:325,activity:"Cheerleading",people:18,amenities:"N/A",created:"01/29/2026 08:20 am"},
    ]},
-  {id:"APR-0038",org:"River Parish Runners",contact:"Denise Toups",email:"rprunners@hotmail.com",phone:"(225) 555-0753",campus:"St. Amant High School",discount:0,expiresIn:"--",status:"denied",submitted:"01/25/2026",notes:"Denied - track resurfacing scheduled for this date. Offered 2/8 as alternative.",photo:"RP",color:C.g400,insStart:"04/01/2025",insEnd:"04/01/2026",insActive:true,insLimit:"$300,000",
+  {id:"APR-0038",org:"River Parish Runners",contact:"Denise Toups",email:"rprunners@hotmail.com",phone:"(225) 555-0753",campus:"St. Amant High School",discount:0,expiresIn:"--",status:"denied",submitted:"01/25/2026",resolvedAt:"01/26/2026 02:45 PM",resolvedBy:"Tameka Johnson",notes:"Denied - track resurfacing scheduled for this date. Offered 2/8 as alternative.",photo:"RP",color:C.g400,insStart:"04/01/2025",insEnd:"04/01/2026",insActive:true,insLimit:"$300,000",
    bk:[
      {bid:"BK-1038A",asset:"Gator Stadium",date:"02/01/2026",time:"6:00 AM - 8:00 AM",hours:2,rev:190,activity:"Track & Field",people:12,amenities:"N/A",created:"01/25/2026 11:00 am"},
    ]},
@@ -203,7 +204,6 @@ let globalNotifs=null;
 function useApprovals(){return{approvals:globalApprovals||approvalsDataInit,setApprovals:globalSetApprovals||(()=>{}),prompt:globalPrompt,setPrompt:globalSetPrompt||(()=>{})}}
 function useSiteAdmin(){return{requireSiteAdmin:globalRequireSiteAdmin??true,setRequireSiteAdmin:globalSetRequireSiteAdmin||(()=>{}),assignedAdmins:globalAssignedAdmins||{},setAssignedAdmins:globalSetAssignedAdmins||(()=>{})}}
 function triggerApproval(id){if(globalSetPrompt)globalSetPrompt({id,reason:""})}
-
 /* Approval Confirmation Prompt */
 function ApprovalPrompt(){
   const {prompt,setPrompt,approvals,setApprovals}=useApprovals();
@@ -214,16 +214,16 @@ function ApprovalPrompt(){
   const a=approvals.find(x=>x.id===prompt.id);
   if(!a)return null;
   const hasNote=prompt.reason.trim().length>0;
-
   /* Site admins for the campus */
   const campusAdmins=usersData.filter(u=>u.role==="Site Admin"&&u.loc===a.campus);
   const allAdmins=usersData.filter(u=>u.role==="Site Admin");
   const relevantAdmins=campusAdmins.length>0?campusAdmins:allAdmins;
-
   const doAction=(action)=>{
     const note=hasNote?` ${action==="approved"?"Approved":"Denied"} by Marcus Williams: ${prompt.reason.trim()}`:"";
     const adminNote=selAdmin?` Site Admin: ${selAdmin}`:"";
-    setApprovals(approvals.map(x=>x.id===prompt.id?{...x,status:action,expiresIn:"--",notes:note?((x.notes||"")+note+adminNote):x.notes}:x));
+    const now=new Date();const pad=n=>String(n).padStart(2,"0");const hr=now.getHours();const ampm=hr>=12?"PM":"AM";const hr12=hr%12||12;
+    const resolvedAt=`${pad(now.getMonth()+1)}/${pad(now.getDate())}/${now.getFullYear()} ${pad(hr12)}:${pad(now.getMinutes())} ${ampm}`;
+    setApprovals(approvals.map(x=>x.id===prompt.id?{...x,status:action,expiresIn:"--",resolvedAt,resolvedBy:"Marcus Williams",notes:note?((x.notes||"")+note+adminNote):x.notes}:x));
     if(selAdmin&&action==="approved"){
       const newAssigned={...assignedAdmins};
       /* Map by day-label so calendar can look them up */
@@ -260,7 +260,6 @@ function ApprovalPrompt(){
           </div>
           <button onClick={()=>{setPrompt(null);setSelAdmin(null);setShowAllAdmins(false)}} style={{background:C.g100,border:"none",width:28,height:28,borderRadius:R.sm,cursor:"pointer",display:"flex",alignItems:"center",justifyContent:"center"}}>{I.x(12,C.g500)}</button>
         </div>
-
         {/* Booking summary */}
         <div style={{display:"flex",gap:0,borderRadius:R.sm,border:`1px solid ${C.g200}`,overflow:"hidden",marginBottom:14}}>
           {[["Asset",a.bk[0].asset],["Date",a.bk.length===1?a.bk[0].date:a.bk[0].date+" +"+(a.bk.length-1)],["Revenue","$"+totalRev.toLocaleString()]].map(([l,v],i)=><div key={l} style={{flex:1,padding:"10px 12px",background:C.g50,borderRight:i<2?`1px solid ${C.g200}`:"none"}}>
@@ -268,7 +267,6 @@ function ApprovalPrompt(){
             <div style={{fontSize:12,fontWeight:600,color:C.g700,marginTop:2}}>{v}</div>
           </div>)}
         </div>
-
         {/* Insurance status callout */}
         <div style={{padding:"10px 14px",borderRadius:R.sm,background:a.insActive?`${C.green}06`:`${C.red}08`,border:`1px solid ${a.insActive?`${C.green}20`:`${C.red}25`}`,marginBottom:14,display:"flex",alignItems:"center",gap:10}}>
           <div style={{width:28,height:28,borderRadius:8,background:a.insActive?`${C.green}12`:`${C.red}12`,display:"flex",alignItems:"center",justifyContent:"center",flexShrink:0}}>
@@ -287,7 +285,6 @@ function ApprovalPrompt(){
           </div>
           <button style={{background:"none",border:`1px solid ${C.g200}`,borderRadius:6,padding:"5px 10px",fontSize:10,fontWeight:600,color:C.g600,cursor:"pointer",fontFamily:font,flexShrink:0,whiteSpace:"nowrap"}}>View COI</button>
         </div>
-
         {/* Site admin assignment */}
         <div style={{marginBottom:16}}>
           <div style={{fontSize:12,fontWeight:600,color:C.g700,marginBottom:6}}>Assign Site Admin</div>
@@ -311,13 +308,11 @@ function ApprovalPrompt(){
           {showAllAdmins&&<button onClick={()=>setShowAllAdmins(false)} style={{background:"none",border:"none",color:C.g400,fontSize:11,fontWeight:600,cursor:"pointer",fontFamily:font,padding:"6px 0 0"}}>Show campus admin only</button>}
           {!selAdmin&&<div style={{fontSize:10,color:C.g400,marginTop:4,fontStyle:"italic"}}>Select who will be on-site for this rental. You can also assign later from the full review.</div>}
         </div>
-
         {/* Note */}
         <div style={{marginBottom:18}}>
           <div style={{fontSize:12,fontWeight:600,color:C.g700,marginBottom:5}}>Note <span style={{fontWeight:400,color:C.g400}}>(optional)</span></div>
           <textarea value={prompt.reason} onChange={e=>setPrompt({...prompt,reason:e.target.value})} placeholder="Add a note..." rows={2} style={{width:"100%",padding:"10px 12px",border:`1px solid ${C.cardBorder}`,borderRadius:R.sm,fontSize:12,fontFamily:font,resize:"vertical",color:C.g700,boxSizing:"border-box",background:C.g50}}/>
         </div>
-
         {/* Actions */}
         <div style={{display:"flex",gap:8}}>
           <button onClick={()=>doAction("approved")} style={{flex:1,padding:"11px",borderRadius:R.sm,border:"none",background:C.green,color:"#fff",fontSize:13,fontWeight:700,cursor:"pointer",fontFamily:font}}>Approve</button>
@@ -384,11 +379,10 @@ const txnData=[
   {id:"oP0qRsTuVw",updatedAt:"11/22/25 02:00 pm",resId:"L75jO3fVuv",asset:"East Ascension Gymnasium",facility:"East Ascension High School",transferDate:"11/23/25",destAcct:"acct_1ScWpNB3rReV834a",amount:400.00,discount:"N/A",status:"success",transferId:"tr_1ShHGzBPaTHg8GrQ8mL5kNpA",acctPayId:"py_1ShHGzBUbsUICInXr1K9rQuD",intentId:"pi_3SgPFyBPaTHg8GrQ1jMiHnBZ"},
   {id:"xY1zAbCdEf",updatedAt:"02/03/26 09:22 am",resId:"K93MNpR4w1",asset:"Prairieville Athletic Complex",facility:"Prairieville High School",transferDate:"pending",destAcct:"acct_1ScWpNB3rReV834a",amount:950.00,discount:"N/A",status:"failed",transferId:"--",acctPayId:"--",intentId:"pi_3Swl1YBPaTHg8GrQ2vGPMglW"},
 ];
-
 /* ======== STYLES ======== */
 const font="'Montserrat', sans-serif";
 const numFont="'DM Sans', 'Montserrat', sans-serif";
-const R={sm:8,md:10,lg:12,xl:16};/* border radius scale */
+const R={sm:8,md:12,lg:14,xl:18};/* border radius scale */
 /* SVG Icons - inline, no emoji */
 const I={
   search:(s=14,c=C.g400)=><svg width={s} height={s} viewBox="0 0 24 24" fill="none" stroke={c} strokeWidth="2" strokeLinecap="round"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>,
@@ -424,25 +418,34 @@ const I={
   share:(s=14,c=C.g500)=><svg width={s} height={s} viewBox="0 0 24 24" fill="none" stroke={c} strokeWidth="2" strokeLinecap="round"><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><path d="m8.59 13.51 6.83 3.98"/><path d="m8.59 10.49 6.83-3.98"/></svg>,
   download:(s=14,c=C.g500)=><svg width={s} height={s} viewBox="0 0 24 24" fill="none" stroke={c} strokeWidth="2" strokeLinecap="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>,
   copy:(s=14,c=C.g500)=><svg width={s} height={s} viewBox="0 0 24 24" fill="none" stroke={c} strokeWidth="2" strokeLinecap="round"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>,
+  star:(s=14,c=C.g500)=><svg width={s} height={s} viewBox="0 0 24 24" fill="none" stroke={c} strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>,
+  tag:(s=14,c=C.g500)=><svg width={s} height={s} viewBox="0 0 24 24" fill="none" stroke={c} strokeWidth="2" strokeLinecap="round"><path d="M12 2H2v10l9.29 9.29c.94.94 2.48.94 3.42 0l6.58-6.58c.94-.94.94-2.48 0-3.42L12 2Z"/><path d="M7 7h.01"/></svg>,
+  grid:(s=14,c=C.g500)=><svg width={s} height={s} viewBox="0 0 24 24" fill="none" stroke={c} strokeWidth="2" strokeLinecap="round"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg>,
+  shield:(s=14,c=C.g500)=><svg width={s} height={s} viewBox="0 0 24 24" fill="none" stroke={c} strokeWidth="2" strokeLinecap="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>,
+  sliders:(s=14,c=C.g500)=><svg width={s} height={s} viewBox="0 0 24 24" fill="none" stroke={c} strokeWidth="2" strokeLinecap="round"><line x1="4" y1="21" x2="4" y2="14"/><line x1="4" y1="10" x2="4" y2="3"/><line x1="12" y1="21" x2="12" y2="12"/><line x1="12" y1="8" x2="12" y2="3"/><line x1="20" y1="21" x2="20" y2="16"/><line x1="20" y1="12" x2="20" y2="3"/><line x1="1" y1="14" x2="7" y2="14"/><line x1="9" y1="8" x2="15" y2="8"/><line x1="17" y1="16" x2="23" y2="16"/></svg>,
+  zap:(s=14,c=C.g500)=><svg width={s} height={s} viewBox="0 0 24 24" fill="none" stroke={c} strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>,
+  clock:(s=14,c=C.g500)=><svg width={s} height={s} viewBox="0 0 24 24" fill="none" stroke={c} strokeWidth="2" strokeLinecap="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>,
+  gift:(s=14,c=C.g500)=><svg width={s} height={s} viewBox="0 0 24 24" fill="none" stroke={c} strokeWidth="2" strokeLinecap="round"><polyline points="20 12 20 22 4 22 4 12"/><rect x="2" y="7" width="20" height="5"/><line x1="12" y1="22" x2="12" y2="7"/><path d="M12 7H7.5a2.5 2.5 0 0 1 0-5C11 2 12 7 12 7z"/><path d="M12 7h4.5a2.5 2.5 0 0 0 0-5C13 2 12 7 12 7z"/></svg>,
+  layers:(s=14,c=C.g500)=><svg width={s} height={s} viewBox="0 0 24 24" fill="none" stroke={c} strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><polygon points="12 2 2 7 12 12 22 7 12 2"/><polyline points="2 17 12 22 22 17"/><polyline points="2 12 12 17 22 12"/></svg>,
+  bar:(s=14,c=C.g500)=><svg width={s} height={s} viewBox="0 0 24 24" fill="none" stroke={c} strokeWidth="2" strokeLinecap="round"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg>,
 };
-const _TH=()=>({textAlign:"left",padding:"11px 16px",color:C.g400,fontWeight:700,fontSize:10,textTransform:"uppercase",letterSpacing:"0.08em",borderBottom:`1px solid ${C.g200}`,background:C.g50});
+const _TH=()=>({textAlign:"left",padding:"11px 16px",color:C.g500,fontWeight:700,fontSize:10,textTransform:"uppercase",letterSpacing:"0.08em",borderBottom:`2px solid ${C.g200}`,background:C.g50});
 const _TD=()=>({padding:"12px 16px",fontSize:13,borderBottom:`1px solid ${C.g100}`});
-const _sel=()=>({padding:"9px 34px 9px 12px",border:`1px solid ${C.cardBorder}`,borderRadius:R.sm,fontSize:13,color:C.g700,background:C.cardBg,appearance:"none",backgroundImage:`url("data:image/svg+xml,%3Csvg width='10' height='6' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M1 1l4 4 4-4' stroke='%239BA5B3' stroke-width='1.5' fill='none'/%3E%3C/svg%3E")`,backgroundRepeat:"no-repeat",backgroundPosition:"right 10px center",cursor:"pointer",fontWeight:600,fontFamily:font});
-const _btnP=()=>({background:C.blue,color:"#fff",border:"none",borderRadius:R.sm,padding:"9px 18px",fontSize:13,fontWeight:700,cursor:"pointer",fontFamily:font,display:"inline-flex",alignItems:"center",gap:6,transition:"all .15s",whiteSpace:"nowrap"});
-const _btnO=()=>({background:C.cardBg,color:C.g600,border:`1px solid ${C.cardBorder}`,borderRadius:R.sm,padding:"9px 18px",fontSize:13,fontWeight:600,cursor:"pointer",fontFamily:font,transition:"all .15s",whiteSpace:"nowrap",display:"inline-flex",alignItems:"center",gap:6});
+const _sel=()=>({padding:"9px 34px 9px 12px",border:`1.5px solid ${C.cardBorder}`,borderRadius:R.sm,fontSize:13,color:C.g700,background:C.cardBg,appearance:"none",backgroundImage:`url("data:image/svg+xml,%3Csvg width='10' height='6' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M1 1l4 4 4-4' stroke='%2394A3B8' stroke-width='1.5' fill='none'/%3E%3C/svg%3E")`,backgroundRepeat:"no-repeat",backgroundPosition:"right 10px center",cursor:"pointer",fontWeight:600,fontFamily:font,transition:"border-color .2s, box-shadow .2s"});
+const _btnP=()=>({background:C.blue,color:"#fff",border:"none",borderRadius:R.sm,padding:"9px 18px",fontSize:13,fontWeight:700,cursor:"pointer",fontFamily:font,display:"inline-flex",alignItems:"center",gap:6,transition:"all .2s cubic-bezier(.22,1,.36,1)",whiteSpace:"nowrap",boxShadow:`0 1px 3px ${C.blue}25`});
+const _btnO=()=>({background:C.cardBg,color:C.g600,border:`1.5px solid ${C.cardBorder}`,borderRadius:R.sm,padding:"9px 18px",fontSize:13,fontWeight:600,cursor:"pointer",fontFamily:font,transition:"all .2s cubic-bezier(.22,1,.36,1)",whiteSpace:"nowrap",display:"inline-flex",alignItems:"center",gap:6});
 /* Proxy objects that always read current theme */
 const TH=new Proxy({},{get:(_,p)=>_TH()[p],ownKeys:()=>Object.keys(_TH()),getOwnPropertyDescriptor:(_,p)=>({value:_TH()[p],enumerable:true,configurable:true})});
 const TD=new Proxy({},{get:(_,p)=>_TD()[p],ownKeys:()=>Object.keys(_TD()),getOwnPropertyDescriptor:(_,p)=>({value:_TD()[p],enumerable:true,configurable:true})});
 const sel=new Proxy({},{get:(_,p)=>_sel()[p],ownKeys:()=>Object.keys(_sel()),getOwnPropertyDescriptor:(_,p)=>({value:_sel()[p],enumerable:true,configurable:true})});
 const btnP=new Proxy({},{get:(_,p)=>_btnP()[p],ownKeys:()=>Object.keys(_btnP()),getOwnPropertyDescriptor:(_,p)=>({value:_btnP()[p],enumerable:true,configurable:true})});
 const btnO=new Proxy({},{get:(_,p)=>_btnO()[p],ownKeys:()=>Object.keys(_btnO()),getOwnPropertyDescriptor:(_,p)=>({value:_btnO()[p],enumerable:true,configurable:true})});
-const pill=(a)=>({padding:"6px 14px",borderRadius:20,fontSize:11,fontWeight:700,cursor:"pointer",border:"none",fontFamily:font,background:a?C.g800:C.g100,color:a?"#fff":C.g500,transition:"all .15s"});
-const statusBadge=(s)=>{const m={completed:{bg:C.greenL,c:C.green},failed:{bg:C.redL,c:C.red},pending:{bg:C.amberL,c:C.amber},processing:{bg:C.blueL,c:C.blue},paid:{bg:C.greenL,c:C.green}};const x=m[s]||m.pending;return{display:"inline-flex",alignItems:"center",gap:5,padding:"4px 10px",borderRadius:20,background:x.bg,color:x.c,fontSize:10,fontWeight:700,textTransform:"uppercase",letterSpacing:"0.04em"}};
-
+const pill=(a)=>({padding:"6px 14px",borderRadius:8,fontSize:11,fontWeight:700,cursor:"pointer",border:a?"none":`1.5px solid ${C.g200}`,fontFamily:font,background:a?C.g800:C.cardBg,color:a?"#fff":C.g500,transition:"all .2s cubic-bezier(.22,1,.36,1)",boxShadow:a?`0 2px 8px ${C.g800}25`:"none"});
+const statusBadge=(s)=>{const m={completed:{bg:C.greenL,c:C.green},failed:{bg:C.redL,c:C.red},pending:{bg:C.amberL,c:C.amber},processing:{bg:C.blueL,c:C.blue},paid:{bg:C.greenL,c:C.green}};const x=m[s]||m.pending;return{display:"inline-flex",alignItems:"center",gap:5,padding:"4px 10px",borderRadius:6,background:x.bg,color:x.c,fontSize:10,fontWeight:700,textTransform:"uppercase",letterSpacing:"0.04em"}};
 /* ======== COMPONENTS ======== */
-function Card({children,style={},np,className=""}){return <div className={`pp-card ${className}`} style={{background:C.cardBg,borderRadius:R.lg,border:`1px solid ${C.cardBorder}`,padding:np?0:20,boxShadow:C.cardShadow,...style}}>{children}</div>}
-function Sec({children,action}){return <div style={{display:"flex",justifyContent:"space-between",alignItems:"center",marginBottom:16}}><h3 style={{margin:0,fontSize:14,fontWeight:700,color:C.g800,letterSpacing:"-0.01em"}}>{children}</h3>{action}</div>}
-function Div({children}){return <div style={{display:"flex",alignItems:"center",gap:12,marginTop:8}}><div style={{fontSize:11,fontWeight:700,color:C.g400,textTransform:"uppercase",letterSpacing:"0.1em",whiteSpace:"nowrap"}}>{children}</div><div style={{flex:1,height:1,background:C.g200}}/></div>}
+function Card({children,style={},np,className=""}){return <div className={`pp-card ${className}`} style={{background:C.cardBg,borderRadius:R.lg,border:`1px solid ${C.cardBorder}`,padding:np?0:20,boxShadow:C.cardShadow,transition:"box-shadow .2s ease, border-color .2s ease",...style}}>{children}</div>}
+function Sec({children,action,icon}){return <div style={{display:"flex",justifyContent:"space-between",alignItems:"center",marginBottom:16}}><h3 style={{margin:0,fontSize:15,fontWeight:800,color:C.g800,letterSpacing:"-0.02em",display:"flex",alignItems:"center",gap:8}}>{icon&&<span style={{display:"flex",alignItems:"center",justifyContent:"center",width:26,height:26,borderRadius:8,background:`linear-gradient(135deg, ${C.blueL}, ${C.greenL})`,flexShrink:0}}>{icon}</span>}{children}</h3>{action}</div>}
+function Div({children}){return <div style={{display:"flex",alignItems:"center",gap:12,marginTop:12,marginBottom:4}}><div style={{fontSize:11,fontWeight:800,color:C.g400,textTransform:"uppercase",letterSpacing:"0.12em",whiteSpace:"nowrap"}}>{children}</div><div style={{flex:1,height:1,background:`linear-gradient(90deg, ${C.g200}, transparent)`}}/></div>}
 function Empty({icon,title,desc,action,onAction}){return <div style={{padding:"48px 20px",textAlign:"center",display:"flex",flexDirection:"column",alignItems:"center",gap:6}}>
   <div style={{width:48,height:48,borderRadius:14,background:C.g100,display:"flex",alignItems:"center",justifyContent:"center",marginBottom:4}}>{icon||I.search(22,C.g300)}</div>
   <div style={{fontSize:14,fontWeight:700,color:C.g600}}>{title||"No results found"}</div>
@@ -466,20 +469,18 @@ function Met({label,value,change,dir,sub,accent=C.blue}){
     return ()=>cancelAnimationFrame(rafRef.current);
   },[numericVal]);
   const fmt=numericVal>=1000?Math.round(display).toLocaleString():numericVal%1!==0?display.toFixed(numericVal.toString().split(".")[1]?.length||0):Math.round(display).toString();
-
-  return <Card className="pp-met" style={{overflow:"hidden",padding:"14px 16px"}}>
-    <div className="pp-met-top" style={{display:"flex",alignItems:"center",justifyContent:"space-between",gap:4,marginBottom:6}}>
+  return <Card className="pp-met" style={{overflow:"hidden",padding:"14px 16px",position:"relative"}}>
+    <div className="pp-met-top" style={{display:"flex",alignItems:"center",justifyContent:"space-between",gap:4,marginBottom:8}}>
       <div style={{fontSize:10,fontWeight:700,color:C.g400,letterSpacing:"0.08em",textTransform:"uppercase",whiteSpace:"nowrap",overflow:"hidden",textOverflow:"ellipsis",minWidth:0}}>{label}</div>
-      {change&&<span className="pp-met-badge" style={{fontSize:10,fontWeight:700,color:dir==="up"?C.blue:C.g400,background:dir==="up"?C.blueL:C.g100,padding:"2px 7px",borderRadius:20,whiteSpace:"nowrap",flexShrink:0,lineHeight:1.2}}>{dir==="up"?"↑":"↓"} {change}</span>}
+      {change&&<span className="pp-met-badge" style={{fontSize:10,fontWeight:700,color:dir==="up"?C.green:C.g400,background:dir==="up"?C.greenL:C.g100,padding:"3px 8px",borderRadius:20,whiteSpace:"nowrap",flexShrink:0,lineHeight:1.2}}>{dir==="up"?"↑":"↓"} {change}</span>}
     </div>
     <div style={{fontSize:28,fontWeight:800,color:C.g800,lineHeight:1,letterSpacing:"-0.02em",fontVariantNumeric:"tabular-nums",fontFamily:numFont}}>{prefix}{fmt}{suffix}</div>
-    <div className="pp-met-bottom" style={{display:"flex",alignItems:"center",justifyContent:"space-between",marginTop:6}}>
+    <div className="pp-met-bottom" style={{display:"flex",alignItems:"center",justifyContent:"space-between",marginTop:8}}>
       {sub&&<div style={{fontSize:11,color:C.g400,whiteSpace:"nowrap",overflow:"hidden",textOverflow:"ellipsis",minWidth:0}}>{sub}</div>}
       {spark&&<div style={{flexShrink:0,opacity:0.7}}><Sparkline data={spark} color={dir==="up"?C.blue:C.g400} w={44} h={16}/></div>}
     </div>
   </Card>
 }
-
 /* Progress Ring */
 function ProgressRing({pct,size=40,stroke=4,color}){
   const r=(size-stroke)/2;const circ=2*Math.PI*r;
@@ -491,10 +492,8 @@ function ProgressRing({pct,size=40,stroke=4,color}){
   },[pct]);
   return <svg width={size} height={size} style={{transform:"rotate(-90deg)"}}><circle cx={size/2} cy={size/2} r={r} fill="none" stroke={C.g200} strokeWidth={stroke}/><circle cx={size/2} cy={size/2} r={r} fill="none" stroke={col} strokeWidth={stroke} strokeDasharray={circ} strokeDashoffset={circ-(anim/100)*circ} strokeLinecap="round" style={{transition:"stroke .3s"}}/></svg>
 }
-
 /* Sort icon */
 const SortIcon=({dir})=><svg width="10" height="10" viewBox="0 0 10 10" fill="none" style={{marginLeft:4,verticalAlign:"middle"}}><path d="M5 1l3 3.5H2L5 1z" fill={dir==="asc"?C.blue:C.g300}/><path d="M5 9L2 5.5h6L5 9z" fill={dir==="desc"?C.blue:C.g300}/></svg>;
-
 /* Create Reservation Modal */
 function CreateResModal({open,onClose}){
   const [form,setForm]=useState({campus:"",asset:"",customer:"",date:"",time:"",endTime:"",duration:"2",rate:"175",activity:"",people:"",notes:""});
@@ -521,10 +520,9 @@ function CreateResModal({open,onClose}){
   const times=["6:00 AM","7:00 AM","8:00 AM","9:00 AM","10:00 AM","11:00 AM","12:00 PM","1:00 PM","2:00 PM","3:00 PM","4:00 PM","5:00 PM","6:00 PM","7:00 PM","8:00 PM","9:00 PM"];
   const Label=({children})=><label style={{fontSize:10,fontWeight:700,color:C.g400,textTransform:"uppercase",letterSpacing:"0.06em",display:"block",marginBottom:5}}>{children}</label>;
   const inp={width:"100%",padding:"10px 12px",border:`1px solid ${C.cardBorder}`,borderRadius:R.sm,fontSize:16,fontFamily:font,background:C.g50,color:C.g700,boxSizing:"border-box"};
-
   return <>
     <div onClick={onClose} style={{position:"fixed",inset:0,background:"rgba(15,23,42,0.35)",backdropFilter:"blur(2px)",zIndex:299,animation:"fadeIn .2s ease"}}/>
-    <div className="pp-create-modal" onClick={e=>e.stopPropagation()} style={{position:"fixed",top:"50%",left:"50%",transform:"translate(-50%,-50%)",width:540,maxWidth:"94vw",maxHeight:"90vh",background:C.cardBg,borderRadius:R.lg,boxShadow:`0 20px 60px rgba(0,0,0,${C.bg==="#0F1318"?0.4:0.18})`,zIndex:300,fontFamily:font,overflow:"hidden",animation:"slideUp .25s cubic-bezier(.22,1,.36,1)",display:"flex",flexDirection:"column"}}>
+    <div className="pp-create-modal" onClick={e=>e.stopPropagation()} style={{position:"fixed",top:"50%",left:"50%",transform:"translate(-50%,-50%)",width:540,maxWidth:"94vw",maxHeight:"88vh",background:C.cardBg,borderRadius:R.lg,boxShadow:`0 20px 60px rgba(0,0,0,${C.bg==="#0F1318"?0.4:0.18})`,zIndex:300,fontFamily:font,overflow:"hidden",animation:"slideUp .25s cubic-bezier(.22,1,.36,1)",display:"flex",flexDirection:"column"}}>
       <div style={{padding:"18px 22px",borderBottom:`1px solid ${C.cardBorder}`,display:"flex",justifyContent:"space-between",alignItems:"center",flexShrink:0}}>
         <div>
           <div style={{fontSize:16,fontWeight:800,color:C.g800}}>Create Reservation</div>
@@ -602,19 +600,16 @@ function CreateResModal({open,onClose}){
     </div>
   </>
 }
-const Tip=({active,payload,label})=>{if(!active||!payload?.length)return null;return <div style={{background:"#1A2030",color:"#fff",padding:"10px 14px",borderRadius:R.sm,fontSize:12,fontFamily:numFont,boxShadow:"0 8px 24px rgba(0,0,0,0.18)",border:"1px solid rgba(255,255,255,0.06)"}}><div style={{fontWeight:700,marginBottom:4,letterSpacing:"-0.01em",fontFamily:font}}>{label}</div>{payload.map((p,i)=><div key={i} style={{display:"flex",alignItems:"center",gap:6,marginTop:3}}><span style={{width:7,height:7,borderRadius:2,background:p.color}}/><span style={{opacity:0.6,fontSize:11}}>{p.name}:</span><span style={{fontWeight:700}}>{typeof p.value==="number"?`$${p.value.toLocaleString()}`:p.value}</span></div>)}</div>};
+const Tip=({active,payload,label})=>{if(!active||!payload?.length)return null;return <div style={{background:"#1E293B",color:"#fff",padding:"12px 16px",borderRadius:10,fontSize:12,fontFamily:numFont,boxShadow:"0 8px 32px rgba(0,0,0,0.2)",border:"1px solid rgba(255,255,255,0.08)"}}><div style={{fontWeight:700,marginBottom:6,letterSpacing:"-0.01em",fontFamily:font,fontSize:13}}>{label}</div>{payload.map((p,i)=><div key={i} style={{display:"flex",alignItems:"center",gap:6,marginTop:4}}><span style={{width:8,height:8,borderRadius:3,background:p.color}}/><span style={{opacity:0.5,fontSize:11}}>{p.name}:</span><span style={{fontWeight:700}}>{typeof p.value==="number"?`$${p.value.toLocaleString()}`:p.value}</span></div>)}</div>};
 function HC({v}){const i=v/6;const blue=C.blue;return <td style={{width:38,height:30,textAlign:"center",fontSize:11,fontWeight:600,background:i===0?C.g100:`${blue}${Math.round((.15+i*.6)*255).toString(16).padStart(2,"0")}`,color:i>.5?"#fff":C.g600,borderRadius:R.sm-2,border:`2px solid ${C.cardBg}`}}>{v||""}</td>}
-
 /* ======== SLIDE PANELS (preserved) ======== */
 function SlidePanel({open,onClose,children,width=500}){if(!open)return null;return <><style>{`@keyframes slideIn{from{transform:translateX(100%);opacity:0.5}to{transform:translateX(0);opacity:1}}@keyframes fadeIn{from{opacity:0}to{opacity:1}}@keyframes slideUp{from{transform:translateY(12px);opacity:0}to{transform:translateY(0);opacity:1}}.slide-panel{animation:slideIn .32s cubic-bezier(.22,1,.36,1) forwards}.slide-overlay{animation:fadeIn .25s ease forwards}.slide-section{animation:slideUp .35s ease forwards;opacity:0}@media(max-width:768px){.slide-panel{width:100vw !important;max-width:100vw !important;height:100dvh !important;height:100vh !important}}`}</style><div className="slide-overlay" onClick={onClose} style={{position:"fixed",inset:0,background:"rgba(15,23,42,0.35)",backdropFilter:"blur(2px)",zIndex:199}}/><div className="slide-panel" style={{position:"fixed",top:0,right:0,width,maxWidth:"92vw",height:"100dvh",background:C.cardBg,boxShadow:`-8px 0 40px rgba(0,0,0,${C.bg==="#0F1318"?0.3:0.12}), -1px 0 0 ${C.cardBorder}`,zIndex:200,display:"flex",flexDirection:"column",fontFamily:font,overflow:"hidden"}}>{children}</div></>}
-
 function CustomerPanel({cust,onClose}){if(!cust)return null;return <SlidePanel open={true} onClose={onClose} width={480}>
   <div style={{padding:"28px 30px",borderBottom:`1px solid ${C.g200}`,display:"flex",justifyContent:"space-between",alignItems:"flex-start"}}><div style={{display:"flex",gap:16,alignItems:"center"}}><div style={{width:56,height:56,borderRadius:16,background:`linear-gradient(135deg,${C.blue},${C.green})`,display:"flex",alignItems:"center",justifyContent:"center",color:"#fff",fontWeight:800,fontSize:20}}>{cust.photo}</div><div><div style={{fontSize:20,fontWeight:800,color:C.g800}}>{cust.n}</div><div style={{fontSize:12,color:C.g400,marginTop:2}}>Customer since {cust.since}</div></div></div><button onClick={onClose} style={{background:C.g100,border:"none",width:32,height:32,borderRadius:8,color:C.g500,cursor:"pointer",display:"flex",alignItems:"center",justifyContent:"center"}}>{I.x(14,C.g500)}</button></div>
   <div style={{flex:1,overflow:"auto"}}><div style={{padding:"20px 30px",display:"grid",gridTemplateColumns:"1fr 1fr",gap:12}}>{[["Email",cust.email],["Phone",cust.phone],["Total Spent",`$${cust.s.toLocaleString()}`],["Total Bookings",cust.b],["Favorite Asset",cust.fav],["Trend",cust.t==="up"?"↑ Increasing":cust.t==="down"?"↓ Decreasing":"- Stable"]].map(([l,v],i)=><div className="slide-section" key={l} style={{animationDelay:`${i*50+100}ms`,background:C.g50,borderRadius:10,padding:"12px 16px",border:`1px solid ${C.g200}`}}><div style={{fontSize:10,fontWeight:700,color:C.g400,textTransform:"uppercase",letterSpacing:"0.08em",marginBottom:4}}>{l}</div><div style={{fontSize:14,fontWeight:600,color:C.g700}}>{v}</div></div>)}</div>
   <div style={{padding:"8px 30px 20px"}}><div style={{display:"flex",justifyContent:"space-between",alignItems:"center",marginBottom:14}}><span style={{fontSize:14,fontWeight:700,color:C.g800}}>Reservation History</span><span style={{fontSize:11,color:C.g400}}>{cust.hist.length} total</span></div>{cust.hist.map((h,i)=><div className="slide-section" key={h.id} style={{animationDelay:`${i*60+400}ms`,display:"flex",alignItems:"center",gap:14,padding:"12px 0",borderBottom:i<cust.hist.length-1?`1px solid ${C.g100}`:"none"}}><div style={{width:40,height:40,borderRadius:10,background:C.blueL,display:"flex",alignItems:"center",justifyContent:"center",flexShrink:0}}>{I.calendar(16,C.blue)}</div><div style={{flex:1,minWidth:0}}><div style={{fontSize:13,fontWeight:600,color:C.g700}}>{h.asset}</div><div style={{fontSize:11,color:C.g400}}>{h.date} - {h.time}</div></div><div style={{textAlign:"right",flexShrink:0}}><div style={{fontSize:14,fontWeight:700,color:C.g800}}>${h.rev.toFixed(2)}</div><div style={{fontSize:10,color:C.g400,fontVariantNumeric:"tabular-nums"}}>#{h.id}</div></div></div>)}</div></div>
   <div style={{padding:"16px 30px 24px",borderTop:`1px solid ${C.g200}`,display:"flex",gap:10}}><button style={{...btnP,flex:1,justifyContent:"center"}}>{I.mail(13,"#fff")} Send Email</button><button style={{...btnO,flex:1,display:"flex",justifyContent:"center",alignItems:"center",gap:6}}>{I.calendar(13,C.g600)} New Booking</button></div>
 </SlidePanel>}
-
 function ReservationPanel({res,onClose,approval}){
   if(!res&&!approval)return null;
   const a=approval||null;
@@ -634,21 +629,17 @@ function ReservationPanel({res,onClose,approval}){
   const totalRev=bookings.reduce((s,b)=>s+b.rev,0);
   const totalHrs=bookings.reduce((s,b)=>s+b.hours,0);
   const multiBook=bookings.length>1;
-
   const partName=a?a.org:res?.c;
   const cust=topCustData.find(c=>c.n===partName);
-
   const [selected,setSelected]=useState(()=>bookings.map(b=>b.bid));
   const [expandedBk,setExpandedBk]=useState(bookings[0]?.bid||null);
   const [selSupervisor,setSelSupervisor]=useState(null);
   const [reason,setReason]=useState("");
   const [panelTab,setPanelTab]=useState("details");
-
   const toggle=(bid)=>{setSelected(s=>s.includes(bid)?s.filter(x=>x!==bid):[...s,bid])};
   const allSel=selected.length===bookings.length;
   const noneSel=selected.length===0;
   const selRev=bookings.filter(b=>selected.includes(b.bid)).reduce((s,b)=>s+b.rev,0);
-
   /* Supervisor data with availability */
   const supervisors=usersData.filter(u=>u.role==="Site Admin").map(s=>{
     const schedules={
@@ -663,7 +654,6 @@ function ReservationPanel({res,onClose,approval}){
     const nextEvent=sched.filter(x=>!conflicts.find(c=>c===x))[0];
     return {...s,sched,conflicts,nextEvent};
   });
-
   return <SlidePanel open={true} onClose={onClose} width={540}>
   {/* ===== HEADER ===== */}
   <div style={{padding:"20px 28px 0",borderBottom:`1px solid ${C.g200}`,flexShrink:0}}>
@@ -696,12 +686,9 @@ function ReservationPanel({res,onClose,approval}){
       )}
     </div>
   </div>
-
   <div style={{flex:1,overflow:"auto",WebkitOverflowScrolling:"touch"}}>
-
   {/* ===== TAB: RESERVATION DETAILS ===== */}
   {panelTab==="details"&&<>
-
     {/* -- Participant -- */}
     <div style={{padding:"16px 28px",borderBottom:`1px solid ${C.g200}`}}>
       {/* Status Timeline */}
@@ -753,7 +740,6 @@ function ReservationPanel({res,onClose,approval}){
       </div>
       {insNote&&<div style={{marginTop:4,padding:"6px 12px",borderRadius:6,background:`${C.red}06`,border:`1px solid ${C.red}15`,fontSize:11,fontWeight:600,color:C.red}}>{insNote}</div>}
     </div>
-
     {/* -- Bookings -- */}
     <div style={{padding:"16px 28px",borderBottom:`1px solid ${C.g200}`}}>
       <div style={{display:"flex",justifyContent:"space-between",alignItems:"center",marginBottom:10}}>
@@ -763,7 +749,6 @@ function ReservationPanel({res,onClose,approval}){
           <button onClick={()=>setSelected(allSel?[]:bookings.map(b=>b.bid))} style={{background:"none",border:"none",color:C.blue,fontSize:10,fontWeight:700,cursor:"pointer",fontFamily:font,padding:0}}>{allSel?"Deselect All":"Select All"}</button>
         </div>}
       </div>
-
       {bookings.map((b)=>{
         const isSel=selected.includes(b.bid);
         const isExp=expandedBk===b.bid;
@@ -794,7 +779,6 @@ function ReservationPanel({res,onClose,approval}){
             </div>
           </div>}
         </div>})}
-
       {/* Totals + discount */}
       <div style={{display:"flex",justifyContent:"space-between",alignItems:"center",padding:"8px 0 0",marginTop:2}}>
         <span style={{fontSize:11,color:C.g400}}>
@@ -807,7 +791,6 @@ function ReservationPanel({res,onClose,approval}){
         <button style={{background:C.blue,color:"#fff",border:"none",borderRadius:6,padding:"7px 14px",fontSize:11,fontWeight:700,cursor:"pointer",fontFamily:font}}>Apply</button>
       </div>
     </div>
-
     {/* -- Assign Supervisor -- */}
     <div style={{padding:"16px 28px",borderBottom:`1px solid ${C.g200}`}}>
       <div style={{fontSize:11,fontWeight:700,color:C.g400,textTransform:"uppercase",letterSpacing:"0.06em",marginBottom:8}}>Assign Supervisor</div>
@@ -846,14 +829,12 @@ function ReservationPanel({res,onClose,approval}){
           </div>})}
       </div>
     </div>
-
     {/* -- Notes -- */}
     {a?.notes&&<div style={{padding:"16px 28px"}}>
       <div style={{fontSize:11,fontWeight:700,color:C.g400,textTransform:"uppercase",letterSpacing:"0.06em",marginBottom:4}}>Notes</div>
       <div style={{fontSize:12,color:C.g600,lineHeight:1.5,padding:"8px 12px",background:C.g50,borderRadius:6,border:`1px solid ${C.g200}`}}>{a.notes}</div>
     </div>}
   </>}
-
   {/* ===== TAB: PARTICIPANT HISTORY ===== */}
   {panelTab==="history"&&<>
     {cust?<>
@@ -905,9 +886,7 @@ function ReservationPanel({res,onClose,approval}){
       <div style={{fontSize:11,marginTop:4}}>This participant doesn't have any past bookings on record.</div>
     </div>}
   </>}
-
   </div>
-
   {/* ===== STICKY FOOTER ===== */}
   {isPending&&panelTab==="details"?<div style={{padding:"12px 28px 18px",borderTop:`1px solid ${C.cardBorder}`,background:C.cardBg,flexShrink:0}}>
     {multiBook&&!allSel&&selected.length>0&&<div style={{padding:"6px 10px",borderRadius:6,background:`${C.orange}06`,border:`1px solid ${C.orange}15`,marginBottom:8,fontSize:10,color:C.g600,lineHeight:1.4}}>
@@ -923,7 +902,6 @@ function ReservationPanel({res,onClose,approval}){
     <button onClick={()=>{globalShowToast({type:"success",title:"Reservation Cancelled",msg:"The reservation has been cancelled",color:C.red});onClose()}} style={{width:"100%",padding:"11px",borderRadius:8,border:`1px solid ${C.cardBorder}`,background:C.cardBg,color:C.red,fontWeight:600,fontSize:13,cursor:"pointer",fontFamily:font}}>Cancel Reservation</button>
   </div>:null}
 </SlidePanel>}
-
 /* ======== DASHBOARD ======== */
 function Dashboard(){
   const [assetRange,setAssetRange]=useState("month");
@@ -939,16 +917,14 @@ function Dashboard(){
   const totalFacRev=facMix.reduce((s,f)=>s+f.v,0);
   const todayRes=upcoming.filter(x=>x.d==="2/6/2026");
   const unreadNotifs=(globalNotifs||notifsInit).filter(n=>!n.read).length;
-
   return <div style={{display:"flex",flexDirection:"column",gap:20}}>
     {selRes!==null&&<ReservationPanel res={upcoming[selRes]} onClose={()=>setSelRes(null)}/>}
     {selApproval!==null&&<ReservationPanel approval={selApproval} onClose={()=>setSelApproval(null)}/>}
-
     {/* Pending Approvals */}
     {pendingApprovals.length>0&&(()=>{
       const expToday=pendingApprovals.filter(a=>a.expiresIn==="0 Days");
       const totalPendRev=pendingApprovals.reduce((s,a)=>s+a.bk.reduce((ss,b)=>ss+b.rev,0),0);
-      return <div className="pp-pending-bar" style={{display:"flex",alignItems:"center",gap:14,padding:"14px 20px",borderRadius:R.lg,background:C.cardBg,border:`1.5px solid ${C.blue}`,boxShadow:`0 0 0 3px ${C.blue}10`}}>
+      return <div className="pp-pending-bar" style={{display:"flex",alignItems:"center",gap:14,padding:"14px 20px",borderRadius:R.lg,background:C.cardBg,border:`1.5px solid ${C.green}`,boxShadow:`0 0 0 3px ${C.green}10`}}>
         <div style={{width:8,height:8,borderRadius:4,background:C.blue,flexShrink:0,animation:"pulse 1.5s ease infinite"}}/>
         <span style={{fontSize:13,fontWeight:700,color:C.g800,whiteSpace:"nowrap"}}>{pendingApprovals.length} Pending Approval{pendingApprovals.length>1?"s":""}</span>
         <span style={{width:1,height:16,background:C.g200,flexShrink:0}}/>
@@ -957,36 +933,85 @@ function Dashboard(){
         <div style={{flex:1}}/>
         <button onClick={()=>{globalSetTab("Rentals");globalSetRentalsTab("approvals")}} style={btnP}>Review{pendingApprovals.length>1?" All":""}</button>
       </div>})()}
-
+    {/* Today at a Glance */}
+    <Card np>
+      <div style={{padding:"14px 18px 6px",display:"flex",justifyContent:"space-between",alignItems:"center"}}>
+        <div style={{display:"flex",alignItems:"center",gap:8}}>
+          <span style={{display:"flex",alignItems:"center",justifyContent:"center",width:26,height:26,borderRadius:8,background:`linear-gradient(135deg, ${C.blueL}, ${C.greenL})`}}>{I.calendar(13,C.g500)}</span>
+          <span style={{fontSize:14,fontWeight:800,color:C.g800}}>Today - Thursday, Feb 6</span>
+          <span style={{fontSize:11,color:C.g400,fontWeight:500}}>3 bookings</span>
+        </div>
+        <div style={{display:"flex",alignItems:"center",gap:6}}>
+          <span style={{fontSize:18}}>⛅</span>
+          <div><div style={{fontSize:12,fontWeight:700,color:C.g700}}>58°F</div><div style={{fontSize:9,color:C.g400}}>Partly Cloudy</div></div>
+        </div>
+      </div>
+      {/* Gantt timeline */}
+      <div style={{padding:"4px 18px 14px",overflow:"auto",WebkitOverflowScrolling:"touch"}}>
+        <div style={{position:"relative",minWidth:520}}>
+          {/* Time axis */}
+          <div style={{display:"flex",justifyContent:"space-between",padding:"0 0 6px 110px"}}>
+            {["6AM","8AM","10AM","12PM","2PM","4PM","6PM","8PM","10PM"].map(t=><span key={t} style={{fontSize:9,color:C.g400,fontWeight:600,fontFamily:numFont}}>{t}</span>)}
+          </div>
+          {/* Facility rows */}
+          {[
+            {fac:"SA Gym",full:"St. Amant Gymnasium",outdoor:false,events:[{org:"Ascension Elite Cheer",start:17,end:19,rev:325,status:"confirmed"}]},
+            {fac:"PV Complex",full:"Prairieville Athletic Complex",outdoor:true,events:[{org:"Gonzales FC",start:8,end:10,rev:475,status:"at-risk"}]},
+            {fac:"DT Gym",full:"Dutchtown Gymnasium",outdoor:false,events:[{org:"Bayou City VB",start:8,end:10,rev:350,status:"confirmed"}]},
+            {fac:"Gator Stadium",full:"Gator Stadium",outdoor:true,events:[]},
+            {fac:"EA Gym",full:"East Ascension Gymnasium",outdoor:false,events:[]},
+          ].map(row=><div key={row.fac} style={{display:"flex",alignItems:"center",gap:0,marginBottom:4}}>
+            <div style={{width:110,flexShrink:0,paddingRight:8}}>
+              <div style={{fontSize:11,fontWeight:600,color:C.g700,whiteSpace:"nowrap",overflow:"hidden",textOverflow:"ellipsis"}}>{row.fac}</div>
+              {row.outdoor&&<div style={{fontSize:8,color:C.amber,fontWeight:700}}>☔ Rain 40% at 3PM</div>}
+            </div>
+            <div style={{flex:1,height:28,background:C.g100,borderRadius:6,position:"relative",overflow:"hidden"}}>
+              {/* Hour grid lines */}
+              {[6,8,10,12,14,16,18,20,22].map((h,i)=><div key={h} style={{position:"absolute",left:`${((h-6)/16)*100}%`,top:0,bottom:0,width:1,background:C.g200}}/>)}
+              {/* Now indicator */}
+              <div style={{position:"absolute",left:`${((9-6)/16)*100}%`,top:0,bottom:0,width:2,background:C.red,borderRadius:1,zIndex:2}}>
+                <div style={{position:"absolute",top:-3,left:-3,width:8,height:8,borderRadius:4,background:C.red}}/>
+              </div>
+              {/* Events */}
+              {row.events.map((ev,ei)=>{
+                const left=((ev.start-6)/16)*100;
+                const width=((ev.end-ev.start)/16)*100;
+                const clr=ev.status==="at-risk"?C.amber:C.blue;
+                return <div key={ei} style={{position:"absolute",left:`${left}%`,width:`${width}%`,top:3,bottom:3,borderRadius:4,background:`${clr}20`,border:`1px solid ${clr}40`,display:"flex",alignItems:"center",paddingLeft:6,overflow:"hidden",cursor:"pointer"}} title={`${ev.org} - $${ev.rev}`}>
+                  <span style={{fontSize:9,fontWeight:700,color:clr,whiteSpace:"nowrap"}}>{ev.org}</span>
+                </div>
+              })}
+              {row.events.length===0&&<div style={{position:"absolute",inset:0,display:"flex",alignItems:"center",justifyContent:"center"}}><span style={{fontSize:9,color:C.g400}}>Available</span></div>}
+            </div>
+          </div>)}
+        </div>
+      </div>
+    </Card>
     {/* Metrics */}
     <div className="pp-metrics" style={{display:"grid",gridTemplateColumns:"repeat(3,1fr)",gap:12}}>
-      <Met label="YTD Revenue" value="$61,011" change="+28%" dir="up" sub="vs last year"/>
-      <Met label="This Month" value="$8,761" change="+18.4%" dir="up" sub="projected $14.2k"/>
-      <Met label="Bookings" value="192" change="+34" dir="up" sub="YTD"/>
+      <Met label="YTD Revenue" value="$61,011" change="+28%" dir="up" sub="$47,665 this time last year"/>
+      <Met label="This Month" value="$8,761" change="+18.4%" dir="up" sub="$7,398 Feb 2025"/>
+      <Met label="Bookings" value="192" change="+34" dir="up" sub="143 this time last year"/>
       <Met label="Avg Rate" value="$318" change="+$42" dir="up" sub="vs $276 prior"/>
       <Met label="Util. Rate" value="52%" change="+9%" dir="up" sub="all assets"/>
       <Met label="Customers" value="23" change="+5" dir="up" sub="trailing 90 days"/>
     </div>
-
     {/* ─── AI Insights ─── */}
     <Card>
       <AIInsights/>
     </Card>
-
     {/* ─── SECTION: Revenue ─── */}
     <Div>Revenue</Div>
-
     {/* Revenue Trend - full width */}
-    <Card><Sec action={<div style={{display:"flex",gap:6,alignItems:"center"}}><div style={{display:"flex",gap:0,border:`1px solid ${C.cardBorder}`,borderRadius:R.sm,overflow:"hidden"}}>{[["6m","6 Mo"],["ytd","YTD"],["1y","1 Year"]].map(([k,l])=><button key={k} onClick={()=>setRevPeriod(k)} style={{padding:"4px 10px",fontSize:10,fontWeight:revPeriod===k?700:500,background:revPeriod===k?C.blue:C.cardBg,color:revPeriod===k?"#fff":C.g400,border:"none",cursor:"pointer",fontFamily:font,transition:"all .12s"}}>{l}</button>)}</div>{selMonth&&<button onClick={()=>setSelMonth(null)} style={{...btnO,fontSize:10,padding:"3px 10px",color:C.blue,borderColor:`${C.blue}30`}}>Clear x</button>}</div>}>Revenue Trend {selMonth&&<span style={{fontSize:12,fontWeight:500,color:C.blue}}>- {selMonth}</span>}</Sec><ResponsiveContainer width="100%" height={220}><AreaChart data={revPeriod==="6m"?monthlyRev.slice(-6):revPeriod==="1y"?monthlyRev:monthlyRev} onClick={(e)=>{if(e&&e.activeLabel)setSelMonth(prev=>prev===e.activeLabel?null:e.activeLabel)}}><defs><linearGradient id="gr" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stopColor={C.blue} stopOpacity={.15}/><stop offset="100%" stopColor={C.blue} stopOpacity={.01}/></linearGradient></defs><CartesianGrid strokeDasharray="3 3" stroke={C.g200} vertical={false}/><XAxis dataKey="m" axisLine={false} tickLine={false} tick={{fontSize:11,fill:C.g400,fontFamily:font}}/><YAxis axisLine={false} tickLine={false} tick={{fontSize:11,fill:C.g400,fontFamily:font}} tickFormatter={v=>"$"+(v/1000).toFixed(1)+"k"}/><Tooltip content={<Tip/>}/><Area type="monotone" dataKey="r" name="Revenue" stroke={C.blue} strokeWidth={2} fill="url(#gr)" dot={(props)=>{const {cx,cy,payload,index}=props;return (<circle key={index} cx={cx} cy={cy} r={selMonth===payload.m?6:3} fill={C.blue} stroke={selMonth===payload.m?"#fff":C.cardBg} strokeWidth={selMonth===payload.m?3:2} style={{cursor:"pointer",transition:"r .2s"}}/>)}} activeDot={{r:5,stroke:C.blue,strokeWidth:2,fill:C.cardBg}}/></AreaChart></ResponsiveContainer>
+    <Card><Sec action={<div style={{display:"flex",gap:6,alignItems:"center"}}><div style={{display:"flex",gap:0,border:`1px solid ${C.cardBorder}`,borderRadius:R.sm,overflow:"hidden"}}>{[["6m","6 Mo"],["ytd","YTD"],["1y","1 Year"]].map(([k,l])=><button key={k} onClick={()=>setRevPeriod(k)} style={{padding:"4px 10px",fontSize:10,fontWeight:revPeriod===k?700:500,background:revPeriod===k?C.blue:C.cardBg,color:revPeriod===k?"#fff":C.g400,border:"none",cursor:"pointer",fontFamily:font,transition:"all .12s"}}>{l}</button>)}</div>{selMonth&&<button onClick={()=>setSelMonth(null)} style={{...btnO,fontSize:10,padding:"3px 10px",color:C.blue,borderColor:`${C.blue}30`}}>Clear x</button>}</div>} icon={I.chart(13,C.g500)}>Revenue Trend {selMonth&&<span style={{fontSize:12,fontWeight:500,color:C.blue}}>- {selMonth}</span>}</Sec><ResponsiveContainer width="100%" height={220}><AreaChart data={revPeriod==="6m"?monthlyRev.slice(-6):revPeriod==="1y"?monthlyRev:monthlyRev} onClick={(e)=>{if(e&&e.activeLabel)setSelMonth(prev=>prev===e.activeLabel?null:e.activeLabel)}}><defs><linearGradient id="gr" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stopColor={C.blue} stopOpacity={.15}/><stop offset="100%" stopColor={C.blue} stopOpacity={.01}/></linearGradient></defs><CartesianGrid strokeDasharray="3 3" stroke={C.g200} vertical={false}/><XAxis dataKey="m" axisLine={false} tickLine={false} tick={{fontSize:11,fill:C.g400,fontFamily:font}}/><YAxis axisLine={false} tickLine={false} tick={{fontSize:11,fill:C.g400,fontFamily:font}} tickFormatter={v=>"$"+(v/1000).toFixed(1)+"k"}/><Tooltip content={<Tip/>}/><Area type="monotone" dataKey="r" name="Revenue" stroke={C.blue} strokeWidth={2} fill="url(#gr)" dot={(props)=>{const {cx,cy,payload,index}=props;return (<circle key={index} cx={cx} cy={cy} r={selMonth===payload.m?6:3} fill={C.blue} stroke={selMonth===payload.m?"#fff":C.cardBg} strokeWidth={selMonth===payload.m?3:2} style={{cursor:"pointer",transition:"r .2s"}}/>)}} activeDot={{r:5,stroke:C.blue,strokeWidth:2,fill:C.cardBg}}/></AreaChart></ResponsiveContainer>
       {selMonth&&<div style={{marginTop:8,padding:"10px 14px",background:C.blueL,borderRadius:R.sm,display:"flex",alignItems:"center",gap:8}}>
         <span style={{fontSize:12,fontWeight:600,color:C.blue}}>{selMonth} - ${(monthlyRev.find(m=>m.m===selMonth)||{}).r?monthlyRev.find(m=>m.m===selMonth).r.toLocaleString():""} revenue</span>
         <span style={{fontSize:11,color:C.g400,marginLeft:"auto"}}>Click chart to filter</span>
       </div>}
     </Card>
-
     {/* Revenue by Campus + Top Organizations - side by side */}
     <div style={{display:"flex",gap:16,flexWrap:"wrap"}}>
-      <Card style={{flex:1,minWidth:300}}><Sec>Revenue by Campus</Sec>
+      <Card style={{flex:1,minWidth:300}}><Sec icon={I.building(13,C.g500)}>Revenue by Campus</Sec>
         {/* Stacked bar summary */}
         <div style={{display:"flex",height:6,borderRadius:3,overflow:"hidden",marginBottom:16}}>{facMix.map((f,i)=><div key={f.n} style={{flex:f.v,background:f.c,transition:"flex .3s"}}/>)}</div>
         {/* Campus rows */}
@@ -1007,40 +1032,44 @@ function Dashboard(){
         </div>
         <div style={{padding:"10px 14px",background:C.g50,borderRadius:8,border:`1px solid ${C.g200}`,display:"flex",justifyContent:"space-between",alignItems:"center",marginTop:12}}><div><div style={{fontSize:10,fontWeight:700,color:C.g400,textTransform:"uppercase",letterSpacing:"0.06em"}}>Total</div><div style={{fontSize:18,fontWeight:800,color:C.g800,fontFamily:numFont}}>${totalFacRev.toLocaleString()}</div></div><div style={{fontSize:11,color:C.g400}}>{facMix.length} campuses - {facMix.reduce((s,f)=>s+f.assets,0)} assets</div></div>
       </Card>
-      <Card style={{flex:1,minWidth:300}}><Sec>Top Organizations</Sec>{topCustData.map((c,i)=><div key={c.n} onClick={()=>globalShowCust(i)} style={{display:"flex",alignItems:"center",gap:10,padding:"11px 4px",borderBottom:i<4?`1px solid ${C.g100}`:"none",cursor:"pointer",borderRadius:8,transition:"background .15s"}} onMouseEnter={e=>e.currentTarget.style.background=C.blueL} onMouseLeave={e=>e.currentTarget.style.background="transparent"}><div style={{width:36,height:36,borderRadius:12,background:`linear-gradient(135deg,${[C.blue,"#4DA8D8",C.blueDk,"#2A8CBF",C.g500][i]},${[C.blueDk,C.blue,"#4DA8D8",C.blueDk,C.g600][i]})`,display:"flex",alignItems:"center",justifyContent:"center",color:"#fff",fontWeight:800,fontSize:13,flexShrink:0}}>{c.photo}</div><div style={{flex:1,minWidth:0}}><div style={{fontSize:13,fontWeight:700,color:C.g700}}>{c.n}</div><div style={{fontSize:11,color:C.g400}}>{c.b} bookings - {c.fav}</div></div><div style={{display:"flex",alignItems:"center",gap:8,flexShrink:0}}><div style={{textAlign:"right"}}><div style={{fontSize:14,fontWeight:800,color:C.g800,fontFamily:numFont}}>${c.s.toLocaleString()}</div></div><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke={C.g300} strokeWidth="2" strokeLinecap="round"><path d="M9 18l6-6-6-6"/></svg></div></div>)}</Card>
+      <Card style={{flex:1,minWidth:300}}><Sec icon={I.star(13,C.g500)}>Top Organizations</Sec>{topCustData.map((c,i)=><div key={c.n} onClick={()=>globalShowCust(i)} style={{display:"flex",alignItems:"center",gap:10,padding:"11px 4px",borderBottom:i<4?`1px solid ${C.g100}`:"none",cursor:"pointer",borderRadius:8,transition:"background .15s"}} onMouseEnter={e=>e.currentTarget.style.background=C.blueL} onMouseLeave={e=>e.currentTarget.style.background="transparent"}><div style={{width:36,height:36,borderRadius:12,background:`linear-gradient(135deg,${[C.blue,"#4DA8D8",C.blueDk,"#2A8CBF",C.g500][i]},${[C.blueDk,C.blue,"#4DA8D8",C.blueDk,C.g600][i]})`,display:"flex",alignItems:"center",justifyContent:"center",color:"#fff",fontWeight:800,fontSize:13,flexShrink:0}}>{c.photo}</div><div style={{flex:1,minWidth:0}}><div style={{fontSize:13,fontWeight:700,color:C.g700}}>{c.n}</div><div style={{fontSize:11,color:C.g400}}>{c.b} bookings - {c.fav}</div></div><div style={{display:"flex",alignItems:"center",gap:8,flexShrink:0}}><div style={{textAlign:"right"}}><div style={{fontSize:14,fontWeight:800,color:C.g800,fontFamily:numFont}}>${c.s.toLocaleString()}</div></div><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke={C.g300} strokeWidth="2" strokeLinecap="round"><path d="M9 18l6-6-6-6"/></svg></div></div>)}</Card>
     </div>
-
     {/* ─── SECTION: Bookings & Operations ─── */}
     <Div>Bookings & Operations</Div>
-
     {/* Upcoming Reservations */}
     <div className="pp-res-header" style={{display:"flex",justifyContent:"space-between",alignItems:"center",gap:8}}>
       <div style={{cursor:"pointer",minWidth:0}} onClick={()=>{globalSetTab("Rentals");setTimeout(()=>{if(globalSetRentalsTab)globalSetRentalsTab("reservations")},100)}}><span style={{fontSize:14,fontWeight:700,color:C.g800}}>Upcoming Reservations</span><span className="pp-res-meta" style={{fontSize:11,color:C.g400,marginLeft:8}}>{upcoming.length} total</span><span className="pp-res-meta" style={{fontSize:10,color:C.blue,marginLeft:6,fontWeight:600}}>View all  </span></div>
       <button onClick={()=>globalCreateRes()} style={{...btnP,whiteSpace:"nowrap",flexShrink:0}}><span className="pp-btn-full">+ New Reservation</span><span className="pp-btn-short">+ New</span></button>
     </div>
-    <Card np><div className="pp-table-wrap"><table style={{width:"100%",borderCollapse:"collapse",fontSize:13}}><thead><tr>{[{h:"Res #",k:"id"},{h:"Asset",k:"a"},{h:"Customer",k:"c"},{h:"Date",k:"d"},{h:"Time",k:"t"},{h:"Status",k:"status"},{h:"Revenue",k:"r"},{h:"",k:""}].map(col=><th key={col.h||"act"} style={{...TH,cursor:col.k?"pointer":"default",userSelect:"none"}}>{col.h}</th>)}</tr></thead><tbody>{(()=>{const monthMap={Aug:"8",Sep:"9",Oct:"10",Nov:"11",Dec:"12",Jan:"1",Feb:"2"};const filt=selMonth?upcoming.filter(x=>{const m=x.d.split("/")[0];return m===monthMap[selMonth]}):upcoming;const shown=showAllRes?filt:filt.slice(0,3);return shown.map((x,i)=>{
-      const stMap={"confirmed":{bg:C.greenL,c:C.green,label:"Confirmed"},"pending":{bg:C.amberL,c:C.amber,label:"Pending"},"at-risk":{bg:C.redL,c:C.red,label:"At Risk"}};
-      const st=stMap[x.status]||stMap.confirmed;
-      return <tr key={x.id} style={{cursor:"pointer",background:x.status==="at-risk"?`${C.red}05`:undefined}} onMouseEnter={e=>e.currentTarget.style.background=C.g50} onMouseLeave={e=>e.currentTarget.style.background=x.status==="at-risk"?`${C.red}05`:""}>
-        <td style={{...TD,fontWeight:700,color:C.blue,fontVariantNumeric:"tabular-nums"}}>{x.id}</td>
-        <td style={{...TD,fontWeight:600,color:C.g700}}>{x.a}</td>
-        <td style={{...TD,color:C.g600}}>{x.c}</td>
-        <td style={{...TD,color:C.g600,whiteSpace:"nowrap"}}>{x.d}</td>
-        <td style={{...TD,color:C.g600,whiteSpace:"nowrap"}}>{x.t}</td>
-        <td style={TD}><span style={{display:"inline-flex",alignItems:"center",gap:4,padding:"3px 10px",borderRadius:20,background:st.bg,color:st.c,fontSize:10,fontWeight:700,textTransform:"uppercase",letterSpacing:"0.04em"}}><span style={{width:5,height:5,borderRadius:"50%",background:"currentColor"}}/>{st.label}</span></td>
-        <td style={{...TD,fontWeight:700,color:C.g800,fontVariantNumeric:"tabular-nums"}}>${x.r.toFixed(2)}</td>
-        <td style={{...TD,whiteSpace:"nowrap"}}><div style={{display:"flex",gap:4}}>
-          <button onClick={e=>{e.stopPropagation();setSelRes(i)}} style={{...btnO,padding:"5px 12px",fontSize:11}}>View</button>
-          <button onClick={e=>{e.stopPropagation();globalShowToast({type:"success",title:"Reservation Cancelled",msg:x.c+" - "+x.id,color:C.red})}} style={{background:"none",border:`1px solid ${C.red}25`,borderRadius:R.sm,padding:"5px 10px",fontSize:11,fontWeight:600,color:C.red,cursor:"pointer",fontFamily:font}}>Cancel</button>
-        </div></td>
-      </tr>})})()}</tbody></table></div>
+    <Card np>
+      <div style={{padding:"4px 0"}}>
+        {(()=>{const monthMap={Aug:"8",Sep:"9",Oct:"10",Nov:"11",Dec:"12",Jan:"1",Feb:"2"};const filt=selMonth?upcoming.filter(x=>{const m=x.d.split("/")[0];return m===monthMap[selMonth]}):upcoming;const shown=showAllRes?filt:filt.slice(0,3);return shown.map((x,i)=>{
+          const stMap={"confirmed":{bg:C.greenL,c:C.green,label:"Confirmed"},"pending":{bg:C.amberL,c:C.amber,label:"Pending"},"at-risk":{bg:C.redL,c:C.red,label:"At Risk"}};
+          const st=stMap[x.status]||stMap.confirmed;
+          return <div key={x.id} onClick={()=>setSelRes(i)} style={{display:"flex",alignItems:"center",gap:14,padding:"14px 20px",borderBottom:i<shown.length-1?`1px solid ${C.g100}`:"none",cursor:"pointer",transition:"background .12s"}} onMouseEnter={e=>e.currentTarget.style.background=C.g50} onMouseLeave={e=>e.currentTarget.style.background="transparent"}>
+            <div style={{width:40,height:40,borderRadius:10,background:x.status==="at-risk"?C.redL:C.blueL,display:"flex",alignItems:"center",justifyContent:"center",flexShrink:0}}>
+              {I.calendar(16,x.status==="at-risk"?C.red:C.blue)}
+            </div>
+            <div style={{flex:1,minWidth:0}}>
+              <div style={{display:"flex",alignItems:"center",gap:6}}>
+                <span style={{fontSize:13,fontWeight:600,color:C.g800}}>{x.a}</span>
+                <span style={{display:"inline-flex",alignItems:"center",gap:3,padding:"2px 7px",borderRadius:20,background:st.bg,color:st.c,fontSize:9,fontWeight:700,textTransform:"uppercase",letterSpacing:"0.03em"}}><span style={{width:4,height:4,borderRadius:"50%",background:"currentColor"}}/>{st.label}</span>
+              </div>
+              <div style={{fontSize:12,color:C.g500,marginTop:2}}>{x.c} - {x.d}, {x.t}</div>
+            </div>
+            <div style={{textAlign:"right",flexShrink:0}}>
+              <div style={{fontSize:14,fontWeight:700,color:C.g800,fontFamily:numFont}}>${x.r.toFixed(2)}</div>
+              <div style={{fontSize:10,color:C.g400,fontFamily:numFont,marginTop:1}}>#{x.id}</div>
+            </div>
+          </div>
+        })})()}
+      </div>
       <div style={{padding:"12px 20px",borderTop:`1px solid ${C.g100}`,textAlign:"center"}}>
         <button onClick={()=>setShowAllRes(!showAllRes)} style={{background:"none",border:"none",fontSize:12,fontWeight:600,color:C.blue,cursor:"pointer",fontFamily:font}}>{showAllRes?"Show Less":"View All "+upcoming.length+" Reservations"}</button>
       </div>
     </Card>
-
     {/* Asset Performance + Recent Activity */}
-    <Card><Sec action={<div style={{display:"flex",gap:4}}>{["day","week","month","year"].map(p=><button key={p} onClick={()=>setAssetRange(p)} style={pill(assetRange===p)}>{p.charAt(0).toUpperCase()+p.slice(1)}</button>)}</div>}>Asset Performance</Sec>
+    <Card><Sec action={<div style={{display:"flex",gap:4}}>{["day","week","month","year"].map(p=><button key={p} onClick={()=>setAssetRange(p)} style={pill(assetRange===p)}>{p.charAt(0).toUpperCase()+p.slice(1)}</button>)}</div>} icon={I.bar(13,C.g500)}>Asset Performance</Sec>
       <div className="pp-table-wrap"><table style={{width:"100%",borderCollapse:"collapse",fontSize:13}}><thead><tr>{["Asset","Revenue","Bookings","Utilization"].map(h=><th key={h} style={TH}>{h}</th>)}</tr></thead><tbody>{ap.map((x,i)=><tr key={x.a} style={{background:i%2===0?C.g50:C.cardBg}}><td style={{...TD,fontWeight:600,color:C.g700}}>{x.a}</td><td style={{...TD,fontWeight:700,color:C.g800}}>${x.r.toFixed(2)}</td><td style={TD}>{x.b}</td><td style={TD}><div style={{display:"flex",alignItems:"center",gap:8}}><ProgressRing pct={x.u} size={32} stroke={3}/><span style={{fontSize:11,fontWeight:700,color:C.g600}}>{x.u}%</span></div></td></tr>)}</tbody></table></div>
       <div style={{marginTop:14,padding:"10px 14px",background:C.g50,borderRadius:8,display:"flex",justifyContent:"space-between",fontSize:12}}><span style={{color:C.g400}}>Total ({assetRange})</span><span style={{fontWeight:800,color:C.g800}}>${ap.reduce((s,x)=>s+x.r,0).toFixed(2)}</span></div>
       <div style={{marginTop:16,borderTop:`1px solid ${C.g200}`,paddingTop:14}}>
@@ -1064,11 +1093,8 @@ function Dashboard(){
         </div>}
       </div>
     </Card>
-
-
   </div>
 }
-
 /* ======== RENTALS (sub-tabs: Locations, Reservations, Approvals) ======== */
 function FacilityPanel({selFacility,setSelFacility}){
   if(selFacility===null)return null;
@@ -1081,11 +1107,9 @@ function FacilityPanel({selFacility,setSelFacility}){
   const [contactPhone,setContactPhone]=useState(contactName==="TBD"?"":"(225) 555-01"+selFacility+"0");
   const inp={width:"100%",padding:"8px 10px",border:`1px solid ${C.cardBorder}`,borderRadius:R.sm,fontSize:16,fontFamily:font,background:C.g50,color:C.g700,boxSizing:"border-box"};
   const Label=({children})=><label style={{fontSize:9,fontWeight:700,color:C.g400,textTransform:"uppercase",letterSpacing:"0.06em",display:"block",marginBottom:4}}>{children}</label>;
-
   const toggleDay=(fi,di)=>{
     setFacAvail(prev=>{const n=[...prev];n[fi]=[...n[fi]];n[fi][di]=!n[fi][di];return n});
   };
-
   return <SlidePanel open={true} onClose={()=>setSelFacility(null)} width={520}>
     <div style={{padding:"20px 24px",borderBottom:`1px solid ${C.g200}`,flexShrink:0}}>
       <div style={{display:"flex",justifyContent:"space-between",alignItems:"flex-start"}}>
@@ -1108,14 +1132,12 @@ function FacilityPanel({selFacility,setSelFacility}){
         </div>
         <span style={{fontSize:10,color:C.g400}}>{facs.length} facilities</span>
       </div>
-
       <div style={{display:"grid",gridTemplateColumns:"1fr 1fr 1fr",gap:8,marginBottom:20}}>
         {[["Utilization",utilizations[selFacility]+"%",utilizations[selFacility]>50?C.green:C.orange],["Bookings",bookingCounts[selFacility]+" YTD",C.blue],["Revenue","$"+Math.round(bookingCounts[selFacility]*rateDefaults[selFacility]*1.8).toLocaleString(),C.g800]].map(([l,v,clr])=><div key={l} style={{padding:"10px",background:C.g50,borderRadius:R.sm,border:`1px solid ${C.g200}`,textAlign:"center"}}>
           <div style={{fontSize:8,fontWeight:700,color:C.g400,textTransform:"uppercase",letterSpacing:"0.06em"}}>{l}</div>
           <div style={{fontSize:16,fontWeight:800,color:clr,marginTop:2}}>{v}</div>
         </div>)}
       </div>
-
       {/* Campus contact */}
       <div style={{fontSize:11,fontWeight:700,color:C.g800,marginBottom:8}}>Campus Contact</div>
       <div style={{display:"grid",gridTemplateColumns:"1fr 1fr",gap:8,marginBottom:20}}>
@@ -1124,7 +1146,6 @@ function FacilityPanel({selFacility,setSelFacility}){
         <div><Label>Phone</Label><input value={contactPhone} onChange={e=>setContactPhone(e.target.value)} style={inp}/></div>
         <div><Label>Location</Label><input value={c.city+", Louisiana"} readOnly style={{...inp,color:C.g400}}/></div>
       </div>
-
       {/* Facilities - editable */}
       <div style={{fontSize:11,fontWeight:700,color:C.g800,marginBottom:8}}>Facilities ({facs.length})</div>
       {facs.map((f,fi)=>{const fullN=facilityFull[f]||f;return <div key={f} style={{padding:"12px",borderRadius:R.sm,border:`1px solid ${C.cardBorder}`,marginBottom:8,background:C.cardBg}}>
@@ -1150,7 +1171,6 @@ function FacilityPanel({selFacility,setSelFacility}){
         </div>
         <div style={{fontSize:9,color:C.g400,marginTop:4}}>Click days to toggle availability</div>
       </div>})}
-
       {/* Sticky save/cancel footer */}
       <div style={{position:"sticky",bottom:0,margin:"8px -16px -16px",padding:"16px 16px",paddingBottom:"max(16px, env(safe-area-inset-bottom, 16px))",borderTop:`2px solid ${C.g200}`,display:"flex",gap:10,background:C.cardBg,boxShadow:`0 -4px 16px rgba(0,0,0,${C.bg==="#0F1318"?0.25:0.08})`}}>
         <button onClick={()=>setSelFacility(null)} style={{...btnO,flex:1,display:"flex",justifyContent:"center",padding:"12px 14px"}}>Cancel</button>
@@ -1159,7 +1179,6 @@ function FacilityPanel({selFacility,setSelFacility}){
     </div>
   </SlidePanel>
 }
-
 function Rentals(){
   const {dark}=useContext(ThemeCtx);
   const [subTab,setSubTab]=useState("approvals");
@@ -1173,6 +1192,19 @@ function Rentals(){
   const [selRes,setSelRes]=useState(null);
   const [showSyncMenu,setShowSyncMenu]=useState(false);
   const [locView,setLocView]=useState("list");
+  const [calMonth,setCalMonth]=useState(1); /* 0=Jan, 1=Feb, etc */
+  const [showPromoModal,setShowPromoModal]=useState(false);
+  const promoScrollRef=useRef(null);
+  useEffect(()=>{if(showPromoModal&&promoScrollRef.current)promoScrollRef.current.scrollTop=0},[showPromoModal]);
+  const [promoForm,setPromoForm]=useState({name:"",code:"",pct:"",maxDisc:"",startDate:"2026-02-21",endDate:"2026-05-21",facility:"all",participants:[],type:"percentage"});
+  const promoParticipantOptions=topCustData.map(c=>({name:c.n,email:c.email}));
+  const resetPromoForm=()=>setPromoForm({name:"",code:"",pct:"",maxDisc:"",startDate:"2026-02-21",endDate:"2026-05-21",facility:"all",participants:[],type:"percentage"});
+  const openPromoFromTemplate=(tpl)=>{
+    const templates={loyalty:{name:"Partner Loyalty",code:"LOYAL"+new Date().getFullYear(),pct:"10",maxDisc:"250"},seasonal:{name:"Seasonal Deal",code:"SEASON"+new Date().getFullYear(),pct:"15",maxDisc:"500"},reengage:{name:"Come Back",code:"COMEBACK"+Math.floor(Math.random()*100),pct:"20",maxDisc:"400"},firsttime:{name:"First Timer",code:"FIRSTBOOK",pct:"25",maxDisc:"300"}};
+    const t=templates[tpl]||{};
+    setPromoForm(f=>({...f,...t}));
+    setShowPromoModal(true);
+  };
   const {requireSiteAdmin,assignedAdmins}=useSiteAdmin();
   globalSetRentalsTab=setSubTab;
   /* Helper: is a PP event unassigned? Checks all assigned keys for day+partial match */
@@ -1214,21 +1246,96 @@ function Rentals(){
     if(facilityFilt!=="all")f=f.filter(e=>e.a===facilityFilt);
     return f;
   };
-
   return <div style={{display:"flex",flexDirection:"column",gap:20}}>
     {selApproval!==null&&<ReservationPanel approval={selApproval} onClose={()=>setSelApproval(null)}/>}
     {selRes!==null&&<ReservationPanel res={upcoming[selRes]} onClose={()=>setSelRes(null)}/>}
-
     {/* Sub-tab navigation */}
     <div className="pp-rentals-tabs" style={{display:"flex",gap:0,borderBottom:`1px solid ${C.cardBorder}`}}>
-      {[["approvals","Approvals",pendingApprovals.length],["reservations","Reservations",null],["locations","Locations",null]].map(([k,l,badge])=>
+      {[["approvals","Approvals",pendingApprovals.length],["reservations","Reservations",null],["bulk","Bulk Reservations",null],["invoices","Invoices",null],["locations","Locations",null],["promotions","Promotions",null]].map(([k,l,badge])=>
         <button key={k} onClick={()=>setSubTab(k)} style={{padding:"12px 20px",fontSize:13,fontWeight:subTab===k?700:500,color:subTab===k?C.g800:C.g500,background:"none",border:"none",borderBottom:subTab===k?`2px solid ${C.blue}`:"2px solid transparent",marginBottom:-1,cursor:"pointer",fontFamily:font,display:"flex",alignItems:"center",gap:6,letterSpacing:"-0.01em",whiteSpace:"nowrap"}}>
           {l}
           {badge>0&&<span style={{background:C.blue,color:"#fff",fontSize:10,fontWeight:800,padding:"1px 6px",borderRadius:8,minWidth:18,textAlign:"center"}}>{badge}</span>}
         </button>
       )}
     </div>
-
+    {/* ============ BULK RESERVATIONS TAB ============ */}
+    {subTab==="bulk"&&<>
+      <div style={{display:"flex",justifyContent:"space-between",alignItems:"center",marginBottom:4}}>
+        <div style={{fontSize:14,fontWeight:700,color:C.g800}}>Bulk Reservations</div>
+        <button onClick={()=>{if(globalShowToast)globalShowToast({type:"info",title:"Coming Soon",msg:"Bulk reservation creator opening...",color:C.blue})}} style={btnP}>+ Create Bulk Reservation</button>
+      </div>
+      <div style={{padding:"14px 18px",background:`linear-gradient(135deg, ${C.blueL}, ${C.greenL})`,borderRadius:R.lg,marginBottom:16}}>
+        <div style={{fontSize:12,color:C.g600,lineHeight:1.6}}>Bulk reservations let you reserve multiple recurring time slots for a partner at a custom rate. Perfect for organizations like Gonzales FC who book every Tuesday and Thursday, or seasonal programs that need locked-in schedules.</div>
+      </div>
+      <Card>
+        <Sec icon={I.calendar(13,C.g500)}>Active Bulk Agreements</Sec>
+        {[
+          {org:"Gonzales FC",slots:"Tue & Thu 5-7 PM",fac:"Prairieville Athletic Complex",rate:"$425/session",sessions:24,used:16,remaining:8,start:"01/06/2026",end:"06/30/2026",total:10200,status:"active",color:C.green},
+          {org:"Bayou City Volleyball",slots:"Mon & Wed 6-8 PM",fac:"Dutchtown Gymnasium",rate:"$300/session",sessions:20,used:12,remaining:8,start:"01/13/2026",end:"05/31/2026",total:6000,status:"active",color:C.green},
+          {org:"Louisiana Tigers AAU",slots:"Sat 9 AM-12 PM",fac:"Dutchtown Gymnasium",rate:"$500/session",sessions:12,used:5,remaining:7,start:"02/01/2026",end:"04/30/2026",total:6000,status:"active",color:C.green},
+          {org:"Ascension Dance Academy",slots:"Fri 4-6 PM",fac:"St. Amant Gymnasium",rate:"$275/session",sessions:16,used:14,remaining:2,start:"10/01/2025",end:"02/28/2026",total:4400,status:"expiring",color:C.amber},
+        ].map((b,i)=><div key={i} style={{display:"flex",alignItems:"center",gap:12,padding:"14px 0",borderBottom:i<3?`1px solid ${C.g100}`:"none"}}>
+          <div style={{width:3,height:42,borderRadius:2,background:b.color,flexShrink:0}}/>
+          <div style={{flex:1,minWidth:0}}>
+            <div style={{display:"flex",alignItems:"center",gap:6}}>
+              <span style={{fontSize:13,fontWeight:700,color:C.g800}}>{b.org}</span>
+              <span style={{fontSize:9,fontWeight:700,color:b.status==="active"?C.green:C.amber,textTransform:"uppercase"}}>{b.status==="expiring"?"Expiring Soon":b.status}</span>
+            </div>
+            <div style={{fontSize:11,color:C.g500,marginTop:2}}>{b.slots} - {b.fac}</div>
+            <div style={{display:"flex",gap:12,marginTop:4}}>
+              <span style={{fontSize:10,color:C.g400}}>{b.rate}</span>
+              <span style={{fontSize:10,color:C.g400}}>{b.used}/{b.sessions} used</span>
+              <span style={{fontSize:10,color:C.g400}}>{b.start} - {b.end}</span>
+            </div>
+          </div>
+          <div style={{textAlign:"right",flexShrink:0}}>
+            <div style={{fontSize:16,fontWeight:800,color:C.g800,fontFamily:numFont}}>${b.total.toLocaleString()}</div>
+            <div style={{fontSize:10,color:C.g400}}>{b.remaining} remaining</div>
+          </div>
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke={C.g300} strokeWidth="2" strokeLinecap="round"><path d="M9 18l6-6-6-6"/></svg>
+        </div>)}
+      </Card>
+      {/* Utilization bar */}
+      <div style={{display:"flex",gap:12,marginTop:4}}>
+        <Card style={{flex:1,textAlign:"center",padding:"14px"}}><div style={{fontSize:9,fontWeight:700,color:C.g400,textTransform:"uppercase",letterSpacing:"0.06em"}}>Total Agreements</div><div style={{fontSize:22,fontWeight:800,color:C.g800,fontFamily:numFont,marginTop:4}}>4</div></Card>
+        <Card style={{flex:1,textAlign:"center",padding:"14px"}}><div style={{fontSize:9,fontWeight:700,color:C.g400,textTransform:"uppercase",letterSpacing:"0.06em"}}>Bulk Revenue</div><div style={{fontSize:22,fontWeight:800,color:C.green,fontFamily:numFont,marginTop:4}}>$26,600</div></Card>
+        <Card style={{flex:1,textAlign:"center",padding:"14px"}}><div style={{fontSize:9,fontWeight:700,color:C.g400,textTransform:"uppercase",letterSpacing:"0.06em"}}>Sessions Remaining</div><div style={{fontSize:22,fontWeight:800,color:C.blue,fontFamily:numFont,marginTop:4}}>25</div></Card>
+      </div>
+    </>}
+    {/* ============ INVOICES TAB ============ */}
+    {subTab==="invoices"&&<>
+      <div style={{display:"flex",justifyContent:"space-between",alignItems:"center",marginBottom:4}}>
+        <div style={{fontSize:14,fontWeight:700,color:C.g800}}>Invoices</div>
+        <button onClick={()=>{if(globalShowToast)globalShowToast({type:"info",title:"New Invoice",msg:"Invoice builder opening...",color:C.blue})}} style={btnP}>{I.mail(12,"#fff")} Send Invoice</button>
+      </div>
+      <Card>
+        <Sec icon={I.wallet(13,C.g500)}>Recent Invoices</Sec>
+        <div style={{overflowX:"auto"}}>
+        <table style={{width:"100%",borderCollapse:"collapse",fontSize:13}}><thead><tr>{["Invoice","Organization","Amount","Issued","Due","Status"].map(h=><th key={h} style={TH}>{h}</th>)}</tr></thead>
+        <tbody>
+          {[
+            {id:"INV-0091",org:"Gonzales FC",amount:2125,issued:"02/01/2026",due:"02/15/2026",status:"paid",paidDate:"02/10/2026"},
+            {id:"INV-0090",org:"Bayou City Volleyball",amount:1800,issued:"02/01/2026",due:"02/15/2026",status:"paid",paidDate:"02/08/2026"},
+            {id:"INV-0089",org:"Louisiana Tigers AAU",amount:2500,issued:"02/01/2026",due:"02/28/2026",status:"outstanding",paidDate:null},
+            {id:"INV-0088",org:"Ascension Dance Academy",amount:1100,issued:"01/15/2026",due:"01/31/2026",status:"paid",paidDate:"01/28/2026"},
+            {id:"INV-0087",org:"River Parish Runners",amount:570,issued:"01/15/2026",due:"01/31/2026",status:"overdue",paidDate:null},
+          ].map((inv,i)=><tr key={inv.id} style={{borderBottom:`1px solid ${C.g100}`}}>
+            <td style={{...TD,fontFamily:"monospace",color:C.blue,fontWeight:600}}>{inv.id}</td>
+            <td style={{...TD,fontWeight:600,color:C.g700}}>{inv.org}</td>
+            <td style={{...TD,fontWeight:700,fontFamily:numFont}}>${inv.amount.toLocaleString()}</td>
+            <td style={{...TD,color:C.g500}}>{inv.issued}</td>
+            <td style={{...TD,color:C.g500}}>{inv.due}</td>
+            <td style={TD}>{(()=>{const m={paid:{bg:C.greenL,c:C.green},outstanding:{bg:C.amberL,c:C.amber},overdue:{bg:C.redL,c:C.red}};const s=m[inv.status];return <span style={{fontSize:9,fontWeight:700,color:s.c,background:s.bg,padding:"3px 8px",borderRadius:4,textTransform:"uppercase"}}>{inv.status}</span>})()}</td>
+          </tr>)}
+        </tbody></table>
+        </div>
+      </Card>
+      <div style={{display:"flex",gap:12,marginTop:4}}>
+        <Card style={{flex:1,textAlign:"center",padding:"14px"}}><div style={{fontSize:9,fontWeight:700,color:C.g400,textTransform:"uppercase",letterSpacing:"0.06em"}}>Outstanding</div><div style={{fontSize:22,fontWeight:800,color:C.amber,fontFamily:numFont,marginTop:4}}>$2,500</div></Card>
+        <Card style={{flex:1,textAlign:"center",padding:"14px"}}><div style={{fontSize:9,fontWeight:700,color:C.g400,textTransform:"uppercase",letterSpacing:"0.06em"}}>Overdue</div><div style={{fontSize:22,fontWeight:800,color:C.red,fontFamily:numFont,marginTop:4}}>$570</div></Card>
+        <Card style={{flex:1,textAlign:"center",padding:"14px"}}><div style={{fontSize:9,fontWeight:700,color:C.g400,textTransform:"uppercase",letterSpacing:"0.06em"}}>Collected (YTD)</div><div style={{fontSize:22,fontWeight:800,color:C.green,fontFamily:numFont,marginTop:4}}>$5,025</div></Card>
+      </div>
+    </>}
     {/* ============ LOCATIONS TAB ============ */}
     {subTab==="locations"&&<>
       <div className="pp-r-toolbar" style={{display:"flex",justifyContent:"space-between",alignItems:"center",gap:12,flexWrap:"wrap"}}>
@@ -1240,7 +1347,6 @@ function Rentals(){
         </div>
         <button onClick={()=>{if(globalShowToast)globalShowToast({type:"success",title:"Location Added",msg:"New location configured",color:C.green})}} style={btnP}>+ Add Location</button>
       </div>
-
       {locView==="map"&&<Card style={{padding:0,overflow:"hidden"}}>
         <iframe title="District Campuses" src="https://www.google.com/maps/embed/v1/place?key=AIzaSyBFw0Qbyq9zTFTd-tUY6dZWTgaQzuU17R8&q=Ascension+Parish+School+Board,+Donaldsonville+LA&zoom=11" style={{width:"100%",height:340,border:"none",display:"block",filter:dark?"invert(90%) hue-rotate(180deg) brightness(0.95) contrast(0.9)":"none"}} loading="lazy"/>
         <div style={{padding:"14px 18px",borderTop:`1px solid ${C.cardBorder}`,display:"flex",gap:8,flexWrap:"wrap"}}>
@@ -1254,7 +1360,6 @@ function Rentals(){
           </div>)}
         </div>
       </Card>}
-
       {locView==="list"&&<>
       <Card np className="pp-loc-card"><div className="pp-loc-desktop">
         <table style={{width:"100%",borderCollapse:"collapse",fontSize:13}}><thead><tr>{["","Name","Assets","Status","Last Updated","Hourly Rate",""].map(h=><th key={h} style={TH}>{h}</th>)}</tr></thead>
@@ -1264,34 +1369,99 @@ function Rentals(){
             <td style={TD}><span style={{color:C.blue,fontWeight:700,cursor:"pointer"}}>{[3,3,2,2,2][i]} assets</span></td>
             <td style={TD}><span style={{...statusBadge("completed"),fontSize:10}}><span style={{width:5,height:5,borderRadius:"50%",background:"currentColor"}}/>Published</span></td>
             <td style={{...TD,color:C.g500,fontSize:12}}>02/04/2026</td>
-            <td style={{...TD,color:C.g500,fontSize:12}}>$175/hr avg</td>
+            <td style={{...TD,color:C.g500,fontSize:12}}><input type="text" defaultValue="$175/hr" style={{width:80,padding:"4px 8px",border:`1px solid ${C.cardBorder}`,borderRadius:4,fontSize:12,fontFamily:numFont,color:C.g700,background:C.g50,textAlign:"center"}} onFocus={e=>e.target.style.borderColor=C.blue} onBlur={e=>{e.target.style.borderColor=C.cardBorder;if(globalShowToast)globalShowToast({type:"success",title:"Rate Updated",msg:`${c.name} hourly rate saved`,color:C.green})}}/></td>
             <td style={{...TD,textAlign:"right"}}><button onClick={()=>globalShowFacility(i)} style={{background:C.blue,color:"#fff",border:"none",borderRadius:R.sm,padding:"5px 12px",fontSize:11,fontWeight:700,cursor:"pointer",fontFamily:font}}>Manage</button></td>
           </tr>)}</tbody>
         </table>
-      </div>
-      {/* Mobile location cards */}
-      <div className="pp-loc-mobile" style={{display:"flex",flexDirection:"column",gap:8,padding:12}}>
-        {campuses.map((c,i)=><div key={c.id} style={{padding:14,borderRadius:R.sm,border:`1px solid ${C.cardBorder}`,background:C.cardBg}}>
-          <div style={{display:"flex",justifyContent:"space-between",alignItems:"flex-start",marginBottom:10}}>
-            <div>
-              <div style={{fontSize:14,fontWeight:700,color:C.g800}}>{c.name}</div>
-              <div style={{fontSize:11,color:C.g400,marginTop:2}}>{c.city}, LA</div>
-            </div>
-            <span style={{...statusBadge("completed"),fontSize:9}}><span style={{width:4,height:4,borderRadius:"50%",background:"currentColor"}}/>Published</span>
-          </div>
-          <div style={{display:"grid",gridTemplateColumns:"1fr 1fr 1fr",gap:8,marginBottom:12}}>
-            {[["Assets",`${[3,3,2,2,2][i]}`],["Rate","$175/hr"],["Updated","02/04"]].map(([l,v])=><div key={l} style={{padding:"8px 10px",background:C.g50,borderRadius:6,border:`1px solid ${C.cardBorder}`}}>
-              <div style={{fontSize:9,fontWeight:700,color:C.g400,textTransform:"uppercase",letterSpacing:"0.06em"}}>{l}</div>
-              <div style={{fontSize:13,fontWeight:700,color:C.g700,marginTop:2}}>{v}</div>
-            </div>)}
-          </div>
-          <div style={{display:"grid",gridTemplateColumns:"1fr 1fr",gap:6}}>
-            <button onClick={()=>globalShowFacility(i)} style={{...btnP,fontSize:12,padding:"8px",display:"flex",alignItems:"center",justifyContent:"center",width:"100%"}}>Manage</button>
-          </div>
-        </div>)}
       </div></Card></>}
     </>}
-
+    {/* ============ PROMOTIONS TAB ============ */}
+    {subTab==="promotions"&&(()=>{
+      const promos=[
+        {id:"PROMO-001",name:"Legacy 50",code:"LEGACY50",pct:50,maxDisc:1000,type:"percentage",status:"active",start:"2026-02-01",end:"2026-04-30",facility:"All Facilities",participants:[{name:"Bayou City Volleyball",email:"bayoucity@gmail.com"}],used:8,savedTotal:2840,created:"01/28/2026",createdBy:"Marcus Williams"},
+        {id:"PROMO-002",name:"Spring Welcome",code:"SPRING26",pct:15,maxDisc:500,type:"percentage",status:"active",start:"2026-03-01",end:"2026-05-31",facility:"All Facilities",participants:[],used:0,savedTotal:0,created:"02/15/2026",createdBy:"Marcus Williams"},
+        {id:"PROMO-003",name:"Partner Loyalty",code:"LOYAL2026",pct:10,maxDisc:250,type:"percentage",status:"active",start:"2026-01-01",end:"2026-12-31",facility:"Dutchtown Gymnasium",participants:[{name:"Bayou City Volleyball",email:"bayoucity@gmail.com"},{name:"Louisiana Tigers AAU",email:"latigersaau@gmail.com"}],used:12,savedTotal:1560,created:"01/02/2026",createdBy:"Marcus Williams"},
+        {id:"PROMO-004",name:"Come Back",code:"COMEBACK20",pct:20,maxDisc:400,type:"percentage",status:"expired",start:"2025-10-01",end:"2025-12-31",facility:"All Facilities",participants:[{name:"River Parish Runners",email:"rprunners@hotmail.com"}],used:3,savedTotal:570,created:"09/28/2025",createdBy:"Marcus Williams"},
+        {id:"PROMO-005",name:"First Timer",code:"FIRSTBOOK",pct:25,maxDisc:300,type:"percentage",status:"scheduled",start:"2026-04-01",end:"2026-06-30",facility:"All Facilities",participants:[],used:0,savedTotal:0,created:"02/18/2026",createdBy:"Marcus Williams"},
+      ];
+      const activePromos=promos.filter(p=>p.status==="active");
+      const totalSaved=promos.reduce((s,p)=>s+p.savedTotal,0);
+      const totalUsed=promos.reduce((s,p)=>s+p.used,0);
+      const stBadge=(st)=>{const m={active:{bg:C.greenL,c:C.green,lbl:"Active"},expired:{bg:C.g100,c:C.g400,lbl:"Expired"},scheduled:{bg:C.blueL,c:C.blue,lbl:"Scheduled"},paused:{bg:C.amberL,c:C.amber,lbl:"Paused"}};const x=m[st]||m.active;return <span style={{fontSize:9,fontWeight:700,color:x.c,background:x.bg,padding:"2px 8px",borderRadius:4,textTransform:"uppercase",letterSpacing:"0.04em"}}>{x.lbl}</span>};
+      return <>
+        {/* Summary metrics */}
+        <div style={{display:"grid",gridTemplateColumns:"repeat(auto-fit,minmax(130px,1fr))",gap:10}}>
+          {[{label:"Active Promos",val:`${activePromos.length}`,clr:C.green},{label:"Total Redemptions",val:`${totalUsed}`,clr:C.blue},{label:"All Promos",val:`${promos.length}`,clr:C.g700}].map((m,i)=><Card key={i} style={{padding:"12px 14px",textAlign:"center"}}>
+            <div style={{fontSize:9,fontWeight:700,color:C.g400,textTransform:"uppercase",letterSpacing:"0.06em",marginBottom:4}}>{m.label}</div>
+            <div style={{fontSize:18,fontWeight:800,color:m.clr,fontFamily:numFont}}>{m.val}</div>
+          </Card>)}
+        </div>
+        {/* Quick create */}
+        <Card>
+          <Sec icon={I.zap(13,C.g500)}>Quick Create</Sec>
+          <div style={{fontSize:12,color:C.g500,lineHeight:1.5,marginBottom:14}}>Start from a template to create common promotion types. Each can be customized after creation.</div>
+          <div style={{display:"grid",gridTemplateColumns:"repeat(auto-fill,minmax(160px,1fr))",gap:8}}>
+            {[
+              {label:"Partner Loyalty",desc:"Reward repeat bookers",icon:"\u2B50",pct:"10%",bg:`linear-gradient(135deg,${C.blue}10,${C.green}10)`,border:`${C.green}30`,tpl:"loyalty"},
+              {label:"Seasonal Deal",desc:"Fill slow periods",icon:"\u2744\uFE0F",pct:"15-20%",bg:`linear-gradient(135deg,${C.blue}10,${C.blue}05)`,border:`${C.blue}30`,tpl:"seasonal"},
+              {label:"Re-engagement",desc:"Win back lapsed orgs",icon:"\u{1F504}",pct:"20%",bg:`linear-gradient(135deg,${C.amber}08,${C.orange}08)`,border:`${C.amber}30`,tpl:"reengage"},
+              {label:"First-Time",desc:"New org welcome",icon:"\u{1F44B}",pct:"25%",bg:`linear-gradient(135deg,${C.green}08,${C.green}05)`,border:`${C.green}30`,tpl:"firsttime"},
+            ].map((t,i)=><button key={i} onClick={()=>openPromoFromTemplate(t.tpl)} style={{padding:"16px 14px",background:t.bg,border:`1px solid ${t.border}`,borderRadius:R.sm,cursor:"pointer",fontFamily:font,textAlign:"left",transition:"all .12s"}} onMouseEnter={e=>e.currentTarget.style.transform="translateY(-1px)"} onMouseLeave={e=>e.currentTarget.style.transform="none"}>
+              <div style={{display:"flex",alignItems:"center",justifyContent:"space-between",marginBottom:6}}>
+                <span style={{fontSize:18}}>{t.icon}</span>
+                <span style={{fontSize:10,fontWeight:700,color:C.g400,background:C.g100,padding:"2px 6px",borderRadius:3}}>{t.pct}</span>
+              </div>
+              <div style={{fontSize:12,fontWeight:700,color:C.g800}}>{t.label}</div>
+              <div style={{fontSize:10,color:C.g500,marginTop:2}}>{t.desc}</div>
+            </button>)}
+          </div>
+        </Card>
+        {/* All promos */}
+        <Card>
+          <Sec action={<button onClick={()=>{resetPromoForm();setShowPromoModal(true)}} style={btnP}>+ New Promo</button>} icon={I.tag(13,C.g500)}>All Promotions</Sec>
+          <div style={{display:"flex",flexDirection:"column",gap:0}}>
+            {promos.map((p,i)=>{
+              const isActive=p.status==="active";
+              const isExp=p.status==="expired";
+              const daysLeft=isActive?Math.max(0,Math.floor((new Date(p.end)-new Date("2026-02-21"))/(864e5))):0;
+              return <div key={p.id} onClick={()=>{if(globalShowToast)globalShowToast({type:"info",title:p.name,msg:`Code: ${p.code} - ${p.used} redemptions - ${p.facility} - ${p.start} to ${p.end}`,color:C.blue})}} style={{display:"flex",alignItems:"center",gap:12,padding:"14px 0",borderBottom:i<promos.length-1?`1px solid ${C.g100}`:"none",opacity:isExp?0.6:1,cursor:"pointer",transition:"background .1s"}} onMouseEnter={e=>e.currentTarget.style.background=C.g50} onMouseLeave={e=>e.currentTarget.style.background="transparent"}>
+                {/* Code badge */}
+                <div style={{width:64,height:44,borderRadius:8,background:isActive?`linear-gradient(135deg,${C.blue},${C.blueDk})`:isExp?C.g200:`linear-gradient(135deg,${C.blue}60,${C.blueDk}60)`,display:"flex",flexDirection:"column",alignItems:"center",justifyContent:"center",flexShrink:0}}>
+                  <span style={{fontSize:14,fontWeight:900,color:isActive||!isExp?"#fff":C.g500,fontFamily:numFont}}>{p.pct}%</span>
+                  <span style={{fontSize:7,fontWeight:700,color:isActive||!isExp?"rgba(255,255,255,0.7)":C.g400,textTransform:"uppercase"}}>off</span>
+                </div>
+                {/* Details */}
+                <div style={{flex:1,minWidth:0}}>
+                  <div style={{display:"flex",alignItems:"center",gap:6,marginBottom:2}}>
+                    <span style={{fontSize:13,fontWeight:700,color:C.g800}}>{p.name}</span>
+                    {stBadge(p.status)}
+                  </div>
+                  <div style={{fontSize:11,fontWeight:600,color:C.blue,fontFamily:numFont,marginBottom:2}}>{p.code}</div>
+                  <div style={{fontSize:10,color:C.g400}}>
+                    {p.facility} {"\u2022"} {p.start.slice(5)} to {p.end.slice(5)} {"\u2022"} Max {"$"}{p.maxDisc}
+                    {p.participants.length>0&&<> {"\u2022"} {p.participants.length} participant{p.participants.length>1?"s":""}</>}
+                    {isActive&&daysLeft<=30&&<span style={{color:C.amber,fontWeight:600}}> {"\u2022"} {daysLeft}d left</span>}
+                  </div>
+                </div>
+                {/* Stats - cleaned up */}
+                <div style={{display:"flex",alignItems:"center",gap:10,flexShrink:0}}>
+                  <div style={{textAlign:"center",minWidth:50}}>
+                    <div style={{fontSize:14,fontWeight:800,color:C.g700,fontFamily:numFont}}>{p.used}</div>
+                    <div style={{fontSize:9,color:C.g400}}>used</div>
+                  </div>
+                  {isActive&&<button onClick={e=>{e.stopPropagation();if(globalShowToast)globalShowToast({type:"success",title:"Code Copied",msg:`${p.code} copied to clipboard`,color:C.green})}} style={{...btnO,fontSize:10,padding:"5px 8px"}}>{I.copy(10,C.g500)}</button>}
+                  {isExp&&<button onClick={e=>{e.stopPropagation();if(globalShowToast)globalShowToast({type:"success",title:"Promo Reactivated",msg:`${p.name} is now active`,color:C.green})}} style={{...btnO,fontSize:10,padding:"5px 8px"}}>Reactivate</button>}
+                </div>
+              </div>
+            })}
+          </div>
+        </Card>
+        {/* Performance insight */}
+        <div style={{padding:"16px 20px",background:`${C.blue}06`,borderRadius:R.lg,border:`1px solid ${C.blue}15`,fontSize:12,color:C.g600,lineHeight:1.6}}>
+          <strong style={{color:C.g800}}>Insight:</strong> Your "Partner Loyalty" promo has the highest redemption rate at 12 uses. Targeted promos for specific partners see 3x more usage than open codes. Consider creating a dedicated code for Gonzales FC - they haven't had one yet.
+        </div>
+      </>
+    })()}
     {/* ============ RESERVATIONS TAB ============ */}
     {subTab==="reservations"&&<>
       {/* Action bar */}
@@ -1322,7 +1492,6 @@ function Rentals(){
           <button onClick={()=>globalCreateRes()} style={{...btnP,padding:"9px 18px",whiteSpace:"nowrap",flexShrink:0}}><span className="pp-btn-full">+ New Reservation</span><span className="pp-btn-short">+ New</span></button>
         </div>
       </div>
-
       {/* Filter bar - inside a card for visual grouping */}
       <Card style={{padding:0,overflow:"visible"}}>
         {/* Dropdowns + source pills */}
@@ -1333,10 +1502,8 @@ function Rentals(){
           </div>
           <div className="pp-r-pills" style={{display:"flex",gap:3,background:C.g100,borderRadius:10,padding:3}}>{[["all","All Events"],["pp","PP Bookings"],["synced","Synced"]].map(([k,l])=><button key={k} onClick={()=>setSrcFilt(k)} style={pill(srcFilt===k)}>{l}</button>)}</div>
         </div>
-
         {/* Divider */}
         <div style={{height:1,background:C.g100,margin:"0 20px"}}/>
-
         {/* Legend + stats */}
         {(()=>{const allFiltered=Object.values(calEvents).flat().filter(e=>filterEvts([e]).length>0);const ppF=allFiltered.filter(e=>e.src==="pp").length;const syncF=allFiltered.filter(e=>e.src!=="pp").length;const unassignedCount=requireSiteAdmin?Object.entries(calEvents).reduce((sum,[day,evts])=>sum+filterEvts(evts).filter(e=>isUnassigned(e,parseInt(day))).length,0):0;return <div className="pp-r-legend" style={{display:"flex",alignItems:"center",justifyContent:"space-between",padding:"12px 20px",flexWrap:"wrap",gap:8}}>
           <div style={{display:"flex",gap:14,alignItems:"center"}}>
@@ -1352,11 +1519,10 @@ function Rentals(){
           </div>
         </div>})()}
       </Card>
-
       {/* Calendar or list */}
       {view==="cal"?<Card np><div className="pp-calendar-wrap">
         <div style={{padding:"16px 20px",display:"flex",justifyContent:"space-between",alignItems:"center",borderBottom:`1px solid ${C.cardBorder}`}}>
-          <div style={{display:"flex",alignItems:"center",gap:12}}><button style={{...btnO,padding:"6px 12px",fontSize:13}}>‹</button><span style={{fontSize:16,fontWeight:800,color:C.g800,letterSpacing:"-0.02em"}}>February 2026</span><button style={{...btnO,padding:"6px 12px",fontSize:13}}>›</button><button onClick={()=>{const el=document.querySelector('[data-today="true"]');if(el)el.scrollIntoView({behavior:"smooth",block:"center"});if(globalShowToast)globalShowToast({type:"success",title:"Today",msg:"Showing February 11, 2026",color:C.blue})}} style={{...btnO,padding:"5px 12px",fontSize:11,color:C.blue,borderColor:`${C.blue}30`,fontWeight:700}}>Today</button></div>
+          <div style={{display:"flex",alignItems:"center",gap:12}}><button onClick={()=>setCalMonth(m=>Math.max(0,m-1))} style={{...btnO,padding:"6px 12px",fontSize:13}}>‹</button><span style={{fontSize:16,fontWeight:800,color:C.g800,letterSpacing:"-0.02em"}}>{["January","February","March","April","May","June","July","August","September","October","November","December"][calMonth]} 2026</span><button onClick={()=>setCalMonth(m=>Math.min(11,m+1))} style={{...btnO,padding:"6px 12px",fontSize:13}}>›</button><button onClick={()=>{setCalMonth(1);const el=document.querySelector('[data-today="true"]');if(el)el.scrollIntoView({behavior:"smooth",block:"center"});if(globalShowToast)globalShowToast({type:"success",title:"Today",msg:"Showing February 11, 2026",color:C.blue})}} style={{...btnO,padding:"5px 12px",fontSize:11,color:C.blue,borderColor:`${C.blue}30`,fontWeight:700}}>Today</button></div>
           <div className="pp-r-district" style={{display:"flex",alignItems:"center",gap:8}}><span style={{fontSize:12,color:C.g500,fontWeight:500}}>{facilityFilt!=="all"?(facilityFull[facilityFilt]||facilityFilt):campusFilt!=="all"?campusFilt:"All Facilities"}</span></div>
         </div>
         {/* Desktop: grid calendar */}
@@ -1419,7 +1585,6 @@ function Rentals(){
           <div style={{fontSize:12,marginTop:4}}>No {srcFilt==="pp"?"PracticePlan bookings":srcFilt==="synced"?"synced events":"events"} match the current filters{campusFilt!=="all"?` for ${campusFilt}`:""}{facilityFilt!=="all"?` at ${facilityFull[facilityFilt]||facilityFilt}`:""}.</div>
         </div>:null})()}
       </div></Card>
-
       :<Card np><div style={{overflowX:"auto",WebkitOverflowScrolling:"touch"}}>
         <table style={{width:"100%",borderCollapse:"collapse",fontSize:13,minWidth:700}}><thead><tr>{["","Res #","Asset","Campus","Customer","Date","Time","Revenue","Status",""].map(h=><th key={h} style={TH}>{h}</th>)}</tr></thead>
           <tbody>{upcoming.map((x,i)=>{
@@ -1440,7 +1605,6 @@ function Rentals(){
         </table>
       </div></Card>}
     </>}
-
     {/* ============ APPROVALS TAB ============ */}
     {subTab==="approvals"&&<>
       {/* Pending approvals - main content */}
@@ -1459,28 +1623,25 @@ function Rentals(){
         const isUrgent=a.expiresIn==="0 Days";
         const stColor=C.amber;
         const stBg=C.amberL;
-        return <div key={a.id} className="pp-appr" style={{background:C.cardBg,borderRadius:R.lg,border:isUrgent?`1.5px solid ${C.red}30`:`1px solid ${C.cardBorder}`,boxShadow:C.cardShadow,overflow:"hidden"}}>
-
+        return <div key={a.id} className="pp-appr" style={{background:C.cardBg,borderRadius:R.lg,border:`1px solid ${C.cardBorder}`,boxShadow:C.cardShadow,overflow:"hidden"}}>
           {/* Status accent bar */}
-          <div style={{height:3,background:stColor}}/>
-
+          <div style={{height:3,background:`linear-gradient(90deg, ${C.blue}, ${C.green})`}}/>
           {/* Header */}
           <div style={{padding:"12px 16px 10px",display:"flex",alignItems:"center",gap:10}}>
-            <div style={{width:36,height:36,borderRadius:9,background:a.color,display:"flex",alignItems:"center",justifyContent:"center",color:"#fff",fontWeight:800,fontSize:12,flexShrink:0}}>{a.photo}</div>
+            <div style={{width:36,height:36,borderRadius:9,background:C.g200,display:"flex",alignItems:"center",justifyContent:"center",color:C.g600,fontWeight:800,fontSize:12,flexShrink:0}}>{a.photo}</div>
             <div style={{flex:1,minWidth:0}}>
               <div style={{display:"flex",alignItems:"center",gap:6}}>
                 <span style={{fontSize:14,fontWeight:800,color:C.g800}}>{a.org}</span>
-                <span style={{display:"inline-flex",alignItems:"center",gap:3,padding:"2px 7px",borderRadius:10,background:stBg,color:stColor,fontSize:9,fontWeight:700,textTransform:"uppercase",letterSpacing:"0.03em"}}><span style={{width:4,height:4,borderRadius:"50%",background:"currentColor"}}/>{a.status}</span>
-                {isUrgent&&<span style={{background:C.red,color:"#fff",padding:"2px 6px",borderRadius:4,fontSize:8,fontWeight:800}}>EXPIRES TODAY</span>}
+                {isUrgent&&<span style={{background:C.redL,color:C.red,padding:"2px 6px",borderRadius:4,fontSize:8,fontWeight:800}}>EXPIRES TODAY</span>}
               </div>
               <div style={{display:"flex",alignItems:"center",gap:8,marginTop:2}}>
                 <span className="pp-appr-contact" style={{fontSize:10,color:C.g400}}>{a.contact}</span>
                 <span style={{fontSize:10,color:C.g300}}>-</span>
-                <span style={{fontSize:10,color:C.blue,fontFamily:"monospace"}}>{a.id}</span>
+                <span style={{fontSize:10,color:C.g500,fontFamily:"monospace"}}>{a.id}</span>
                 <span style={{fontSize:10,color:C.g300}}>-</span>
                 {a.insActive?
-                  <span style={{display:"inline-flex",alignItems:"center",gap:3,fontSize:9,fontWeight:700,color:C.green,background:C.greenL,padding:"1px 7px",borderRadius:8}}>{I.check(9,C.green)} Insured</span>:
-                  <span style={{display:"inline-flex",alignItems:"center",gap:3,fontSize:9,fontWeight:700,color:C.red,background:C.redL,padding:"1px 7px",borderRadius:8}}>⚠ No Insurance</span>
+                  <span style={{fontSize:9,fontWeight:600,color:C.g500}}>{I.check(9,C.g400)} Insured</span>:
+                  <span style={{fontSize:9,fontWeight:600,color:C.red}}>No Insurance</span>
                 }
               </div>
             </div>
@@ -1489,12 +1650,11 @@ function Rentals(){
               <div style={{fontSize:10,color:C.g400}}>{totalHrs}h total</div>
             </div>
           </div>
-
           {/* Booking rows */}
           <div style={{borderTop:`1px solid ${C.g100}`}}>
             {a.bk.map((b,bi)=><div key={b.bid} className="pp-appr-bk" style={{display:"flex",alignItems:"center",gap:10,padding:"8px 16px",borderBottom:bi<a.bk.length-1?`1px solid ${C.g100}`:"none"}}>
-              <div style={{width:22,height:22,borderRadius:6,background:`${stColor}10`,display:"flex",alignItems:"center",justifyContent:"center",flexShrink:0}}>
-                <span style={{fontSize:10,fontWeight:800,color:stColor}}>{bi+1}</span>
+              <div style={{width:22,height:22,borderRadius:6,background:C.g100,display:"flex",alignItems:"center",justifyContent:"center",flexShrink:0}}>
+                <span style={{fontSize:10,fontWeight:800,color:C.g500}}>{bi+1}</span>
               </div>
               <div style={{flex:1,minWidth:0}}>
                 <span style={{fontSize:12,fontWeight:600,color:C.g800}}>{b.asset}</span>
@@ -1507,7 +1667,6 @@ function Rentals(){
               </div>
             </div>)}
           </div>
-
           {/* Footer */}
           <div style={{padding:"10px 16px",borderTop:`1px solid ${C.g100}`,display:"flex",alignItems:"center",gap:10}}>
             {a.notes&&<div style={{fontSize:10,color:C.g400,fontStyle:"italic",flex:1,minWidth:0,overflow:"hidden",textOverflow:"ellipsis",whiteSpace:"nowrap"}}>"{a.notes}"</div>}
@@ -1520,56 +1679,202 @@ function Rentals(){
         </div>})}
       </div>
       </>:<Card><div style={{padding:"40px 0",textAlign:"center",color:C.g400}}><div style={{fontSize:36,marginBottom:8}}>✓</div><div style={{fontSize:14,fontWeight:600,color:C.g600}}>All caught up</div><div style={{fontSize:12,marginTop:4}}>No pending approval requests.</div></div></Card>}
-
-      {/* History - collapsible */}
+      {/* History - always visible */}
       {(()=>{const resolved=approvalsData.filter(a=>a.status!=="pending");
         if(resolved.length===0)return null;
+        const showAll=approvalFilt==="history";
+        const visible=showAll?resolved:resolved.slice(0,5);
         return <>
-          <div onClick={()=>setApprovalFilt(approvalFilt==="history"?"all":"history")} style={{display:"flex",alignItems:"center",justifyContent:"space-between",cursor:"pointer",padding:"12px 0",marginTop:4}}>
-            <div style={{display:"flex",alignItems:"center",gap:8}}>
-              <span style={{fontSize:13,fontWeight:700,color:C.g600}}>History</span>
-              <span style={{fontSize:10,fontWeight:600,color:C.g400,background:C.g100,padding:"2px 8px",borderRadius:6}}>{resolved.length}</span>
-            </div>
-            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke={C.g400} strokeWidth="2" strokeLinecap="round" style={{transform:approvalFilt==="history"?"rotate(180deg)":"none",transition:"transform .2s"}}><path d="M6 9l6 6 6-6"/></svg>
+          <div style={{display:"flex",alignItems:"center",gap:8,padding:"14px 0 6px"}}>
+            <span style={{fontSize:13,fontWeight:700,color:C.g600}}>Recent Decisions</span>
+            <span style={{fontSize:10,fontWeight:600,color:C.g400,background:C.g100,padding:"2px 8px",borderRadius:6}}>{resolved.length}</span>
           </div>
-          {approvalFilt==="history"&&<div style={{display:"flex",flexDirection:"column",gap:0}}>
-            {resolved.map((a,i)=>{
+          <div style={{display:"flex",flexDirection:"column",gap:0}}>
+            {visible.map((a,i)=>{
               const totalRev=a.bk.reduce((s,b)=>s+b.rev,0);
               const stColor=a.status==="approved"?C.green:C.red;
-              return <div key={a.id} onClick={()=>setSelApproval(a)} style={{display:"flex",alignItems:"center",gap:12,padding:"12px 4px",borderBottom:i<resolved.length-1?`1px solid ${C.g100}`:"none",cursor:"pointer",borderRadius:6,transition:"background .12s"}} onMouseEnter={e=>e.currentTarget.style.background=C.g50} onMouseLeave={e=>e.currentTarget.style.background="transparent"}>
+              return <div key={a.id} onClick={()=>setSelApproval(a)} style={{display:"flex",alignItems:"center",gap:12,padding:"12px 4px",borderBottom:i<visible.length-1?`1px solid ${C.g100}`:"none",cursor:"pointer",borderRadius:6,transition:"background .12s"}} onMouseEnter={e=>e.currentTarget.style.background=C.g50} onMouseLeave={e=>e.currentTarget.style.background="transparent"}>
                 <div style={{width:6,height:6,borderRadius:3,background:stColor,flexShrink:0}}/>
                 <div style={{flex:1,minWidth:0}}>
                   <div style={{fontSize:13,fontWeight:600,color:C.g700}}>{a.org}</div>
                   <div style={{fontSize:11,color:C.g400}}>{a.bk.length} booking{a.bk.length>1?"s":""} - {a.bk[0]?.asset||"N/A"}</div>
+                  {a.resolvedAt&&<div style={{fontSize:10,color:C.g400,marginTop:2}}>{a.status==="approved"?"Approved":"Denied"} {a.resolvedAt}{a.resolvedBy?` by ${a.resolvedBy}`:""}</div>}
                 </div>
                 <div style={{textAlign:"right",flexShrink:0}}>
-                  <div style={{fontSize:12,fontWeight:700,color:C.g700}}>${totalRev.toLocaleString()}</div>
+                  <div style={{fontSize:12,fontWeight:700,color:C.g700,fontFamily:numFont}}>${totalRev.toLocaleString()}</div>
                   <span style={{fontSize:9,fontWeight:700,color:stColor,textTransform:"uppercase"}}>{a.status}</span>
                 </div>
                 <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke={C.g300} strokeWidth="2" strokeLinecap="round"><path d="M9 18l6-6-6-6"/></svg>
               </div>
             })}
+          </div>
+          {resolved.length>5&&<div style={{textAlign:"center",padding:"8px 0"}}>
+            <button onClick={()=>setApprovalFilt(showAll?"all":"history")} style={{background:"none",border:"none",fontSize:12,fontWeight:600,color:C.blue,cursor:"pointer",fontFamily:font}}>{showAll?"Show Less":`View All ${resolved.length} Decisions`}</button>
           </div>}
         </>
       })()}
     </>}
+    {/* ===== Create Promotion Modal ===== */}
+    {showPromoModal&&(()=>{
+      const closeModal=()=>{setShowPromoModal(false);resetPromoForm()};
+      const fieldStyle={width:"100%",padding:"11px 12px",border:`1px solid ${C.cardBorder}`,borderRadius:R.sm,fontSize:16,fontFamily:font,color:C.g800,background:C.g50,boxSizing:"border-box",transition:"border-color .15s, box-shadow .15s",outline:"none"};
+      const fieldFocus={borderColor:C.blue,boxShadow:`0 0 0 3px ${C.blue}15`};
+      const addFocus=(e)=>{Object.assign(e.target.style,fieldFocus)};
+      const rmFocus=(e)=>{e.target.style.borderColor=C.cardBorder;e.target.style.boxShadow="none"};
+      const lbl={fontSize:11,fontWeight:700,color:C.g600,display:"block",marginBottom:5};
+      return <>
+        <style>{`
+          @keyframes pmOverlay{from{opacity:0}to{opacity:1}}
+          @keyframes pmCardDesktop{from{opacity:0;transform:translateY(12px) scale(0.98)}to{opacity:1;transform:translateY(0) scale(1)}}
+          @keyframes pmSheetMobile{from{transform:translateY(100%)}to{transform:translateY(0)}}
+          @keyframes pmFieldIn{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:translateY(0)}}
+          .pm-field{animation:pmFieldIn .35s cubic-bezier(.25,.46,.45,.94) both}
+          .pm-field:nth-child(1){animation-delay:.05s}
+          .pm-field:nth-child(2){animation-delay:.1s}
+          .pm-field:nth-child(3){animation-delay:.15s}
+          .pm-field:nth-child(4){animation-delay:.2s}
+          .pm-field:nth-child(5){animation-delay:.25s}
+          .pm-field:nth-child(6){animation-delay:.3s}
+          .pm-field:nth-child(7){animation-delay:.35s}
+          .pm-field:nth-child(8){animation-delay:.4s}
+        `}</style>
+        {/* Overlay */}
+        <div style={{position:"fixed",inset:0,background:"rgba(15,23,42,0.45)",backdropFilter:"blur(6px)",WebkitBackdropFilter:"blur(6px)",zIndex:300,display:"flex",alignItems:"center",justifyContent:"center",animation:"pmOverlay .35s ease both"}} onClick={closeModal}>
+          {/* Modal card */}
+          <div onClick={e=>e.stopPropagation()} className="pp-promo-modal" style={{background:C.cardBg,width:"100%",maxWidth:500,margin:"0 16px",borderRadius:16,boxShadow:`0 24px 80px rgba(0,0,0,${C.bg==="#0F1318"?0.6:0.2}), 0 0 1px rgba(0,0,0,0.1)`,display:"flex",flexDirection:"column",maxHeight:"min(680px, 88vh)",overflow:"hidden",animation:"pmCardDesktop .4s cubic-bezier(.16,1,.3,1) both"}}>
+            {/* Drag handle - mobile only */}
+            <div className="pp-promo-handle" style={{display:"none",justifyContent:"center",padding:"8px 0 0",flexShrink:0}}>
+              <div style={{width:36,height:4,borderRadius:2,background:C.g300}}/>
+            </div>
+            {/* Header */}
+            <div style={{padding:"18px 20px 14px",flexShrink:0,display:"flex",justifyContent:"space-between",alignItems:"flex-start"}}>
+              <div>
+                <div style={{fontSize:18,fontWeight:800,color:C.g800,letterSpacing:"-0.01em"}}>Create Promotion</div>
+                <div style={{fontSize:12,color:C.g400,marginTop:3,lineHeight:1.4}}>Create a promo code that partners can apply at checkout for a discount on their reservation.</div>
+              </div>
+              <button onClick={closeModal} style={{background:C.g100,border:"none",width:32,height:32,borderRadius:10,cursor:"pointer",display:"flex",alignItems:"center",justifyContent:"center",flexShrink:0,marginLeft:12,transition:"background .15s"}} onMouseEnter={e=>e.currentTarget.style.background=C.g200} onMouseLeave={e=>e.currentTarget.style.background=C.g100}>{I.x(12,C.g500)}</button>
+            </div>
+            <div style={{height:1,background:C.g200,margin:"0 20px",flexShrink:0}}/>
+            {/* Scrollable form */}
+            <div ref={promoScrollRef} style={{flex:1,overflow:"auto",WebkitOverflowScrolling:"touch",overscrollBehavior:"contain",padding:"18px 20px 12px",display:"flex",flexDirection:"column",gap:16}}>
+              {/* Name + Code */}
+              <div className="pm-field">
+                <label style={lbl}>Promotion Name</label>
+                <input value={promoForm.name} onChange={e=>setPromoForm(f=>({...f,name:e.target.value}))} onFocus={addFocus} onBlur={rmFocus} placeholder="e.g. Legacy 50, Spring Welcome" style={fieldStyle}/>
+              </div>
+              <div className="pm-field">
+                <label style={lbl}>Promotion Code</label>
+                <input value={promoForm.code} onChange={e=>setPromoForm(f=>({...f,code:e.target.value.toUpperCase().replace(/[^A-Z0-9]/g,"")}))} onFocus={addFocus} onBlur={rmFocus} placeholder="e.g. LEGACY50" style={{...fieldStyle,fontFamily:numFont,fontWeight:700,color:C.blue,letterSpacing:"0.06em"}}/>
+                <div style={{fontSize:10,color:C.g400,marginTop:4}}>Letters and numbers only. This is what partners enter at checkout.</div>
+              </div>
+              {/* Discount row */}
+              <div className="pm-field" style={{display:"grid",gridTemplateColumns:"1fr 1fr",gap:10}}>
+                <div>
+                  <label style={lbl}>Discount %</label>
+                  <div style={{position:"relative"}}>
+                    <input value={promoForm.pct} onChange={e=>setPromoForm(f=>({...f,pct:e.target.value.replace(/[^0-9]/g,"")}))} onFocus={addFocus} onBlur={rmFocus} placeholder="50" inputMode="numeric" style={{...fieldStyle,paddingRight:30}}/>
+                    <span style={{position:"absolute",right:12,top:"50%",transform:"translateY(-50%)",fontSize:14,fontWeight:700,color:C.g300,pointerEvents:"none"}}>%</span>
+                  </div>
+                </div>
+                <div>
+                  <label style={lbl}>Max Discount</label>
+                  <div style={{position:"relative"}}>
+                    <span style={{position:"absolute",left:12,top:"50%",transform:"translateY(-50%)",fontSize:14,fontWeight:700,color:C.g300,pointerEvents:"none"}}>$</span>
+                    <input value={promoForm.maxDisc} onChange={e=>setPromoForm(f=>({...f,maxDisc:e.target.value.replace(/[^0-9]/g,"")}))} onFocus={addFocus} onBlur={rmFocus} placeholder="1000" inputMode="numeric" style={{...fieldStyle,paddingLeft:24}}/>
+                  </div>
+                </div>
+              </div>
+              {/* Date row */}
+              <div className="pm-field" style={{display:"grid",gridTemplateColumns:"1fr 1fr",gap:10}}>
+                <div>
+                  <label style={lbl}>Start Date</label>
+                  <input type="date" value={promoForm.startDate} onChange={e=>setPromoForm(f=>({...f,startDate:e.target.value}))} onFocus={addFocus} onBlur={rmFocus} style={fieldStyle}/>
+                </div>
+                <div>
+                  <label style={lbl}>End Date</label>
+                  <input type="date" value={promoForm.endDate} onChange={e=>setPromoForm(f=>({...f,endDate:e.target.value}))} onFocus={addFocus} onBlur={rmFocus} style={fieldStyle}/>
+                </div>
+              </div>
+              {/* Participants */}
+              <div className="pm-field">
+                <label style={lbl}>Participants <span style={{fontWeight:500,color:C.g400}}>(optional)</span></label>
+                <select onChange={e=>{const val=e.target.value;if(!val)return;const p=promoParticipantOptions.find(o=>o.email===val);if(p&&!promoForm.participants.find(x=>x.email===p.email))setPromoForm(f=>({...f,participants:[...f.participants,p]}));e.target.value=""}} style={{...fieldStyle,color:C.g500,cursor:"pointer"}}>
+                  <option value="">Add a partner...</option>
+                  {promoParticipantOptions.filter(o=>!promoForm.participants.find(p=>p.email===o.email)).map(o=><option key={o.email} value={o.email}>{o.name}</option>)}
+                </select>
+                {promoForm.participants.length>0&&<div style={{display:"flex",flexWrap:"wrap",gap:5,marginTop:8}}>
+                  {promoForm.participants.map((p,i)=><span key={p.email} style={{display:"inline-flex",alignItems:"center",gap:5,padding:"5px 10px",background:C.blueL,borderRadius:6,fontSize:11,fontWeight:600,color:C.blue,transition:"background .12s"}}>{i+1}. {p.name}
+                    <button onClick={()=>setPromoForm(f=>({...f,participants:f.participants.filter(x=>x.email!==p.email)}))} style={{background:"none",border:"none",cursor:"pointer",padding:0,display:"flex",opacity:0.7}} onMouseEnter={e=>e.currentTarget.style.opacity=1} onMouseLeave={e=>e.currentTarget.style.opacity=0.7}>{I.x(10,C.blue)}</button>
+                  </span>)}
+                </div>}
+                <div style={{fontSize:10,color:C.g400,marginTop:4,lineHeight:1.4}}>Leave empty so any organization can use it, or restrict to specific partners.</div>
+              </div>
+              {/* Facility */}
+              <div className="pm-field">
+                <label style={lbl}>Applies To</label>
+                <select value={promoForm.facility} onChange={e=>setPromoForm(f=>({...f,facility:e.target.value}))} style={{...fieldStyle,color:C.g700,cursor:"pointer"}}>
+                  <option value="all">All Facilities</option>
+                  {campuses.map(c=><option key={c.id} value={c.name}>{c.name}</option>)}
+                </select>
+              </div>
+              {/* Live preview */}
+              {promoForm.name&&promoForm.pct&&<div className="pm-field" style={{padding:"14px 16px",background:`linear-gradient(135deg, ${C.blue}06, ${C.green}04)`,borderRadius:R.sm,border:`1px solid ${C.blue}12`}}>
+                <div style={{fontSize:9,fontWeight:700,color:C.g400,textTransform:"uppercase",letterSpacing:"0.06em",marginBottom:8}}>Live Preview</div>
+                <div style={{display:"flex",alignItems:"center",gap:12}}>
+                  <div style={{width:52,height:38,borderRadius:8,background:`linear-gradient(135deg,${C.blue},${C.blueDk})`,display:"flex",flexDirection:"column",alignItems:"center",justifyContent:"center",flexShrink:0,boxShadow:"0 2px 8px rgba(37,99,235,0.2)"}}>
+                    <span style={{fontSize:14,fontWeight:900,color:"#fff",fontFamily:numFont,lineHeight:1}}>{promoForm.pct}%</span>
+                    <span style={{fontSize:6,fontWeight:700,color:"rgba(255,255,255,0.65)",textTransform:"uppercase",marginTop:1}}>off</span>
+                  </div>
+                  <div style={{minWidth:0}}>
+                    <div style={{fontSize:13,fontWeight:700,color:C.g800}}>{promoForm.name}</div>
+                    <div style={{fontSize:11,fontWeight:600,color:C.blue,fontFamily:numFont,marginTop:1}}>{promoForm.code||"CODE"}</div>
+                    <div style={{fontSize:10,color:C.g400,marginTop:2}}>
+                      {promoForm.facility==="all"?"All Facilities":promoForm.facility}
+                      {promoForm.maxDisc&&<> {"\u2022"} Max {"$"}{promoForm.maxDisc}</>}
+                      {promoForm.participants.length>0&&<> {"\u2022"} {promoForm.participants.length} partner{promoForm.participants.length>1?"s":""}</>}
+                    </div>
+                  </div>
+                </div>
+              </div>}
+              <div className="pm-field" style={{fontSize:10,color:C.g400,lineHeight:1.5,paddingBottom:8}}>You can re-activate or deactivate this promotion at any time from the Promotions list.</div>
+            </div>
+            {/* Sticky footer */}
+            <div style={{padding:"14px 20px",paddingBottom:"max(14px, env(safe-area-inset-bottom, 14px))",borderTop:`1px solid ${C.g200}`,display:"flex",gap:10,flexShrink:0,background:C.cardBg}}>
+              <button onClick={closeModal} style={{...btnO,flex:1,display:"flex",justifyContent:"center",padding:"13px 14px",fontSize:14}}>Cancel</button>
+              <button onClick={()=>{closeModal();if(globalShowToast)globalShowToast({type:"success",title:"Promotion Created",msg:`${promoForm.name||"New promo"} (${promoForm.code||"CODE"}) is now ${new Date(promoForm.startDate)<=new Date()?"active":"scheduled"}`,color:C.green})}} style={{...btnP,flex:2,justifyContent:"center",padding:"13px 14px",fontSize:14}}>Create Promotion</button>
+            </div>
+          </div>
+        </div>
+      </>
+    })()}
   </div>
 }
-
 /* ======== ORGANIZATION ======== */
 function Org(){
   const {dark}=useContext(ThemeCtx);
   const [orgTab,setOrgTab]=useState("overview");
   const [editMode,setEditMode]=useState(false);
-  const orgTabs=[["overview","Overview"],["amenities","Amenities"],["integrations","Integrations"],["team","Team"],["activity","Activity Log"]];
+  const orgTabs=[["overview","Overview"],["amenities","Amenities"],["documents","Documents"],["blackouts","Blackouts"],["pricing","Pricing"],["integrations","Integrations"],["team","Team"],["approvals","Approval Chain"],["activity","Activity Log"]];
   const [amenSearch,setAmenSearch]=useState("");
+  const [docPartnerFilt,setDocPartnerFilt]=useState("all");
+  const [blackoutMonth,setBlackoutMonth]=useState(1);
+  const [priceFac,setPriceFac]=useState("Dutchtown Gymnasium");
+  const [chainFac,setChainFac]=useState("All Facilities");
+  const [expandedFolder,setExpandedFolder]=useState(null);
+  const defaultChains={"All Facilities":[{name:"Coach Tony Richard",initials:"TR",role:"Site Admin",color:C.green,type:"reviewer"},{name:"Claire Dupuis",initials:"CD",role:"Facility Manager",color:C.green,type:"reviewer"},{name:"Marcus Williams",initials:"MW",role:"District Admin",color:C.blue,type:"final"}],"Dutchtown High School":[{name:"Coach Tony Richard",initials:"TR",role:"Site Admin",color:C.green,type:"reviewer"},{name:"Claire Dupuis",initials:"CD",role:"Facility Manager",color:C.green,type:"reviewer"},{name:"Marcus Williams",initials:"MW",role:"District Admin",color:C.blue,type:"final"}],"St. Amant High School":[{name:"Coach Ray Bourque",initials:"RB",role:"Site Admin",color:C.purple,type:"reviewer"},{name:"Marcus Williams",initials:"MW",role:"District Admin",color:C.blue,type:"final"}],"East Ascension High School":[{name:"Denise Landry",initials:"DL",role:"Site Admin",color:C.blueDk,type:"reviewer"},{name:"Marcus Williams",initials:"MW",role:"District Admin",color:C.blue,type:"final"}],"Prairieville High School":[{name:"Amy Melancon",initials:"AM",role:"Site Admin",color:C.blueDk,type:"reviewer"},{name:"Marcus Williams",initials:"MW",role:"District Admin",color:C.blue,type:"final"}]};
+  const [chainData,setChainData]=useState(defaultChains);
+  const [chainInsertIdx,setChainInsertIdx]=useState(null);
+  const chain=chainData[chainFac]||[];
+  const moveChain=(idx,dir)=>{const c=[...chain];const target=idx+dir;if(target<0||target>=c.length)return;const tmp=c[idx];c[idx]=c[target];c[target]=tmp;setChainData(d=>({...d,[chainFac]:c}))};
+  const removeFromChain=(idx)=>{setChainData(d=>({...d,[chainFac]:chain.filter((_,i)=>i!==idx)}))};
+  const insertIntoChain=(idx,person)=>{const c=[...chain];c.splice(idx,0,{name:person.name,initials:person.initials,role:person.role,color:person.color,type:"reviewer"});setChainData(d=>({...d,[chainFac]:c}));setChainInsertIdx(null);if(globalShowToast)globalShowToast({type:"success",title:"Reviewer Added",msg:`${person.name} added to approval chain at step ${idx+1}`,color:C.green})};
+  const chainNames=new Set(chain.map(c=>c.name));
   const [amenCat,setAmenCat]=useState("All");
   const [amenView,setAmenView]=useState("library");
   const [enabledAmens,setEnabledAmens]=useState(()=>new Set(defaultEnabled));
   const [venueAssign,setVenueAssign]=useState(()=>({...defaultVenueAssign}));
   const [amenVenue,setAmenVenue]=useState("Dutchtown Gymnasium");
   const [amenPrices,setAmenPrices]=useState(()=>{const m={};amenityLib.forEach(a=>m[a.id]=a.p);return m});
-
   const integrations=[
     {name:"RankOne",desc:"Athletic scheduling & eligibility",status:"connected",lastSync:"2 min ago",abbr:"R1",abbrBg:"#1B4D3E",color:C.green,events:347},
     {name:"DragonFly",desc:"Athletic scheduling & facility management",status:"disconnected",lastSync:"--",abbr:"DF",abbrBg:"#B8860B",color:"#B8860B",events:null},
@@ -1578,7 +1883,6 @@ function Org(){
     {name:"QuickBooks",desc:"Accounting & invoicing",status:"disconnected",lastSync:"--",abbr:"QB",abbrBg:C.g400,color:C.g400,events:null},
     {name:"Custom API",desc:"Connect your own system via webhook or REST API",status:"disconnected",lastSync:"--",abbr:"{ }",abbrBg:C.g500,color:C.g500,events:null},
   ];
-
   const teamMembers=[
     {name:"Marcus Williams",email:"m.williams@ascension.k12.la.us",role:"District Admin",campus:"All Campuses",status:"active",lastActive:"Just now",initials:"MW",color:C.blue},
     {name:"Dr. Edith Walker",email:"e.walker@ascension.k12.la.us",role:"Superintendent",campus:"All Campuses",status:"active",lastActive:"1h ago",initials:"EW",color:C.blueDk},
@@ -1587,7 +1891,7 @@ function Org(){
     {name:"Robert Guidry",email:"r.guidry@ascension.k12.la.us",role:"Finance Director",campus:"All Campuses",status:"active",lastActive:"2d ago",initials:"RG",color:C.amber},
     {name:"Lisa Breaux",email:"l.breaux@ascension.k12.la.us",role:"Approver",campus:"St. Amant HS, Prairieville HS",status:"invited",lastActive:"Pending",initials:"LB",color:C.g400},
   ];
-
+  const availableForChain=teamMembers.filter(p=>p.status!=="invited"&&!chainNames.has(p.name));
   const activityLog=[
     {action:"Reservation Approved",detail:"APR-0042 - Bayou City Volleyball - Dutchtown Gymnasium",user:"Marcus Williams",time:"35 min ago",icon:I.check(12,C.green),color:C.greenL},
     {action:"Payment Received",detail:"$475.00 - Gonzales FC - Prairieville Athletic Complex",user:"System",time:"2h ago",icon:I.wallet(12,C.green),color:C.greenL},
@@ -1600,7 +1904,6 @@ function Org(){
     {action:"Settings Updated",detail:"Tax rate updated from 0% to 0% (no change)",user:"David Chen",time:"3d ago",icon:I.edit(12,C.g500),color:C.g100},
     {action:"New Customer",detail:"Louisiana Tigers AAU completed onboarding and uploaded COI",user:"System",time:"3d ago",icon:I.user(12,C.green),color:C.greenL},
   ];
-
   return <div style={{display:"flex",flexDirection:"column",gap:20}}>
     {/* Sub-tabs */}
     <div className="pp-sub-tabs" style={{display:"flex",gap:0,borderBottom:`1px solid ${C.cardBorder}`,overflowX:"auto"}}>
@@ -1608,7 +1911,6 @@ function Org(){
         <button key={k} onClick={()=>setOrgTab(k)} style={{padding:"12px 20px",fontSize:13,fontWeight:orgTab===k?700:500,color:orgTab===k?C.g800:C.g500,background:"none",border:"none",borderBottom:orgTab===k?`2px solid ${C.blue}`:"2px solid transparent",marginBottom:-1,cursor:"pointer",fontFamily:font,letterSpacing:"-0.01em",whiteSpace:"nowrap"}}>{l}</button>
       )}
     </div>
-
     {/* OVERVIEW TAB */}
     {orgTab==="overview"&&<>
       <Div>District Profile</Div>
@@ -1631,7 +1933,7 @@ function Org(){
           </div>
         </Card>
         <Card style={{flex:2,minWidth:320}}>
-          <Sec action={<button onClick={()=>{setEditMode(!editMode);if(editMode&&globalShowToast)globalShowToast({type:"success",title:"Changes Saved",msg:"District information updated",color:C.green})}} style={editMode?{...btnP}:btnO}>{editMode?<>{I.check(12,"#fff")} Save</>:<>{I.edit(12,C.g500)} Edit</>}</button>}>District Information</Sec>
+          <Sec action={<button onClick={()=>{setEditMode(!editMode);if(editMode&&globalShowToast)globalShowToast({type:"success",title:"Changes Saved",msg:"District information updated",color:C.green})}} style={editMode?{...btnP}:btnO}>{editMode?<>{I.check(12,"#fff")} Save</>:<>{I.edit(12,C.g500)} Edit</>}</button>} icon={I.building(13,C.g500)}>District Information</Sec>
           <div style={{display:"grid",gridTemplateColumns:"1fr 1fr",gap:14}}>
             {[["District","Ascension Parish School Board"],["Address","1100 Webster St, Donaldsonville, LA 70346"],["Phone","(225) 391-7000"],["Timezone","America/Chicago"],["Superintendent","Dr. Edith M. Walker"],["Campuses Enrolled","5 of 32"]].map(([l,v])=><div key={l}>
               <div style={{fontSize:10,fontWeight:700,color:C.g400,textTransform:"uppercase",letterSpacing:"0.08em",marginBottom:5}}>{l}</div>
@@ -1642,7 +1944,7 @@ function Org(){
         </Card>
       </div>
       <Card>
-          <Sec action={<button onClick={()=>{if(globalShowToast)globalShowToast({type:"success",title:"Account Added",msg:"New payment account configured",color:C.green})}} style={{...btnO,fontSize:12,padding:"5px 12px"}}>+ Add</button>}>Payment Accounts</Sec>
+          <Sec action={<button onClick={()=>{if(globalShowToast)globalShowToast({type:"success",title:"Account Added",msg:"New payment account configured",color:C.green})}} style={{...btnO,fontSize:12,padding:"5px 12px"}}>+ Add</button>} icon={I.wallet(13,C.g500)}>Payment Accounts</Sec>
           <div style={{display:"grid",gridTemplateColumns:"repeat(auto-fill,minmax(200px,1fr))",gap:10}}>
           {campuses.map((c,ci)=><div key={c.id} style={{padding:"12px 14px",borderRadius:8,border:`1px solid ${C.cardBorder}`,background:C.g50,display:"flex",justifyContent:"space-between",alignItems:"center"}}>
             <div><div style={{fontSize:12,fontWeight:600,color:C.g700}}>{c.short}</div><div style={{fontSize:11,color:C.g400,marginTop:2,fontFamily:"monospace"}}>**** **** **** {["4821","7293","3018","5547","1962"][ci]}</div></div>
@@ -1650,20 +1952,23 @@ function Org(){
           </div>)}
           </div>
       </Card>
-
-
       <Div>Services & Amenities</Div>
-      <Card><Sec action={<button onClick={()=>setOrgTab("amenities")} style={{...btnO,fontSize:12,padding:"5px 14px",color:C.blue,borderColor:`${C.blue}30`}}>Manage All ({amenityLib.length}) →</button>}>Amenities & Add-ons</Sec><div style={{display:"grid",gridTemplateColumns:"repeat(auto-fill,minmax(190px,1fr))",gap:10}}>{amenityLib.filter(a=>enabledAmens.has(a.id)).slice(0,8).map(a=><div key={a.id} style={{display:"flex",justifyContent:"space-between",alignItems:"center",padding:"11px 14px",background:C.g50,borderRadius:10,border:`1px solid ${C.cardBorder}`}}><span style={{fontSize:13,color:C.g700,fontWeight:600}}>{a.n}</span><span style={{fontSize:13,fontWeight:800,color:C.blue}}>${amenPrices[a.id]||a.p}</span></div>)}{enabledAmens.size>8&&<div style={{display:"flex",alignItems:"center",justifyContent:"center",padding:"11px 14px",background:C.g50,borderRadius:10,border:`1px dashed ${C.cardBorder}`,color:C.g400,fontSize:12,fontWeight:600,cursor:"pointer"}} onClick={()=>setOrgTab("amenities")}>+{enabledAmens.size-8} more</div>}</div></Card>
+      <Card><Sec action={<button onClick={()=>setOrgTab("amenities")} style={{...btnO,fontSize:12,padding:"5px 14px",color:C.blue,borderColor:`${C.blue}30`}}>Manage All ({amenityLib.length}) →</button>} icon={I.grid(13,C.g500)}>Amenities & Add-ons</Sec><div style={{display:"grid",gridTemplateColumns:"repeat(auto-fill,minmax(190px,1fr))",gap:10}}>{amenityLib.filter(a=>enabledAmens.has(a.id)).slice(0,8).map(a=><div key={a.id} style={{display:"flex",justifyContent:"space-between",alignItems:"center",padding:"11px 14px",background:C.g50,borderRadius:10,border:`1px solid ${C.cardBorder}`}}><span style={{fontSize:13,color:C.g700,fontWeight:600}}>{a.n}</span><span style={{fontSize:13,fontWeight:800,color:C.blue}}>${amenPrices[a.id]||a.p}</span></div>)}{enabledAmens.size>8&&<div style={{display:"flex",alignItems:"center",justifyContent:"center",padding:"11px 14px",background:C.g50,borderRadius:10,border:`1px dashed ${C.cardBorder}`,color:C.g400,fontSize:12,fontWeight:600,cursor:"pointer"}} onClick={()=>setOrgTab("amenities")}>+{enabledAmens.size-8} more</div>}</div></Card>
       <Div>Settings</Div>
       <div style={{display:"flex",gap:20,flexWrap:"wrap"}}>
-        <Card style={{flex:1}}><Sec>Notification Preferences</Sec>
+        <Card style={{flex:1}}><Sec icon={I.bell(13,C.g500)}>Notification Preferences</Sec>
+        <div style={{padding:'12px 14px',background:`linear-gradient(135deg, ${C.blueL}, ${C.greenL})`,borderRadius:R.md,marginBottom:14,display:'flex',alignItems:'center',gap:12}}>
+          <span style={{fontSize:22}}>📱</span>
+          <div style={{flex:1}}><div style={{fontSize:12,fontWeight:700,color:C.g700}}>Push Notifications</div><div style={{fontSize:11,color:C.g500}}>Get instant approval requests on your phone. Approve or deny without opening the app.</div></div>
+          <span style={{fontSize:9,fontWeight:700,color:C.green,background:C.greenL,padding:'3px 8px',borderRadius:4}}>ENABLED</span>
+        </div>
           {[["Email - New Reservations",true],["Email - Payment Confirmations",true],["Email - Insurance Alerts",true],["SMS - Urgent Approvals",true],["SMS - Payment Failures",false],["Weekly Digest Report",true]].map(([n,on])=><div key={n} style={{display:"flex",justifyContent:"space-between",alignItems:"center",padding:"10px 0",borderBottom:`1px solid ${C.g100}`}}>
             <span style={{fontSize:13,color:C.g600}}>{n}</span>
             <div style={{width:42,height:22,borderRadius:11,background:on?C.green:C.g300,cursor:"pointer",position:"relative",transition:"background .2s"}}><div style={{width:16,height:16,borderRadius:"50%",background:"#fff",position:"absolute",top:3,...(on?{right:3}:{left:3}),boxShadow:"0 1px 3px rgba(0,0,0,.2)",transition:"all .15s"}}/></div>
           </div>)}
         </Card>
         <div style={{flex:1,display:"flex",flexDirection:"column",gap:20}}>
-          <Card><Sec>Workflow Settings</Sec>
+          <Card><Sec icon={I.sliders(13,C.g500)}>Workflow Settings</Sec>
             {(()=>{const {requireSiteAdmin,setRequireSiteAdmin}=useSiteAdmin();return <>
               <div style={{display:"flex",justifyContent:"space-between",alignItems:"flex-start",padding:"10px 0",borderBottom:`1px solid ${C.g100}`}}>
                 <div style={{flex:1,marginRight:16}}>
@@ -1681,7 +1986,7 @@ function Org(){
               </div>
             </>})()}
           </Card>
-          <Card><Sec>Booking Settings</Sec>
+          <Card><Sec icon={I.calendar(13,C.g500)}>Booking Settings</Sec>
           <div style={{display:"flex",flexDirection:"column",gap:14}}>
             <div style={{display:"flex",justifyContent:"space-between",alignItems:"center"}}>
               <div><span style={{fontSize:13,fontWeight:600,color:C.g700}}>Sales Tax Rate</span><div style={{fontSize:10,color:C.g400,marginTop:1}}>Applied to all rental invoices</div></div>
@@ -1707,7 +2012,6 @@ function Org(){
         </div>
       </div>
     </>}
-
     {/* AMENITIES TAB */}
     {orgTab==="amenities"&&<>
       {/* Compact summary */}
@@ -1719,7 +2023,6 @@ function Org(){
           </div>)}
         </div>
       </div>
-
       {/* View toggle - centered */}
       <div style={{display:"flex",flexDirection:"column",alignItems:"center",gap:12}}>
         <div style={{display:"flex",gap:0,border:`1px solid ${C.cardBorder}`,borderRadius:R.sm,overflow:"hidden"}}>
@@ -1730,7 +2033,6 @@ function Org(){
           <div className="pp-r-pills pp-amen-pills" style={{display:"flex",gap:3,background:C.g100,borderRadius:10,padding:3}}>{amenityCats.map(cat=><button key={cat} onClick={()=>setAmenCat(cat)} style={pill(amenCat===cat)}>{cat}</button>)}</div>
         </div>}
       </div>
-
       {/* LIBRARY VIEW */}
       {amenView==="library"&&<>{amenityCats.filter(c=>c!=="All").filter(c=>amenCat==="All"||amenCat===c).map(cat=>{
         const items=amenityLib.filter(a=>a.cat===cat&&(amenSearch===""||a.n.toLowerCase().includes(amenSearch.toLowerCase())||a.desc.toLowerCase().includes(amenSearch.toLowerCase())));
@@ -1769,7 +2071,6 @@ function Org(){
       })}
       {amenSearch&&amenityLib.filter(a=>(amenCat==="All"||a.cat===amenCat)&&(a.n.toLowerCase().includes(amenSearch.toLowerCase())||a.desc.toLowerCase().includes(amenSearch.toLowerCase()))).length===0&&<Card><div style={{padding:"40px 0",textAlign:"center",color:C.g400}}><div style={{fontSize:14,fontWeight:600,color:C.g600}}>No amenities match "{amenSearch}"</div><div style={{fontSize:12,marginTop:4}}>Try a different search term or category.</div></div></Card>}
       </>}
-
       {/* VENUE ASSIGNMENTS VIEW */}
       {amenView==="venues"&&<>
         <Card>
@@ -1778,7 +2079,6 @@ function Org(){
             <select value={amenVenue} onChange={e=>setAmenVenue(e.target.value)} style={{...sel,minWidth:220}}>{Object.keys(defaultVenueAssign).map(v=><option key={v} value={v}>{v}</option>)}</select>
             <span style={{fontSize:11,color:C.g400}}>{(venueAssign[amenVenue]||[]).length} of {enabledAmens.size} amenities assigned</span>
           </div>
-
           {/* Progress */}
           <div style={{marginBottom:20}}>
             <div style={{display:"flex",justifyContent:"space-between",fontSize:11,color:C.g400,marginBottom:4}}>
@@ -1789,7 +2089,6 @@ function Org(){
               <div style={{width:`${((venueAssign[amenVenue]||[]).length/Math.max(enabledAmens.size,1))*100}%`,height:"100%",background:C.blue,borderRadius:3,transition:"width .3s"}}/>
             </div>
           </div>
-
           {/* Amenity checklist for this venue */}
           <div style={{display:"grid",gridTemplateColumns:"repeat(auto-fill,minmax(280px,1fr))",gap:0}}>
             {amenityLib.filter(a=>enabledAmens.has(a.id)).map((a,i)=>{
@@ -1811,10 +2110,9 @@ function Org(){
             })}
           </div>
         </Card>
-
         {/* Quick overview: all venues */}
         <Card>
-          <Sec>All Venue Assignments</Sec>
+          <Sec icon={I.layers(13,C.g500)}>All Venue Assignments</Sec>
           <div style={{overflowX:"auto",WebkitOverflowScrolling:"touch"}}>
             <table style={{width:"100%",borderCollapse:"collapse",fontSize:12,minWidth:600}}>
               <thead><tr>
@@ -1835,7 +2133,6 @@ function Org(){
         </Card>
       </>}
     </>}
-
     {/* INTEGRATIONS TAB */}
     {orgTab==="integrations"&&<>
       {/* Active Integrations */}
@@ -1878,7 +2175,6 @@ function Org(){
           </div>
         </div>)}
       </div>
-
       {/* Available Integrations */}
       <Div>Available Integrations</Div>
       <div style={{display:"grid",gridTemplateColumns:"repeat(auto-fill,minmax(300px,1fr))",gap:14}}>
@@ -1908,7 +2204,6 @@ function Org(){
           </div>
         </div>)}
       </div>
-
       {/* Suggest an integration CTA */}
       <div style={{display:"flex",alignItems:"center",justifyContent:"center",padding:"16px 0 4px"}}>
         <button onClick={()=>globalShowSuggest()} style={{background:"none",border:"none",cursor:"pointer",fontFamily:font,display:"flex",alignItems:"center",gap:6,padding:"8px 16px",borderRadius:8,transition:"background .15s"}} onMouseEnter={e=>e.currentTarget.style.background=C.g100} onMouseLeave={e=>e.currentTarget.style.background="transparent"}>
@@ -1916,11 +2211,10 @@ function Org(){
           <span style={{fontSize:12,fontWeight:600,color:C.g400}}>Need a different integration? <span style={{color:C.blue,fontWeight:700}}>Suggest one</span></span>
         </button>
       </div>
-
       {/* Payout Accounts */}
       <Div>Payout Accounts</Div>
       <Card>
-        <Sec>Primary Account</Sec>
+        <Sec icon={I.wallet(13,C.g500)}>Primary Account</Sec>
         <div style={{display:"flex",alignItems:"center",gap:12,marginBottom:14}}>
           <div style={{width:40,height:40,borderRadius:10,background:C.green,display:"flex",alignItems:"center",justifyContent:"center",flexShrink:0}}>
             <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#fff" strokeWidth="2" strokeLinecap="round"><path d="M21 12V7H5a2 2 0 0 1 0-4h14v4"/><path d="M3 5v14a2 2 0 0 0 2 2h16v-5"/><path d="M18 12a2 2 0 0 0 0 4h4v-4h-4z"/></svg>
@@ -1945,14 +2239,12 @@ function Org(){
           <span style={{fontWeight:700,color:C.g600}}>All campuses (default)</span>
         </div>
       </Card>
-
       {/* Facility-specific accounts */}
       <Card>
-        <Sec action={<button onClick={()=>{if(globalShowToast)globalShowToast({type:"success",title:"Account Added",msg:"New payout account created. Map it to a campus or facility below.",color:C.green})}} style={{...btnP,fontSize:11,padding:"6px 14px"}}><span style={{fontSize:14,lineHeight:1}}>+</span> Add Account</button>}>Facility-Specific Accounts</Sec>
+        <Sec action={<button onClick={()=>{if(globalShowToast)globalShowToast({type:"success",title:"Account Added",msg:"New payout account created. Map it to a campus or facility below.",color:C.green})}} style={{...btnP,fontSize:11,padding:"6px 14px"}}><span style={{fontSize:14,lineHeight:1}}>+</span> Add Account</button>} icon={I.building(13,C.g500)}>Facility-Specific Accounts</Sec>
         <div style={{fontSize:12,color:C.g500,lineHeight:1.5,marginBottom:16}}>
           Route revenue from specific campuses or facilities to separate bank accounts. Any facility not mapped will use the primary account above.
         </div>
-
         {/* Existing mapped accounts */}
         {[
           {name:"Dutchtown Athletic Fund",bank:"Regions Bank - ****4182",campus:"Dutchtown High School",facilities:["Dutchtown Gymnasium","Dutchtown Stadium","Dutchtown Fields"],verified:true},
@@ -1975,23 +2267,20 @@ function Org(){
             </div>
           </div>
         </div>)}
-
         {/* Add new account form placeholder */}
         <div style={{padding:"14px 16px",borderRadius:10,border:`1px dashed ${C.g200}`,display:"flex",alignItems:"center",justifyContent:"center",gap:8,cursor:"pointer"}} onClick={()=>{if(globalShowToast)globalShowToast({type:"success",title:"Account Added",msg:"New payout account created. Map it to a campus or facility below.",color:C.green})}}>
           <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke={C.g400} strokeWidth="2" strokeLinecap="round"><path d="M12 5v14M5 12h14"/></svg>
           <span style={{fontSize:12,fontWeight:600,color:C.g400}}>Add another payout account</span>
         </div>
       </Card>
-
       <div style={{padding:"10px 14px",background:`${C.blue}06`,borderRadius:8,border:`1px solid ${C.blue}15`}}>
         <div style={{fontSize:11,color:C.g500,lineHeight:1.5}}>Revenue is deposited on a bi-monthly schedule after processing fees are deducted. Next payout estimated <span style={{fontWeight:700,color:C.g700}}>March 1, 2026</span>. Facility-specific accounts receive only the revenue from their mapped locations.</div>
       </div>
     </>}
-
     {/* TEAM TAB */}
     {orgTab==="team"&&<>
       <Card>
-        <Sec action={<button onClick={()=>{if(globalShowToast)globalShowToast({type:"success",title:"Invitation Sent",msg:"New team member invited via email",color:C.green})}} style={btnP}><span style={{fontSize:15}}>+</span> Invite Member</button>}>Team Members ({teamMembers.length})</Sec>
+        <Sec action={<button onClick={()=>{if(globalShowToast)globalShowToast({type:"success",title:"Invitation Sent",msg:"New team member invited via email",color:C.green})}} style={btnP}><span style={{fontSize:15}}>+</span> Invite Member</button>} icon={I.users(13,C.g500)}>Team Members ({teamMembers.length})</Sec>
         <table style={{width:"100%",borderCollapse:"collapse",fontSize:13}}>
           <thead><tr>{["Member","Role","Campus Access","Status","Last Active",""].map(h=><th key={h} style={TH}>{h}</th>)}</tr></thead>
           <tbody>{teamMembers.map((m,i)=><tr key={m.name} style={{background:i%2===0?C.g50:C.cardBg}}>
@@ -2011,11 +2300,311 @@ function Org(){
         </table>
       </Card>
     </>}
+    {/* DOCUMENTS TAB */}
+    {orgTab==="documents"&&<>
+      <div style={{display:"flex",justifyContent:"space-between",alignItems:"center",marginBottom:16}}>
+        <div style={{fontSize:14,fontWeight:700,color:C.g800}}>Document Vault</div>
+        <button onClick={()=>{if(globalShowToast)globalShowToast({type:"success",title:"Upload",msg:"File upload dialog opened",color:C.blue})}} style={btnP}>{I.download(12,"#fff")} Upload Document</button>
+      </div>
+      {/* Breadcrumb */}
+      <div style={{display:"flex",alignItems:"center",gap:6,marginBottom:14,fontSize:12}}>
+        <button onClick={()=>setExpandedFolder(null)} style={{background:"none",border:"none",color:expandedFolder?C.blue:C.g800,fontWeight:700,cursor:"pointer",fontFamily:font,padding:0}}>All Partners</button>
+        {expandedFolder!==null&&<><span style={{color:C.g300}}>/</span><span style={{fontWeight:700,color:C.g800}}>{topCustData[expandedFolder]?.n}</span></>}
+      </div>
+      {/* Folder grid or file list */}
+      {expandedFolder===null?<div style={{display:"grid",gridTemplateColumns:"repeat(auto-fill,minmax(180px,1fr))",gap:10}}>
+        {topCustData.slice(0,5).map((org,oi)=>{
+          const hasExpired=org.n.includes("Gonzales");
+          const docCount=org.n.includes("Bayou")?3:2;
+          return <div key={oi} onClick={()=>setExpandedFolder(oi)} style={{padding:"16px",borderRadius:R.md,border:`1px solid ${hasExpired?`${C.red}25`:C.cardBorder}`,background:hasExpired?`${C.red}03`:C.cardBg,cursor:"pointer",transition:"all .15s",position:"relative"}} onMouseEnter={e=>{e.currentTarget.style.boxShadow=`0 4px 16px ${C.blue}12`;e.currentTarget.style.borderColor=C.blue}} onMouseLeave={e=>{e.currentTarget.style.boxShadow="none";e.currentTarget.style.borderColor=hasExpired?`${C.red}25`:C.cardBorder}}>
+            {hasExpired&&<div style={{position:"absolute",top:8,right:8,width:8,height:8,borderRadius:4,background:C.red}}/>}
+            <div style={{width:40,height:36,borderRadius:6,background:C.blueL,display:"flex",alignItems:"center",justifyContent:"center",marginBottom:10}}>
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke={C.blue} strokeWidth="1.5" strokeLinecap="round"><path d="M22 19a2 2 0 01-2 2H4a2 2 0 01-2-2V5a2 2 0 012-2h5l2 3h9a2 2 0 012 2z"/></svg>
+            </div>
+            <div style={{fontSize:13,fontWeight:700,color:C.g800,marginBottom:2,whiteSpace:"nowrap",overflow:"hidden",textOverflow:"ellipsis"}}>{org.n}</div>
+            <div style={{fontSize:11,color:C.g400}}>{docCount} documents</div>
+            {hasExpired&&<div style={{fontSize:9,fontWeight:700,color:C.red,marginTop:4}}>1 EXPIRED</div>}
+          </div>})}
+        {/* Add new folder */}
+        <div onClick={()=>{if(globalShowToast)globalShowToast({type:"info",title:"New Folder",msg:"Create a folder for a new partner organization",color:C.blue})}} style={{padding:"16px",borderRadius:R.md,border:`2px dashed ${C.g200}`,background:C.g50,cursor:"pointer",display:"flex",flexDirection:"column",alignItems:"center",justifyContent:"center",minHeight:110,transition:"all .15s"}} onMouseEnter={e=>e.currentTarget.style.borderColor=C.blue} onMouseLeave={e=>e.currentTarget.style.borderColor=C.g200}>
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke={C.g400} strokeWidth="1.5" strokeLinecap="round"><path d="M12 5v14M5 12h14"/></svg>
+          <span style={{fontSize:11,color:C.g400,marginTop:6,fontWeight:600}}>New Partner Folder</span>
+        </div>
+      </div>
+      :<>
+        {/* File list inside folder */}
+        {(()=>{
+          const org=topCustData[expandedFolder];
+          const docs=[
+            {type:"COI",name:"Certificate of Insurance",file:"COI_"+org.n.replace(/\s/g,"_")+"_2026.pdf",size:"245 KB",uploaded:"Jan 10, 2026",expiry:"03/01/2026",status:org.n.includes("Gonzales")?"expired":"active",icon:"shield"},
+            {type:"AGR",name:"Facility Use Agreement",file:"FUA_"+org.n.replace(/\s/g,"_")+"_2026.pdf",size:"128 KB",uploaded:"Jan 2, 2026",expiry:"12/31/2026",status:"active",icon:"file"},
+            ...(org.n.includes("Bayou")?[{type:"W9",name:"W-9 Tax Form",file:"W9_BayouCityVB.pdf",size:"89 KB",uploaded:"Dec 15, 2025",expiry:null,status:"active",icon:"file"}]:[]),
+          ];
+          return <Card np>
+            {/* File header */}
+            <div style={{display:"flex",padding:"10px 16px",borderBottom:`1px solid ${C.g100}`,fontSize:10,fontWeight:700,color:C.g400,textTransform:"uppercase",letterSpacing:"0.06em"}}>
+              <span style={{flex:1}}>Name</span>
+              <span style={{width:90,textAlign:"center"}}>Type</span>
+              <span style={{width:90,textAlign:"center"}}>Size</span>
+              <span style={{width:110,textAlign:"center"}}>Uploaded</span>
+              <span style={{width:100,textAlign:"center"}}>Expires</span>
+              <span style={{width:80}}/>
+            </div>
+            {docs.map((d,di)=><div key={di} style={{display:"flex",alignItems:"center",padding:"12px 16px",borderBottom:di<docs.length-1?`1px solid ${C.g100}`:"none",background:d.status==="expired"?`${C.red}03`:di%2===0?C.g50:"transparent",transition:"background .1s"}} onMouseEnter={e=>e.currentTarget.style.background=C.blueL} onMouseLeave={e=>e.currentTarget.style.background=d.status==="expired"?`${C.red}03`:di%2===0?C.g50:"transparent"}>
+              <div style={{flex:1,display:"flex",alignItems:"center",gap:10,minWidth:0}}>
+                <div style={{width:30,height:34,borderRadius:4,background:d.status==="expired"?C.redL:d.type==="COI"?`${C.green}12`:C.blueL,display:"flex",alignItems:"center",justifyContent:"center",flexShrink:0}}>
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke={d.status==="expired"?C.red:d.type==="COI"?C.green:C.blue} strokeWidth="2" strokeLinecap="round"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><path d="M14 2v6h6"/></svg>
+                </div>
+                <div style={{minWidth:0}}>
+                  <div style={{fontSize:13,fontWeight:600,color:C.g800,whiteSpace:"nowrap",overflow:"hidden",textOverflow:"ellipsis"}}>{d.name}</div>
+                  <div style={{fontSize:10,color:C.g400}}>{d.file}</div>
+                </div>
+              </div>
+              <span style={{width:90,textAlign:"center",fontSize:10,fontWeight:700,color:d.type==="COI"?C.green:C.blue}}>{d.type}</span>
+              <span style={{width:90,textAlign:"center",fontSize:11,color:C.g400,fontFamily:numFont}}>{d.size}</span>
+              <span style={{width:110,textAlign:"center",fontSize:11,color:C.g500}}>{d.uploaded}</span>
+              <span style={{width:100,textAlign:"center"}}>
+                {d.expiry?<span style={{fontSize:11,fontWeight:d.status==="expired"?700:500,color:d.status==="expired"?C.red:C.g400}}>{d.expiry}{d.status==="expired"&&<div style={{fontSize:8,fontWeight:800,color:C.red}}>EXPIRED</div>}</span>:<span style={{fontSize:10,color:C.g300}}>--</span>}
+              </span>
+              <div style={{width:80,display:"flex",gap:4,justifyContent:"flex-end"}}>
+                <button style={{background:C.g100,border:"none",width:28,height:28,borderRadius:6,cursor:"pointer",display:"flex",alignItems:"center",justifyContent:"center"}} title="Download">{I.download(12,C.g500)}</button>
+                <button style={{background:C.g100,border:"none",width:28,height:28,borderRadius:6,cursor:"pointer",display:"flex",alignItems:"center",justifyContent:"center"}} title="Delete">{I.x(10,C.g400)}</button>
+              </div>
+            </div>)}
+            {/* Upload to this folder */}
+            <div style={{padding:"14px 16px",borderTop:`1px solid ${C.g100}`,display:"flex",gap:10}}>
+              <button onClick={()=>{if(globalShowToast)globalShowToast({type:"success",title:"Upload",msg:`Upload a document to ${org.n}'s folder`,color:C.blue})}} style={{...btnO,fontSize:11,padding:"8px 14px"}}>{I.download(11,C.g500)} Upload to Folder</button>
+            </div>
+          </Card>})()}
+      </>}
+    </>}
+    {/* BLACKOUT CALENDAR TAB */}
+    {orgTab==="blackouts"&&<>
+      <div style={{display:"flex",justifyContent:"space-between",alignItems:"center",marginBottom:16}}>
+        <div style={{fontSize:14,fontWeight:700,color:C.g800}}>Blackout & Maintenance Calendar</div>
+        <button onClick={()=>{if(globalShowToast)globalShowToast({type:"success",title:"Blackout Added",msg:"New blackout window created",color:C.blue})}} style={btnP}>+ Add Blackout</button>
+      </div>
+      <div style={{padding:"12px 16px",background:`linear-gradient(135deg, ${C.blueL}, ${C.greenL})`,borderRadius:R.lg,marginBottom:16,fontSize:12,color:C.g600,lineHeight:1.6}}>
+        Block off facilities for maintenance, school events, testing days, and holidays. Partners see these as unavailable when booking.
+      </div>
+      <Card>
+        <Sec icon={I.calendar(13,C.g500)}>Upcoming Blackouts</Sec>
+        {[
+          {title:"Spring Break",dates:"Mar 16-20, 2026",facilities:"All Facilities",type:"holiday",color:C.blue,recurring:true},
+          {title:"Easter Monday",dates:"Apr 6, 2026",facilities:"All Facilities",type:"holiday",color:C.blue,recurring:true},
+          {title:"Gym Floor Resurfacing",dates:"Mar 2-4, 2026",facilities:"Dutchtown Gymnasium",type:"maintenance",color:C.amber,recurring:false},
+          {title:"State Testing",dates:"Apr 14-17, 2026",facilities:"All Gymnasiums",type:"school",color:C.purple,recurring:true},
+          {title:"Graduation Rehearsal",dates:"May 18, 2026",facilities:"Gator Stadium, Spartan Stadium",type:"school",color:C.purple,recurring:false},
+          {title:"Memorial Day",dates:"May 25, 2026",facilities:"All Facilities",type:"holiday",color:C.blue,recurring:true},
+          {title:"Summer Maintenance",dates:"Jun 1-14, 2026",facilities:"St. Amant Gymnasium",type:"maintenance",color:C.amber,recurring:false},
+        ].map((b,i,arr)=><div key={i} style={{display:"flex",alignItems:"center",gap:12,padding:"12px 0",borderBottom:i<arr.length-1?`1px solid ${C.g100}`:"none"}}>
+          <div style={{width:3,height:36,borderRadius:2,background:b.color,flexShrink:0}}/>
+          <div style={{flex:1,minWidth:0}}>
+            <div style={{display:"flex",alignItems:"center",gap:6}}>
+              <span style={{fontSize:13,fontWeight:700,color:C.g800}}>{b.title}</span>
+              <span style={{fontSize:9,fontWeight:600,color:b.color,textTransform:"uppercase"}}>{b.type}</span>
+              {b.recurring&&<span style={{fontSize:8,color:C.g400,fontWeight:600}}>RECURRING</span>}
+            </div>
+            <div style={{fontSize:11,color:C.g500,marginTop:2}}>{b.dates}</div>
+            <div style={{fontSize:10,color:C.g400,marginTop:1}}>{b.facilities}</div>
+          </div>
+          <button style={{...btnO,fontSize:10,padding:"5px 10px"}}>{I.edit(10,C.g500)} Edit</button>
+        </div>)}
+      </Card>
+    </>}
+    {/* DYNAMIC PRICING TAB */}
+    {orgTab==="pricing"&&<>
+      <div style={{display:"flex",justifyContent:"space-between",alignItems:"center",marginBottom:16}}>
+        <div style={{fontSize:14,fontWeight:700,color:C.g800}}>Dynamic Pricing</div>
+        <select value={priceFac} onChange={e=>setPriceFac(e.target.value)} style={sel}>{["Dutchtown Gymnasium","Prairieville Athletic Complex","St. Amant Gymnasium","East Ascension Gymnasium","Gator Stadium"].map(f=><option key={f}>{f}</option>)}</select>
+      </div>
+      <div style={{padding:"12px 16px",background:`linear-gradient(135deg, ${C.blueL}, ${C.greenL})`,borderRadius:R.lg,marginBottom:16,fontSize:12,color:C.g600,lineHeight:1.6}}>
+        Set custom hourly rates by day and time window. Peak hours, weekends, and seasonal pricing help maximize revenue.
+      </div>
+      <Card>
+        <Sec icon={I.sliders(13,C.g500)}>Weekly Rate Schedule - {priceFac.split(" ")[0]}</Sec>
+        <div style={{display:"flex",alignItems:"center",gap:12,marginBottom:14,padding:"10px 14px",background:C.g50,borderRadius:R.sm,border:`1px solid ${C.cardBorder}`}}>
+          <span style={{fontSize:11,fontWeight:700,color:C.g500}}>Time Zone:</span>
+          <span style={{fontSize:12,fontWeight:600,color:C.g700}}>Central (CT) - UTC-6</span>
+          <div style={{flex:1}}/>
+          <span style={{fontSize:10,color:C.g400}}>All times displayed in CT</span>
+        </div>
+        {/* Time window definitions */}
+        <div style={{display:"grid",gridTemplateColumns:"repeat(3,1fr)",gap:10,marginBottom:16}}>
+          {[
+            {label:"Morning",from:"6:00 AM",to:"12:00 PM",color:C.blueL,borderColor:`${C.blue}30`},
+            {label:"Afternoon",from:"12:00 PM",to:"5:00 PM",color:C.greenL,borderColor:`${C.green}30`},
+            {label:"Evening",from:"5:00 PM",to:"10:00 PM",color:`${C.amber}10`,borderColor:`${C.amber}30`},
+          ].map(w=><div key={w.label} style={{padding:"10px 12px",borderRadius:R.sm,background:w.color,border:`1px solid ${w.borderColor}`}}>
+            <div style={{fontSize:11,fontWeight:700,color:C.g700,marginBottom:6}}>{w.label}</div>
+            <div style={{display:"flex",gap:4,alignItems:"center"}}>
+              <input type="text" defaultValue={w.from} style={{width:70,padding:"5px 6px",border:`1px solid ${C.cardBorder}`,borderRadius:4,fontSize:11,fontFamily:numFont,color:C.g700,background:C.cardBg,textAlign:"center"}}/>
+              <span style={{fontSize:10,color:C.g400}}>to</span>
+              <input type="text" defaultValue={w.to} style={{width:70,padding:"5px 6px",border:`1px solid ${C.cardBorder}`,borderRadius:4,fontSize:11,fontFamily:numFont,color:C.g700,background:C.cardBg,textAlign:"center"}}/>
+            </div>
+          </div>)}
+        </div>
+        {/* Rate grid */}
+        <div style={{overflowX:"auto"}}>
+        <table style={{width:"100%",borderCollapse:"collapse",fontSize:12}}><thead><tr>
+          <th style={{...TH,width:90}}>Day</th>
+          <th style={TH}>Morning</th>
+          <th style={TH}>Afternoon</th>
+          <th style={TH}>Evening</th>
+        </tr></thead><tbody>
+        {["Monday","Tuesday","Wednesday","Thursday","Friday","Saturday","Sunday"].map((day,di)=>{
+          const isWeekend=di>=5;
+          const rates=isWeekend?[175,175,200]:[125,150,175];
+          return <tr key={day} style={{background:isWeekend?`${C.amber}06`:di%2===0?C.g50:C.cardBg}}>
+            <td style={{...TD,fontWeight:700,color:C.g800}}>{day}{isWeekend&&<div style={{fontSize:8,fontWeight:700,color:C.amber}}>WEEKEND</div>}</td>
+            {rates.map((r,ri)=><td key={ri} style={{...TD,padding:"8px 10px"}}>
+              <div style={{display:"flex",alignItems:"center",gap:4}}>
+                <span style={{fontSize:11,color:C.g400}}>$</span>
+                <input type="number" defaultValue={r} style={{width:50,padding:"5px 6px",border:`1px solid ${C.cardBorder}`,borderRadius:4,fontSize:12,fontFamily:numFont,fontWeight:700,color:isWeekend&&ri===2?C.amber:C.g700,background:C.cardBg,textAlign:"center"}} onBlur={e=>{if(globalShowToast)globalShowToast({type:"success",title:"Rate Saved",msg:`${day} ${["morning","afternoon","evening"][ri]}: $${e.target.value}/hr`,color:C.green})}}/>
+                <span style={{fontSize:10,color:C.g400}}>/hr</span>
+                {isWeekend&&ri===2&&<span style={{fontSize:7,fontWeight:700,color:C.amber,background:C.amberL,padding:"1px 4px",borderRadius:2}}>PEAK</span>}
+              </div>
+            </td>)}
+          </tr>})}
+        </tbody></table>
+        </div>
+        <div style={{marginTop:14,padding:"12px 14px",background:C.g50,borderRadius:R.sm,fontSize:11,color:C.g500,lineHeight:1.6}}>
+          <strong style={{color:C.g700}}>Seasonal Override:</strong> Summer rates (Jun-Aug) apply a 1.2x multiplier on all time slots. Holiday blackout dates use standard rates when facilities reopen. All changes save automatically.
+        </div>
+      </Card>
+    </>}
+    {/* APPROVAL CHAIN TAB */}
+    {orgTab==="approvals"&&<>
+      <div style={{display:"flex",justifyContent:"space-between",alignItems:"center",marginBottom:16}}>
+        <div style={{fontSize:14,fontWeight:700,color:C.g800}}>Approval Chain of Command</div>
+        <select value={chainFac} onChange={e=>setChainFac(e.target.value)} style={sel}>{["All Facilities",...campuses.map(c=>c.name)].map(f=><option key={f} value={f}>{f}</option>)}</select>
+      </div>
+      <div style={{padding:"12px 16px",background:`linear-gradient(135deg, ${C.blueL}, ${C.greenL})`,borderRadius:R.lg,marginBottom:16,fontSize:12,color:C.g600,lineHeight:1.6}}>
+        When a reservation request comes in, it flows through this sequence. Reviewers can approve (pass forward) or deny (stop). The last person is the final decision maker. Drag people up or down, or insert new reviewers at any point.
+      </div>
 
+      {/* Insert at top zone */}
+      {chainInsertIdx===0?<Card style={{margin:"0 0 4px",border:`1.5px solid ${C.blue}`,background:`${C.blue}04`}}>
+        <div style={{display:"flex",alignItems:"center",justifyContent:"space-between",marginBottom:10}}>
+          <span style={{fontSize:12,fontWeight:700,color:C.g800}}>Select a team member to insert at step 1</span>
+          <button onClick={()=>setChainInsertIdx(null)} style={{background:C.g100,border:"none",width:24,height:24,borderRadius:6,cursor:"pointer",display:"flex",alignItems:"center",justifyContent:"center"}}>{I.x(10,C.g500)}</button>
+        </div>
+        {availableForChain.length===0?<div style={{fontSize:12,color:C.g400,padding:"10px 0"}}>All team members are already in this chain.</div>
+        :<div style={{display:"flex",flexDirection:"column",gap:4}}>
+          {availableForChain.map(p=><div key={p.name} onClick={()=>insertIntoChain(0,p)} style={{display:"flex",alignItems:"center",gap:10,padding:"8px 12px",borderRadius:R.sm,border:`1px solid ${C.cardBorder}`,cursor:"pointer",transition:"all .12s"}} onMouseEnter={e=>{e.currentTarget.style.background=C.blueL;e.currentTarget.style.borderColor=C.blue}} onMouseLeave={e=>{e.currentTarget.style.background="transparent";e.currentTarget.style.borderColor=C.cardBorder}}>
+            <div style={{width:30,height:30,borderRadius:8,background:p.color,display:"flex",alignItems:"center",justifyContent:"center",color:"#fff",fontWeight:800,fontSize:10,flexShrink:0}}>{p.initials}</div>
+            <div style={{flex:1}}><div style={{fontSize:12,fontWeight:600,color:C.g800}}>{p.name}</div><div style={{fontSize:10,color:C.g400}}>{p.role}{p.campus?` - ${p.campus}`:""}</div></div>
+          </div>)}
+        </div>}
+      </Card>
+      :<div onClick={()=>{setChainInsertIdx(0)}} style={{display:"flex",alignItems:"center",justifyContent:"center",gap:6,padding:"8px",margin:"0 20px 4px",borderRadius:6,border:`2px dashed ${C.g200}`,cursor:"pointer",transition:"all .15s"}} onMouseEnter={e=>{e.currentTarget.style.borderColor=C.blue;e.currentTarget.style.background=`${C.blue}06`}} onMouseLeave={e=>{e.currentTarget.style.borderColor=C.g200;e.currentTarget.style.background="transparent"}}>
+        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke={C.g400} strokeWidth="2" strokeLinecap="round"><path d="M12 5v14M5 12h14"/></svg>
+        <span style={{fontSize:10,color:C.g400,fontWeight:600}}>Insert reviewer at start</span>
+      </div>}
 
+      {/* Chain steps */}
+      <div style={{display:"flex",flexDirection:"column",gap:0}}>
+        {chain.map((p,i)=>{
+          const isFinal=i===chain.length-1;
+          const isOnly=chain.length===1;
+          return <React.Fragment key={p.name+i}>
+            <Card style={{margin:"4px 0",border:isFinal?`1.5px solid #F59E0B40`:`1px solid ${C.cardBorder}`,background:isFinal?`linear-gradient(135deg, #FFFBEB, #FEF9E8)`:C.cardBg,position:"relative",overflow:"visible"}}>
+              {/* Step badge */}
+              <div style={{position:"absolute",left:-12,top:"50%",transform:"translateY(-50%)",width:24,height:24,borderRadius:12,background:isFinal?`linear-gradient(135deg, #F59E0B, #D97706)`:C.blue,display:"flex",alignItems:"center",justifyContent:"center",boxShadow:`0 2px 8px ${isFinal?"rgba(245,158,11,0.3)":"rgba(0,118,187,0.3)"}`,zIndex:2}}>
+                {isFinal?<svg width="12" height="12" viewBox="0 0 24 24" fill="none"><path d="M2 20h20l-3-12-5 5-4-8-4 8-5-5z" fill="#fff"/></svg>:<span style={{fontSize:10,fontWeight:900,color:"#fff"}}>{i+1}</span>}
+              </div>
+              <div style={{display:"flex",alignItems:"center",gap:12,paddingLeft:16}}>
+                {/* Avatar */}
+                <div style={{width:40,height:40,borderRadius:10,background:p.color,display:"flex",alignItems:"center",justifyContent:"center",color:"#fff",fontWeight:800,fontSize:12,flexShrink:0}}>{p.initials}</div>
+                {/* Info */}
+                <div style={{flex:1,minWidth:0}}>
+                  <div style={{display:"flex",alignItems:"center",gap:6,flexWrap:"wrap"}}>
+                    <span style={{fontSize:14,fontWeight:700,color:C.g800}}>{p.name}</span>
+                    <span style={{fontSize:10,fontWeight:600,color:C.g400,background:C.g100,padding:"2px 8px",borderRadius:4}}>{p.role}</span>
+                    {isFinal&&<span style={{fontSize:8,fontWeight:800,color:"#92400E",background:"#FDE68A",padding:"2px 8px",borderRadius:4,letterSpacing:"0.04em"}}>FINAL DECISION</span>}
+                  </div>
+                  <div style={{fontSize:11,color:C.g500,marginTop:3}}>
+                    {isFinal?"Has final authority to approve or deny all requests":"Reviews request and passes to next approver in sequence"}
+                  </div>
+                </div>
+                {/* Controls */}
+                <div style={{display:"flex",flexDirection:"column",gap:2,flexShrink:0}}>
+                  <button onClick={()=>moveChain(i,-1)} disabled={i===0} style={{background:i===0?C.g50:C.g100,border:"none",width:30,height:26,borderRadius:"6px 6px 2px 2px",cursor:i===0?"default":"pointer",display:"flex",alignItems:"center",justifyContent:"center",opacity:i===0?0.3:1,transition:"all .1s"}} onMouseEnter={e=>{if(i>0){e.currentTarget.style.background=C.blue;e.currentTarget.querySelector("svg").style.stroke="#fff"}}} onMouseLeave={e=>{e.currentTarget.style.background=C.g100;const sv=e.currentTarget.querySelector("svg");if(sv)sv.style.stroke=C.g500}} title="Move up">
+                    <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke={C.g500} strokeWidth="2.5" strokeLinecap="round"><path d="M18 15l-6-6-6 6"/></svg>
+                  </button>
+                  <button onClick={()=>moveChain(i,1)} disabled={isFinal} style={{background:isFinal?C.g50:C.g100,border:"none",width:30,height:26,borderRadius:"2px 2px 6px 6px",cursor:isFinal?"default":"pointer",display:"flex",alignItems:"center",justifyContent:"center",opacity:isFinal?0.3:1,transition:"all .1s"}} onMouseEnter={e=>{if(!isFinal){e.currentTarget.style.background=C.blue;e.currentTarget.querySelector("svg").style.stroke="#fff"}}} onMouseLeave={e=>{e.currentTarget.style.background=C.g100;const sv=e.currentTarget.querySelector("svg");if(sv)sv.style.stroke=C.g500}} title="Move down">
+                    <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke={C.g500} strokeWidth="2.5" strokeLinecap="round"><path d="M6 9l6 6 6-6"/></svg>
+                  </button>
+                </div>
+                {/* Remove */}
+                {!isOnly&&<button onClick={()=>{removeFromChain(i);if(globalShowToast)globalShowToast({type:"success",title:"Removed",msg:`${p.name} removed from chain`,color:C.green})}} style={{background:"none",border:"none",width:28,height:28,borderRadius:6,cursor:"pointer",display:"flex",alignItems:"center",justifyContent:"center",opacity:0.4,transition:"opacity .15s"}} onMouseEnter={e=>e.currentTarget.style.opacity=1} onMouseLeave={e=>e.currentTarget.style.opacity=0.4} title="Remove from chain">
+                  {I.x(12,C.red)}
+                </button>}
+              </div>
+            </Card>
+            {/* Insert between zone */}
+            {!isFinal&&<>
+              {chainInsertIdx===i+1?<Card style={{margin:"4px 0",border:`1.5px solid ${C.blue}`,background:`${C.blue}04`}}>
+                <div style={{display:"flex",alignItems:"center",justifyContent:"space-between",marginBottom:10}}>
+                  <span style={{fontSize:12,fontWeight:700,color:C.g800}}>Select a team member to insert at step {i+2}</span>
+                  <button onClick={()=>setChainInsertIdx(null)} style={{background:C.g100,border:"none",width:24,height:24,borderRadius:6,cursor:"pointer",display:"flex",alignItems:"center",justifyContent:"center"}}>{I.x(10,C.g500)}</button>
+                </div>
+                {availableForChain.length===0?<div style={{fontSize:12,color:C.g400,padding:"10px 0"}}>All team members are already in this chain.</div>
+                :<div style={{display:"flex",flexDirection:"column",gap:4}}>
+                  {availableForChain.map(p=><div key={p.name} onClick={()=>insertIntoChain(i+1,p)} style={{display:"flex",alignItems:"center",gap:10,padding:"8px 12px",borderRadius:R.sm,border:`1px solid ${C.cardBorder}`,cursor:"pointer",transition:"all .12s"}} onMouseEnter={e=>{e.currentTarget.style.background=C.blueL;e.currentTarget.style.borderColor=C.blue}} onMouseLeave={e=>{e.currentTarget.style.background="transparent";e.currentTarget.style.borderColor=C.cardBorder}}>
+                    <div style={{width:30,height:30,borderRadius:8,background:p.color,display:"flex",alignItems:"center",justifyContent:"center",color:"#fff",fontWeight:800,fontSize:10,flexShrink:0}}>{p.initials}</div>
+                    <div style={{flex:1}}><div style={{fontSize:12,fontWeight:600,color:C.g800}}>{p.name}</div><div style={{fontSize:10,color:C.g400}}>{p.role}{p.campus?` - ${p.campus}`:""}</div></div>
+                  </div>)}
+                </div>
+              </Card>
+              :<div style={{display:"flex",alignItems:"center",gap:0,margin:"0 20px"}}>
+                <div style={{flex:1,height:1,background:C.g200}}/>
+                <div onClick={()=>{setChainInsertIdx(i+1)}} style={{display:"flex",alignItems:"center",gap:4,padding:"4px 12px",borderRadius:20,border:`1.5px dashed ${C.g200}`,cursor:"pointer",transition:"all .15s",background:"transparent"}} onMouseEnter={e=>{e.currentTarget.style.borderColor=C.blue;e.currentTarget.style.background=`${C.blue}08`}} onMouseLeave={e=>{e.currentTarget.style.borderColor=C.g200;e.currentTarget.style.background="transparent"}}>
+                  <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke={C.g400} strokeWidth="2.5" strokeLinecap="round"><path d="M12 5v14M5 12h14"/></svg>
+                  <span style={{fontSize:9,fontWeight:600,color:C.g400}}>Insert</span>
+                </div>
+                <div style={{flex:1,height:1,background:C.g200}}/>
+              </div>}
+            </>}
+          </React.Fragment>})}
+      </div>
+
+      {/* Add at end */}
+      {chainInsertIdx===chain.length?<Card style={{margin:"8px 0",border:`1.5px solid ${C.blue}`,background:`${C.blue}04`}}>
+        <div style={{display:"flex",alignItems:"center",justifyContent:"space-between",marginBottom:10}}>
+          <span style={{fontSize:12,fontWeight:700,color:C.g800}}>Select a team member to add at end (step {chain.length+1})</span>
+          <button onClick={()=>setChainInsertIdx(null)} style={{background:C.g100,border:"none",width:24,height:24,borderRadius:6,cursor:"pointer",display:"flex",alignItems:"center",justifyContent:"center"}}>{I.x(10,C.g500)}</button>
+        </div>
+        {availableForChain.length===0?<div style={{fontSize:12,color:C.g400,padding:"10px 0"}}>All team members are already in this chain.</div>
+        :<div style={{display:"flex",flexDirection:"column",gap:4}}>
+          {availableForChain.map(p=><div key={p.name} onClick={()=>insertIntoChain(chain.length,p)} style={{display:"flex",alignItems:"center",gap:10,padding:"8px 12px",borderRadius:R.sm,border:`1px solid ${C.cardBorder}`,cursor:"pointer",transition:"all .12s"}} onMouseEnter={e=>{e.currentTarget.style.background=C.blueL;e.currentTarget.style.borderColor=C.blue}} onMouseLeave={e=>{e.currentTarget.style.background="transparent";e.currentTarget.style.borderColor=C.cardBorder}}>
+            <div style={{width:30,height:30,borderRadius:8,background:p.color,display:"flex",alignItems:"center",justifyContent:"center",color:"#fff",fontWeight:800,fontSize:10,flexShrink:0}}>{p.initials}</div>
+            <div style={{flex:1}}><div style={{fontSize:12,fontWeight:600,color:C.g800}}>{p.name}</div><div style={{fontSize:10,color:C.g400}}>{p.role}{p.campus?` - ${p.campus}`:""}</div></div>
+          </div>)}
+        </div>
+      </Card>
+      :<div onClick={()=>{setChainInsertIdx(chain.length)}} style={{display:"flex",alignItems:"center",justifyContent:"center",gap:6,padding:"12px",margin:"8px 0",borderRadius:R.sm,border:`2px dashed ${C.g200}`,cursor:"pointer",transition:"all .15s"}} onMouseEnter={e=>{e.currentTarget.style.borderColor=C.blue;e.currentTarget.style.background=`${C.blue}06`}} onMouseLeave={e=>{e.currentTarget.style.borderColor=C.g200;e.currentTarget.style.background="transparent"}}>
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke={C.g400} strokeWidth="2" strokeLinecap="round"><path d="M12 5v14M5 12h14"/></svg>
+        <span style={{fontSize:11,color:C.g400,fontWeight:600}}>Add reviewer at end</span>
+      </div>}
+
+      {/* Summary */}
+      <div style={{display:"flex",alignItems:"center",justifyContent:"space-between",padding:"12px 16px",background:C.g50,borderRadius:R.sm,border:`1px solid ${C.cardBorder}`,marginTop:4}}>
+        <div style={{display:"flex",alignItems:"center",gap:12}}>
+          <div style={{display:"flex"}}>
+            {chain.slice(0,4).map((p,i)=><div key={i} style={{width:24,height:24,borderRadius:12,background:p.color,border:`2px solid ${C.cardBg}`,display:"flex",alignItems:"center",justifyContent:"center",color:"#fff",fontSize:8,fontWeight:800,marginLeft:i>0?-6:0,zIndex:4-i}}>{p.initials}</div>)}
+          </div>
+          <span style={{fontSize:12,fontWeight:600,color:C.g700}}>{chain.length} step{chain.length!==1?"s":""} in chain</span>
+        </div>
+        <div style={{display:"flex",alignItems:"center",gap:6}}>
+          <div style={{width:6,height:6,borderRadius:3,background:C.green}}/>
+          <span style={{fontSize:11,color:C.g500}}>Final approver: <strong style={{color:C.g700}}>{chain[chain.length-1]?.name||"None"}</strong></span>
+        </div>
+      </div>
+    </>}
     {/* ACTIVITY LOG TAB */}
     {orgTab==="activity"&&<Card>
-      <Sec action={<div style={{display:"flex",gap:8,alignItems:"center"}}><select style={sel}><option>All Activity</option><option>Reservations</option><option>Payments</option><option>System</option><option>User Actions</option></select><ExportBtns/></div>}>Activity Log</Sec>
+      <Sec action={<div style={{display:"flex",gap:8,alignItems:"center"}}><select style={sel}><option>All Activity</option><option>Reservations</option><option>Payments</option><option>System</option><option>User Actions</option></select><ExportBtns/></div>} icon={I.clock(13,C.g500)}>Activity Log</Sec>
       <div style={{display:"flex",flexDirection:"column",gap:0}}>
         {activityLog.map((a,i)=><div key={i} style={{display:"flex",gap:14,alignItems:"flex-start",padding:"14px 0",borderBottom:i<activityLog.length-1?`1px solid ${C.g100}`:"none"}}>
           <div style={{width:34,height:34,borderRadius:10,background:a.color,display:"flex",alignItems:"center",justifyContent:"center",flexShrink:0,marginTop:2}}>{a.icon}</div>
@@ -2032,7 +2621,6 @@ function Org(){
     </Card>}
   </div>
 }
-
 /* ======== REPORTING (expanded ratings) ======== */
 /* Ratings data: individual reviews with user info, comments, contact */
 const ratingsData=[
@@ -2051,7 +2639,6 @@ const ratingsData=[
 ];
 const ratingTrendData=[{m:"Sep",avg:3.8,count:6},{m:"Oct",avg:4.0,count:9},{m:"Nov",avg:4.1,count:11},{m:"Dec",avg:4.3,count:8},{m:"Jan",avg:4.1,count:14},{m:"Feb",avg:4.5,count:4}];
 const sentimentColors={positive:C.blue,mixed:C.g400,negative:C.red};
-
 function Reporting(){
   const [rt,setRt]=useState(0);
   globalSetRt=setRt;
@@ -2060,8 +2647,13 @@ function Reporting(){
   const [ratingSentiment,setRatingSentiment]=useState("all");
   const [expandedReview,setExpandedReview]=useState(null);
   const [payStatusFilt,setPayStatusFilt]=useState("all");
+  const [showScheduleModal,setShowScheduleModal]=useState(false);
+  const [schedFreq,setSchedFreq]=useState("weekly");
+  const [schedDay,setSchedDay]=useState("Monday");
+  const [schedTime,setSchedTime]=useState("08:00");
+  const [schedRecipients,setSchedRecipients]=useState(["marcus.williams@apsb.org"]);
+  const [schedNewEmail,setSchedNewEmail]=useState("");
   const rTabs=["Ratings & Reviews","Revenue - Campus","Revenue - Facility","Revenue - Participant","Payouts Report","Bulk Payments"];
-
   const filteredRatings=ratingsData.filter(r=>{
     if(ratingsCampus!=="all"&&r.campus!==ratingsCampus)return false;
     if(ratingSentiment!=="all"&&r.sentiment!==ratingSentiment)return false;
@@ -2070,7 +2662,6 @@ function Reporting(){
   const avgRating=(filteredRatings.reduce((s,r)=>s+r.rating,0)/filteredRatings.length||0).toFixed(1);
   const distrib=[1,2,3,4,5].map(s=>filteredRatings.filter(r=>r.rating===s).length);
   const maxDistrib=Math.max(...distrib,1);
-
   return <div style={{display:"flex",flexDirection:"column",gap:20}}>
     {/* Report tabs - horizontal scroll pills */}
     <div className="pp-report-tabs" style={{display:"flex",gap:0,borderBottom:`1px solid ${C.cardBorder}`,justifyContent:"center"}}>
@@ -2079,7 +2670,6 @@ function Reporting(){
         return <button key={t} onClick={()=>setRt(i)} style={{padding:"10px 16px",fontSize:12,fontWeight:rt===i?700:500,color:rt===i?C.g800:C.g400,background:"none",border:"none",borderBottom:rt===i?`2px solid ${C.blue}`:"2px solid transparent",marginBottom:-1,cursor:"pointer",fontFamily:font,whiteSpace:"nowrap",letterSpacing:"-0.01em"}}><span className="pp-tab-full">{t}</span><span className="pp-tab-short" style={{display:"none"}}>{short}</span></button>
       })}
     </div>
-
     {/* Report controls */}
     <div className="pp-report-controls" style={{display:"flex",alignItems:"center",justifyContent:"space-between",gap:12,flexWrap:"wrap"}}>
       <div className="pp-report-range" style={{display:"flex",gap:6,alignItems:"center"}}>
@@ -2087,11 +2677,12 @@ function Reporting(){
         <span style={{fontSize:12,color:C.g400,fontWeight:500,whiteSpace:"nowrap"}}>Feb 1 - Feb 28, 2026</span>
       </div>
       <div className="pp-report-actions" style={{display:"flex",gap:4}}>
-        <button onClick={()=>{if(globalShowToast)globalShowToast({type:"success",title:"Report Exported",msg:`${rTabs[rt]} exported as CSV`,color:C.green})}} style={{padding:"7px 14px",borderRadius:6,border:"none",background:C.g800,color:"#fff",fontSize:11,fontWeight:600,cursor:"pointer",fontFamily:font,display:"flex",alignItems:"center",gap:5,transition:"opacity .15s"}} onMouseEnter={e=>e.currentTarget.style.opacity="0.85"} onMouseLeave={e=>e.currentTarget.style.opacity="1"}>{I.link(11,"#fff")} Export</button>
-        <button onClick={()=>{if(globalShowToast)globalShowToast({type:"success",title:"Report Scheduled",msg:"Weekly email report scheduled for Mondays at 8 AM",color:C.blue})}} style={{padding:"7px 14px",borderRadius:6,border:`1px solid ${C.cardBorder}`,background:C.cardBg,color:C.g600,fontSize:11,fontWeight:600,cursor:"pointer",fontFamily:font,display:"flex",alignItems:"center",gap:5}}>{I.mail(11,C.g400)} Schedule</button>
+        <button onClick={()=>{if(globalShowToast)globalShowToast({type:"success",title:"CSV Exported",msg:`${rTabs[rt]} exported as CSV`,color:C.green})}} style={{...btnO,fontSize:11,padding:"7px 12px"}}>{I.download(11,C.g500)} CSV</button>
+        <button onClick={()=>{if(globalShowToast)globalShowToast({type:"success",title:"PDF Exported",msg:`${rTabs[rt]} exported as PDF`,color:C.green})}} style={{...btnO,fontSize:11,padding:"7px 12px"}}>{I.download(11,C.g500)} PDF</button>
+        <button onClick={()=>{if(globalShowToast)globalShowToast({type:"success",title:"Board Report Generated",msg:"One-page board summary PDF with logo and key metrics",color:C.green})}} style={{...btnO,fontSize:11,padding:"7px 12px"}}>{I.flag(11,C.g500)} Board Report</button>
+        <button onClick={()=>setShowScheduleModal(true)} style={{...btnO,fontSize:11,padding:"7px 12px"}}>{I.mail(11,C.g400)} Schedule Report</button>
       </div>
     </div>
-
     {rt===0&&<>
       <Div>Overview</Div>
       {/* Ratings header metrics */}
@@ -2122,16 +2713,15 @@ function Reporting(){
         </Card>
         <Card style={{flex:1,minWidth:160}}>
           <div style={{fontSize:10,fontWeight:700,color:C.g400,textTransform:"uppercase",letterSpacing:"0.08em",marginBottom:10}}>Action Items</div>
-          <div style={{fontSize:28,fontWeight:900,color:C.red,lineHeight:1}}>{ratingsData.filter(r=>r.rating<=2).length}</div>
+          <div style={{fontSize:28,fontWeight:900,color:C.red,lineHeight:1,fontFamily:numFont}}>{ratingsData.filter(r=>r.rating<=2).length}</div>
           <div style={{fontSize:11,color:C.g500,marginTop:4,fontWeight:600}}>Reviews rated 2 or below</div>
           <div style={{fontSize:11,color:C.red,marginTop:6,fontWeight:700,cursor:"pointer"}} onClick={()=>{setRatingSentiment("negative");setRatingsView("reviews")}}>→ View & follow up</div>
         </Card>
       </div>
-
       <Div>Trends & Analysis</Div>
       {/* Rating trend chart */}
       <Card>
-        <Sec action={<div style={{display:"flex",gap:4}}>{[["overview","Overview"],["reviews","All Reviews"]].map(([k,l])=><button key={k} onClick={()=>setRatingsView(k)} style={pill(ratingsView===k)}>{l}</button>)}</div>}>Rating Trends</Sec>
+        <Sec action={<div style={{display:"flex",gap:4}}>{[["overview","Overview"],["reviews","All Reviews"]].map(([k,l])=><button key={k} onClick={()=>setRatingsView(k)} style={pill(ratingsView===k)}>{l}</button>)}</div>} icon={I.star(13,C.g500)}>Rating Trends</Sec>
         {ratingsView==="overview"&&<>
           <ResponsiveContainer width="100%" height={200}>
             <AreaChart data={ratingTrendData}><defs><linearGradient id="ratingGr" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stopColor="#FBBF24" stopOpacity={.3}/><stop offset="100%" stopColor="#FBBF24" stopOpacity={.02}/></linearGradient></defs>
@@ -2149,10 +2739,40 @@ function Reporting(){
           </div>
         </>}
       </Card>
-
       {/* Campus breakdown table */}
       <Card>
-        <Sec action={<select value={ratingsCampus} onChange={e=>setRatingsCampus(e.target.value)} style={sel}><option value="all">All Campuses</option>{campuses.map(c=><option key={c.id} value={c.name}>{c.short}</option>)}</select>}>Ratings by Campus</Sec>
+      {/* Partner Health Scores */}
+      <Card>
+        <Sec icon={I.star(13,C.g500)}>Partner Health Scores</Sec>
+        <div style={{fontSize:11,color:C.g500,marginBottom:12,lineHeight:1.5}}>Composite score combining booking frequency, payment reliability, communication responsiveness, and review ratings. Updated weekly.</div>
+        {[
+          {org:"Bayou City Volleyball",score:94,booking:98,payment:100,comms:90,rating:88,trend:"up"},
+          {org:"Gonzales FC",score:78,booking:92,payment:85,comms:72,rating:65,trend:"stable"},
+          {org:"Louisiana Tigers AAU",score:85,booking:80,payment:90,comms:88,rating:82,trend:"up"},
+          {org:"Ascension Elite Cheer",score:72,booking:75,payment:80,comms:65,rating:68,trend:"down"},
+          {org:"River Parish Runners",score:58,booking:45,payment:70,comms:55,rating:62,trend:"down"},
+        ].map((p,i,arr)=>{
+          const clr=p.score>=80?C.green:p.score>=60?C.amber:C.red;
+          return <div key={i} style={{padding:"12px 0",borderBottom:i<arr.length-1?`1px solid ${C.g100}`:"none"}}>
+            <div style={{display:"flex",alignItems:"center",gap:12}}>
+              <div style={{width:42,height:42,borderRadius:10,background:`${clr}12`,display:"flex",alignItems:"center",justifyContent:"center",flexShrink:0}}>
+                <span style={{fontSize:16,fontWeight:900,color:clr,fontFamily:numFont}}>{p.score}</span>
+              </div>
+              <div style={{flex:1,minWidth:0}}>
+                <div style={{display:"flex",alignItems:"center",gap:6}}>
+                  <span style={{fontSize:13,fontWeight:700,color:C.g800}}>{p.org}</span>
+                  <span style={{fontSize:10,color:p.trend==="up"?C.green:p.trend==="down"?C.red:C.g400}}>{p.trend==="up"?"↑":p.trend==="down"?"↓":"→"}</span>
+                </div>
+                <div style={{display:"flex",gap:12,marginTop:4}}>
+                  {[["Bookings",p.booking],["Payment",p.payment],["Comms",p.comms],["Rating",p.rating]].map(([l,v])=><div key={l} style={{fontSize:10,color:C.g500}}>
+                    <span style={{color:C.g400}}>{l}:</span> <span style={{fontWeight:700,color:v>=80?C.green:v>=60?C.amber:C.red,fontFamily:numFont}}>{v}</span>
+                  </div>)}
+                </div>
+              </div>
+            </div>
+          </div>})}
+      </Card>
+        <Sec action={<select value={ratingsCampus} onChange={e=>setRatingsCampus(e.target.value)} style={sel}><option value="all">All Campuses</option>{campuses.map(c=><option key={c.id} value={c.name}>{c.short}</option>)}</select>} icon={I.building(13,C.g500)}>Ratings by Campus</Sec>
         <table style={{width:"100%",borderCollapse:"collapse",fontSize:13}}><thead><tr>{["Campus","Total Reviews","Avg Rating","Trend (3mo)","Positive","Needs Attn",""].map(h=><th key={h} style={TH}>{h}</th>)}</tr></thead>
           <tbody>{campuses.map((c,i)=>{
             const cr=ratingsData.filter(r=>r.campus===c.name);const cAvg=cr.length?(cr.reduce((s,r)=>s+r.rating,0)/cr.length).toFixed(1):"--";
@@ -2168,12 +2788,11 @@ function Reporting(){
             </tr>})}</tbody>
         </table>
       </Card>
-
       {/* Individual Reviews Feed */}
       {ratingsView==="reviews"&&<><Div>Reviews</Div><Card>
         <Sec action={<div style={{display:"flex",gap:8,alignItems:"center"}}>
           <div style={{display:"flex",gap:4,background:C.g100,borderRadius:10,padding:3}}>{[["all","All"],["positive","Positive"],["mixed","Mixed"],["negative","Needs Attn"]].map(([k,l])=><button key={k} onClick={()=>setRatingSentiment(k)} style={pill(ratingSentiment===k)}>{l}</button>)}</div>
-        </div>}>Individual Reviews ({filteredRatings.length})</Sec>
+        </div>} icon={I.star(13,C.g500)}>Individual Reviews ({filteredRatings.length})</Sec>
         <div style={{display:"flex",flexDirection:"column",gap:0}}>
           {filteredRatings.map((r,i)=><div key={r.id} style={{padding:"16px 0",borderBottom:i<filteredRatings.length-1?`1px solid ${C.g100}`:"none"}}>
             {/* Review header row */}
@@ -2221,10 +2840,9 @@ function Reporting(){
         </div>
         {filteredRatings.length===0&&<Empty icon={I.chart(22,C.g300)} title="No reviews match" desc="Try adjusting your campus or sentiment filters." action="Clear Filters" onAction={()=>{setRatingSentiment("all");setRatingsCampus("all")}}/>}
       </Card></>}
-
       {/* Negative reviews summary - always visible on overview */}
       {ratingsView==="overview"&&ratingsData.filter(r=>r.rating<=2).length>0&&<><Div>Action Required</Div><Card style={{border:`1px solid ${C.red}20`,background:`linear-gradient(135deg,${C.red}04,${C.cardBg})`}}>
-        <Sec action={<button onClick={()=>{setRatingSentiment("negative");setRatingsView("reviews")}} style={{...btnO,fontSize:12,padding:"6px 14px",color:C.red,borderColor:`${C.red}40`}}>View All →</button>}>Reviews Requiring Attention</Sec>
+        <Sec action={<button onClick={()=>{setRatingSentiment("negative");setRatingsView("reviews")}} style={{...btnO,fontSize:12,padding:"6px 14px",color:C.red,borderColor:`${C.red}40`}}>View All →</button>} icon={I.alert(13,C.orange)}>Reviews Requiring Attention</Sec>
         {ratingsData.filter(r=>r.rating<=2).map(r=><div key={r.id} style={{padding:"14px 0",borderBottom:`1px solid ${C.g100}`,display:"flex",gap:12,alignItems:"flex-start"}}>
           <div style={{width:36,height:36,borderRadius:10,background:C.red+"15",display:"flex",alignItems:"center",justifyContent:"center",flexShrink:0}}>{I.alert(16,C.red)}</div>
           <div style={{flex:1}}>
@@ -2244,12 +2862,10 @@ function Reporting(){
         </div>)}
       </Card></>}
     </>}
-
     {rt===1&&<RevByCampus/>}
     {rt===2&&<RevByFacility/>}
     {rt===3&&<RevByParticipant/>}
     {rt===4&&<PayoutsReport/>}
-
     {/* BULK PAYMENTS TAB */}
     {rt===5&&<>{(()=>{
       const filtered=payStatusFilt==="all"?paymentsData:paymentsData.filter(p=>p.status===payStatusFilt);
@@ -2261,7 +2877,6 @@ function Reporting(){
         <div style={{padding:"14px 18px",background:`${C.blue}06`,borderRadius:10,border:`1px solid ${C.blue}15`,marginBottom:16}}>
           <div style={{fontSize:12,color:C.g500,lineHeight:1.6}}>Bulk payments are created when an organization books a facility for multiple days or extended hours at a negotiated rate. These may differ from the standard hourly rate.</div>
         </div>
-
         {/* Summary stats row */}
         <div style={{display:"flex",justifyContent:"center",marginBottom:16}}>
           <div style={{display:"flex",gap:0,background:C.cardBg,border:`1px solid ${C.cardBorder}`,borderRadius:R.lg,overflow:"hidden"}}>
@@ -2271,9 +2886,8 @@ function Reporting(){
             </div>)}
           </div>
         </div>
-
         {/* Volume chart */}
-        <Card style={{marginBottom:16}}><Sec>Monthly Volume</Sec>
+        <Card style={{marginBottom:16}}><Sec icon={I.bar(13,C.g500)}>Monthly Volume</Sec>
           <ResponsiveContainer width="100%" height={180}><BarChart data={[{m:"Sep",v:4200,f:180},{m:"Oct",v:5800,f:0},{m:"Nov",v:6100,f:220},{m:"Dec",v:3900,f:0},{m:"Jan",v:8200,f:475},{m:"Feb",v:5100,f:0}]} margin={{left:-10}}>
             <CartesianGrid strokeDasharray="3 3" stroke={C.g200} vertical={false}/>
             <XAxis dataKey="m" axisLine={false} tickLine={false} tick={{fontSize:11,fill:C.g400,fontFamily:numFont}}/>
@@ -2283,7 +2897,6 @@ function Reporting(){
             <Bar dataKey="f" name="Failed" fill={C.red} radius={[4,4,0,0]} barSize={16}/>
           </BarChart></ResponsiveContainer>
         </Card>
-
         {/* Filters */}
         <div className="pp-pay-filters" style={{display:"flex",justifyContent:"space-between",alignItems:"center",flexWrap:"wrap",gap:12,marginBottom:14}}>
           <div style={{display:"flex",gap:4,background:C.g100,borderRadius:10,padding:3}}>
@@ -2291,7 +2904,6 @@ function Reporting(){
           </div>
           <input type="text" placeholder="Search organization..." style={{padding:"8px 14px",border:`1px solid ${C.cardBorder}`,borderRadius:R.sm,fontSize:12,fontFamily:font,width:190,background:C.g50,color:C.g700,boxSizing:"border-box"}}/>
         </div>
-
         {/* Transactions table */}
         <Card np><div className="pp-table-wrap"><table style={{width:"100%",borderCollapse:"collapse",fontSize:13}}><thead><tr>{["Date","Facility","Organization","Bookings","Amount","Status"].map(h=><th key={h} style={TH}>{h}</th>)}</tr></thead>
           <tbody>{filtered.length===0?<tr><td colSpan={6}><Empty icon={I.wallet(22,C.g300)} title="No transactions found" desc="No bulk payments match the current filter." action="Show All" onAction={()=>setPayStatusFilt("all")}/></td></tr>:filtered.map((p,i)=><tr key={i} onClick={()=>globalSetShowPay(p)} style={{background:i%2===0?C.g50:C.cardBg,cursor:"pointer",transition:"background .12s"}} onMouseEnter={e=>e.currentTarget.style.background=C.blueL} onMouseLeave={e=>e.currentTarget.style.background=i%2===0?C.g50:C.cardBg}>
@@ -2305,12 +2917,59 @@ function Reporting(){
         </table></div></Card>
       </>
     })()}</>}
+    {/* Schedule Report Modal */}
+    {showScheduleModal&&<div style={{position:"fixed",inset:0,background:"rgba(15,23,42,0.45)",backdropFilter:"blur(6px)",WebkitBackdropFilter:"blur(6px)",zIndex:300,display:"flex",alignItems:"flex-end",justifyContent:"center"}} onClick={()=>setShowScheduleModal(false)}>
+      <style>{`@keyframes schedSlide{from{transform:translateY(100%)}to{transform:translateY(0)}}@media(min-width:641px){.pp-sched-modal{max-width:440px!important;border-radius:16px!important;margin:auto!important;animation:none!important;transform:none!important}}`}</style>
+      <div className="pp-sched-modal" onClick={e=>e.stopPropagation()} style={{background:C.cardBg,borderRadius:"16px 16px 0 0",width:"100%",maxHeight:"90vh",overflow:"auto",animation:"schedSlide .35s cubic-bezier(.16,1,.3,1)",WebkitOverflowScrolling:"touch",boxShadow:`0 -8px 40px rgba(0,0,0,0.15)`}}>
+        <div style={{display:"flex",justifyContent:"center",padding:"10px 0 4px"}}><div style={{width:36,height:4,borderRadius:2,background:C.g300}}/></div>
+        <div style={{padding:"12px 20px 20px",display:"flex",flexDirection:"column",gap:16}}>
+          <div style={{display:"flex",justifyContent:"space-between",alignItems:"center"}}>
+            <div style={{fontSize:16,fontWeight:800,color:C.g800}}>Schedule Report</div>
+            <button onClick={()=>setShowScheduleModal(false)} style={{background:C.g100,border:"none",width:28,height:28,borderRadius:8,cursor:"pointer",display:"flex",alignItems:"center",justifyContent:"center"}}>{I.x(12,C.g500)}</button>
+          </div>
+          <div style={{fontSize:12,color:C.g500,lineHeight:1.5}}>Automatically deliver the <strong style={{color:C.g700}}>{rTabs[rt]}</strong> report to one or more email addresses on a recurring schedule.</div>
+          <div>
+            <label style={{fontSize:11,fontWeight:700,color:C.g500,textTransform:"uppercase",letterSpacing:"0.06em",marginBottom:6,display:"block"}}>Report</label>
+            <div style={{padding:"10px 12px",background:C.g50,borderRadius:R.sm,border:`1px solid ${C.cardBorder}`,fontSize:13,color:C.g700,fontWeight:600}}>{rTabs[rt]}</div>
+          </div>
+          <div>
+            <label style={{fontSize:11,fontWeight:700,color:C.g500,textTransform:"uppercase",letterSpacing:"0.06em",marginBottom:6,display:"block"}}>Frequency</label>
+            <div style={{display:"flex",gap:4}}>{["daily","weekly","biweekly","monthly"].map(f=><button key={f} onClick={()=>setSchedFreq(f)} style={{flex:1,padding:"9px 0",borderRadius:R.sm,border:`1.5px solid ${schedFreq===f?C.blue:C.cardBorder}`,background:schedFreq===f?C.blueL:C.cardBg,color:schedFreq===f?C.blue:C.g500,fontSize:12,fontWeight:schedFreq===f?700:500,cursor:"pointer",fontFamily:font,transition:"all .12s",textTransform:"capitalize"}}>{f}</button>)}</div>
+          </div>
+          <div style={{display:"flex",gap:10}}>
+            {schedFreq!=="daily"&&<div style={{flex:1}}>
+              <label style={{fontSize:11,fontWeight:700,color:C.g500,textTransform:"uppercase",letterSpacing:"0.06em",marginBottom:6,display:"block"}}>Day</label>
+              <select value={schedDay} onChange={e=>setSchedDay(e.target.value)} style={{width:"100%",padding:"10px 34px 10px 12px",border:`1px solid ${C.cardBorder}`,borderRadius:R.sm,fontSize:13,color:C.g700,background:C.g50,appearance:"none",backgroundImage:`url("data:image/svg+xml,%3Csvg width='10' height='6' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M1 1l4 4 4-4' stroke='%239BA5B3' stroke-width='1.5' fill='none'/%3E%3C/svg%3E")`,backgroundRepeat:"no-repeat",backgroundPosition:"right 10px center",cursor:"pointer",fontWeight:600,fontFamily:font}}>{["Monday","Tuesday","Wednesday","Thursday","Friday","Saturday","Sunday"].map(d=><option key={d}>{d}</option>)}</select>
+            </div>}
+            <div style={{flex:1}}>
+              <label style={{fontSize:11,fontWeight:700,color:C.g500,textTransform:"uppercase",letterSpacing:"0.06em",marginBottom:6,display:"block"}}>Time</label>
+              <input type="time" value={schedTime} onChange={e=>setSchedTime(e.target.value)} style={{width:"100%",padding:"10px 12px",border:`1px solid ${C.cardBorder}`,borderRadius:R.sm,fontSize:13,fontFamily:font,color:C.g700,background:C.g50,boxSizing:"border-box"}}/>
+            </div>
+          </div>
+          <div>
+            <label style={{fontSize:11,fontWeight:700,color:C.g500,textTransform:"uppercase",letterSpacing:"0.06em",marginBottom:6,display:"block"}}>Recipients</label>
+            <div style={{display:"flex",flexWrap:"wrap",gap:6,marginBottom:8}}>
+              {schedRecipients.map((em,i)=><span key={i} style={{display:"inline-flex",alignItems:"center",gap:4,padding:"5px 10px",borderRadius:6,background:C.g100,fontSize:11,fontWeight:600,color:C.g700}}>
+                {em}
+                <button onClick={()=>setSchedRecipients(r=>r.filter((_,j)=>j!==i))} style={{background:"none",border:"none",cursor:"pointer",padding:0,display:"flex"}}>{I.x(10,C.g400)}</button>
+              </span>)}
+            </div>
+            <div style={{display:"flex",gap:6}}>
+              <input value={schedNewEmail} onChange={e=>setSchedNewEmail(e.target.value)} placeholder="Add email address..." onKeyDown={e=>{if(e.key==="Enter"&&schedNewEmail.includes("@")){setSchedRecipients(r=>[...r,schedNewEmail]);setSchedNewEmail("")}}} style={{flex:1,padding:"9px 12px",border:`1px solid ${C.cardBorder}`,borderRadius:R.sm,fontSize:13,fontFamily:font,color:C.g700,background:C.g50,boxSizing:"border-box"}}/>
+              <button onClick={()=>{if(schedNewEmail.includes("@")){setSchedRecipients(r=>[...r,schedNewEmail]);setSchedNewEmail("")}}} style={{...btnO,fontSize:12,padding:"8px 14px"}}>Add</button>
+            </div>
+          </div>
+          <div style={{display:"flex",gap:8,paddingBottom:"env(safe-area-inset-bottom, 0px)"}}>
+            <button onClick={()=>{setShowScheduleModal(false);if(globalShowToast)globalShowToast({type:"success",title:"Report Scheduled",msg:`${rTabs[rt]} will be sent ${schedFreq} to ${schedRecipients.length} recipient${schedRecipients.length>1?"s":""}`,color:C.green})}} style={{...btnP,flex:1,justifyContent:"center",fontSize:13,padding:"12px 18px"}}>Schedule Report</button>
+            <button onClick={()=>setShowScheduleModal(false)} style={{...btnO,fontSize:13,padding:"12px 18px"}}>Cancel</button>
+          </div>
+        </div>
+      </div>
+    </div>}
   </div>
 }
-
 /* ======== REPORT EXPORT BUTTONS (shared) ======== */
 const ExportBtns=()=><div style={{display:"flex",gap:6}}><button style={{...btnO,fontSize:11,padding:"5px 12px"}}>Export CSV</button><button style={{...btnO,fontSize:11,padding:"5px 12px"}}>Export PDF</button></div>;
-
 /* ======== REVENUE - CAMPUS ======== */
 const campusRevDetail=[
   {id:"dths",name:"Dutchtown High School",short:"Dutchtown HS",rev:21900,bookings:62,assets:3,util:68,avgRate:353,topAsset:"Dutchtown Gymnasium",topRev:18296,trend:"up",trendPct:"+22%",color:"#0076BB",monthly:[2800,4200,3600,2100,5800,3400]},
@@ -2325,17 +2984,17 @@ function RevByCampus(){
   return <div style={{display:"flex",flexDirection:"column",gap:20}}>
     <Div>Summary</Div>
     <div className="pp-report-stat-row" style={{display:"grid",gridTemplateColumns:"repeat(4,1fr)",gap:12}}>
-      <Card style={{textAlign:"center"}}><div style={{fontSize:10,fontWeight:700,color:C.g400,textTransform:"uppercase",letterSpacing:"0.06em"}}>Total Revenue</div><div style={{fontSize:24,fontWeight:900,color:C.g800,marginTop:4}}>${totalRev.toLocaleString()}</div></Card>
-      <Card style={{textAlign:"center"}}><div style={{fontSize:10,fontWeight:700,color:C.g400,textTransform:"uppercase",letterSpacing:"0.06em"}}>Total Bookings</div><div style={{fontSize:24,fontWeight:900,color:C.g800,marginTop:4}}>{campusRevDetail.reduce((s,c)=>s+c.bookings,0)}</div></Card>
-      <Card style={{textAlign:"center"}}><div style={{fontSize:10,fontWeight:700,color:C.g400,textTransform:"uppercase",letterSpacing:"0.06em"}}>Avg Utilization</div><div style={{fontSize:24,fontWeight:900,color:C.g800,marginTop:4}}>{Math.round(campusRevDetail.reduce((s,c)=>s+c.util,0)/5)}%</div></Card>
-      <Card style={{textAlign:"center"}}><div style={{fontSize:10,fontWeight:700,color:C.g400,textTransform:"uppercase",letterSpacing:"0.06em"}}>Avg / Booking</div><div style={{fontSize:24,fontWeight:900,color:C.g800,marginTop:4}}>${Math.round(totalRev/campusRevDetail.reduce((s,c)=>s+c.bookings,0))}</div></Card>
+      <Card style={{textAlign:"center"}}><div style={{fontSize:10,fontWeight:700,color:C.g400,textTransform:"uppercase",letterSpacing:"0.06em"}}>Total Revenue</div><div style={{fontSize:24,fontWeight:900,color:C.g800,marginTop:4,fontFamily:numFont}}>${totalRev.toLocaleString()}</div></Card>
+      <Card style={{textAlign:"center"}}><div style={{fontSize:10,fontWeight:700,color:C.g400,textTransform:"uppercase",letterSpacing:"0.06em"}}>Total Bookings</div><div style={{fontSize:24,fontWeight:900,color:C.g800,marginTop:4,fontFamily:numFont}}>{campusRevDetail.reduce((s,c)=>s+c.bookings,0)}</div></Card>
+      <Card style={{textAlign:"center"}}><div style={{fontSize:10,fontWeight:700,color:C.g400,textTransform:"uppercase",letterSpacing:"0.06em"}}>Avg Utilization</div><div style={{fontSize:24,fontWeight:900,color:C.g800,marginTop:4,fontFamily:numFont}}>{Math.round(campusRevDetail.reduce((s,c)=>s+c.util,0)/5)}%</div></Card>
+      <Card style={{textAlign:"center"}}><div style={{fontSize:10,fontWeight:700,color:C.g400,textTransform:"uppercase",letterSpacing:"0.06em"}}>Avg / Booking</div><div style={{fontSize:24,fontWeight:900,color:C.g800,marginTop:4,fontFamily:numFont}}>${Math.round(totalRev/campusRevDetail.reduce((s,c)=>s+c.bookings,0))}</div></Card>
     </div>
     <Div>Revenue Breakdown</Div>
-    <Card><Sec>Revenue by Campus (6 Months)</Sec>
+    <Card><Sec icon={I.building(13,C.g500)}>Revenue by Campus (6 Months)</Sec>
       <ResponsiveContainer width="100%" height={320}><BarChart data={revByFacData} margin={{bottom:20}}><CartesianGrid strokeDasharray="3 3" stroke={C.g200} vertical={false}/><XAxis dataKey="m" axisLine={false} tickLine={false} tick={{fontSize:11,fill:C.g400,fontFamily:font}}/><YAxis axisLine={false} tickLine={false} tick={{fontSize:11,fill:C.g400,fontFamily:font}} tickFormatter={v=>`$${(v/1000).toFixed(0)}k`}/><Tooltip content={<Tip/>}/><Legend wrapperStyle={{fontSize:11,fontFamily:font,paddingTop:16,color:C.g500}} iconSize={10} iconType="square"/><Bar dataKey="dt" name="Dutchtown" fill="#0076BB" radius={[3,3,0,0]} barSize={12}/><Bar dataKey="ea" name="East Ascension" fill="#00A84F" radius={[3,3,0,0]} barSize={12}/><Bar dataKey="sa" name="St. Amant" fill="#F59E0B" radius={[3,3,0,0]} barSize={12}/><Bar dataKey="pv" name="Prairieville" fill="#7C3AED" radius={[3,3,0,0]} barSize={12}/><Bar dataKey="dn" name="Donaldsonville" fill="#F15A29" radius={[3,3,0,0]} barSize={12}/></BarChart></ResponsiveContainer>
     </Card>
     <Div>Campus Detail</Div>
-    <Card><Sec>Campus Detail</Sec>
+    <Card><Sec icon={I.building(13,C.g500)}>Campus Detail</Sec>
       <table style={{width:"100%",borderCollapse:"collapse",fontSize:13}}><thead><tr>{["","Campus","Revenue","Bookings","Assets","Utilization","Avg Rate","Top Asset","Trend",""].map(h=><th key={h} style={TH}>{h}</th>)}</tr></thead>
         <tbody>{campusRevDetail.map((c,i)=><React.Fragment key={c.id}>
           <tr style={{background:i%2===0?C.g50:C.cardBg,cursor:"pointer"}} onClick={()=>setExpanded(expanded===c.id?null:c.id)}>
@@ -2367,7 +3026,6 @@ function RevByCampus(){
     </Card>
   </div>
 }
-
 /* ======== REVENUE - FACILITY ======== */
 const facilityRevDetail=[
   {a:"Dutchtown Gymnasium",c:"Dutchtown HS",ci:"dths",rev:18296,bookings:42,util:68,avgRate:436,topParticipant:"Bayou City Volleyball",topRev:6840,pct:30,color:"#0076BB",types:{volleyball:8400,basketball:4200,cheer:3600,other:2096}},
@@ -2394,8 +3052,8 @@ function RevByFacility(){
     </Card>
     <Div>Summary</Div>
     <div className="pp-report-stat-row" style={{display:"grid",gridTemplateColumns:"1fr 1fr",gap:12}}>
-      <Card style={{textAlign:"center"}}><div style={{fontSize:10,fontWeight:700,color:C.g400,textTransform:"uppercase"}}>Total Reservations</div><div style={{fontSize:28,fontWeight:900,color:C.g800,marginTop:4}}>{totalBook}</div></Card>
-      <Card style={{textAlign:"center"}}><div style={{fontSize:10,fontWeight:700,color:C.g400,textTransform:"uppercase"}}>Total Revenue</div><div style={{fontSize:28,fontWeight:900,color:C.g800,marginTop:4}}>${totalRev.toLocaleString()}</div></Card>
+      <Card style={{textAlign:"center"}}><div style={{fontSize:10,fontWeight:700,color:C.g400,textTransform:"uppercase"}}>Total Reservations</div><div style={{fontSize:28,fontWeight:900,color:C.g800,marginTop:4,fontFamily:numFont}}>{totalBook}</div></Card>
+      <Card style={{textAlign:"center"}}><div style={{fontSize:10,fontWeight:700,color:C.g400,textTransform:"uppercase"}}>Total Revenue</div><div style={{fontSize:28,fontWeight:900,color:C.g800,marginTop:4,fontFamily:numFont}}>${totalRev.toLocaleString()}</div></Card>
     </div>
     <Div>Results</Div>
     <Card>
@@ -2431,7 +3089,6 @@ function RevByFacility(){
     </Card>
   </div>
 }
-
 /* ======== REVENUE - PARTICIPANT ======== */
 function RevByParticipant(){
   const [partFilt,setPartFilt]=useState("all");
@@ -2452,7 +3109,6 @@ function RevByParticipant(){
           <button style={{...btnP,height:38}}>Search</button></div></div>
       </div>
     </Card>
-
     <Div>Summary</Div>
     <div style={{display:"grid",gridTemplateColumns:"repeat(auto-fit,minmax(160px,1fr))",gap:12}}>
       {[["Total Reservations",totalBook,C.g800,null],["Total Revenue",`$${totalRev.toLocaleString()}`,C.g800,null],["Avg per Booking",`$${totalBook?Math.round(totalRev/totalBook):0}`,C.blue,null],["Active Participants",filtered.length,C.green,null]].map(([l,v,clr])=><Card key={l} style={{textAlign:"center",padding:"18px 14px"}}>
@@ -2460,7 +3116,6 @@ function RevByParticipant(){
         <div style={{fontSize:26,fontWeight:900,color:clr,marginTop:6,fontFamily:numFont}}>{v}</div>
       </Card>)}
     </div>
-
     <Div>Participant Breakdown</Div>
     <Card>
       <div style={{display:"flex",justifyContent:"space-between",alignItems:"center",marginBottom:16}}>
@@ -2529,7 +3184,6 @@ function RevByParticipant(){
     </Card>
   </div>
 }
-
 /* ======== PAYOUTS REPORT (full transaction-level detail) ======== */
 function PayoutsReport(){
   const [locFilt,setLocFilt]=useState("all");
@@ -2537,7 +3191,6 @@ function PayoutsReport(){
   const [statusFilt,setStatusFilt]=useState("all");
   const [expandedTxn,setExpandedTxn]=useState(null);
   const [perPage,setPerPage]=useState(10);
-
   const filtered=txnData.filter(t=>{
     if(locFilt!=="all"&&t.facility!==locFilt)return false;
     if(assetFilt!=="all"&&t.asset!==assetFilt)return false;
@@ -2549,7 +3202,6 @@ function PayoutsReport(){
   const failedAmt=filtered.filter(t=>t.status==="failed").reduce((s,t)=>s+t.amount,0);
   const shown=filtered.slice(0,perPage);
   const allAssets=[...new Set(txnData.map(t=>t.asset))];
-
   return <div style={{display:"flex",flexDirection:"column",gap:20}}>
     <Div>Filters</Div>
     <Card>
@@ -2567,17 +3219,16 @@ function PayoutsReport(){
         <button style={{...btnP,height:38,width:"100%"}}>Search</button>
       </div>
     </Card>
-
     <Div>Summary</Div>
     <div style={{display:"grid",gridTemplateColumns:"repeat(auto-fit,minmax(180px,1fr))",gap:12}}>
       <Card style={{padding:"20px 18px",background:`linear-gradient(135deg,${C.blue}08,${C.cardBg})`}}>
         <div style={{fontSize:10,fontWeight:700,color:C.g400,textTransform:"uppercase",letterSpacing:"0.06em"}}>Total Transactions</div>
-        <div style={{fontSize:28,fontWeight:900,color:C.g800,marginTop:6}}>{filtered.length}</div>
+        <div style={{fontSize:28,fontWeight:900,color:C.g800,marginTop:6,fontFamily:numFont}}>{filtered.length}</div>
         <div style={{fontSize:11,color:C.g400,marginTop:4}}>{filtered.filter(t=>t.status==="success").length} successful</div>
       </Card>
       <Card style={{padding:"20px 18px",background:`linear-gradient(135deg,${C.green}06,${C.cardBg})`}}>
         <div style={{fontSize:10,fontWeight:700,color:C.g400,textTransform:"uppercase",letterSpacing:"0.06em"}}>Gross Revenue</div>
-        <div style={{fontSize:28,fontWeight:900,color:C.g800,marginTop:6}}>${totalAmt.toLocaleString(undefined,{minimumFractionDigits:2,maximumFractionDigits:2})}</div>
+        <div style={{fontSize:28,fontWeight:900,color:C.g800,marginTop:6,fontFamily:numFont}}>${totalAmt.toLocaleString(undefined,{minimumFractionDigits:2,maximumFractionDigits:2})}</div>
         <div style={{fontSize:11,color:C.green,fontWeight:600,marginTop:4}}>5% transaction fee</div>
       </Card>
       <Card style={{padding:"20px 18px"}}>
@@ -2591,11 +3242,10 @@ function PayoutsReport(){
         <div style={{fontSize:11,color:C.g400,marginTop:4}}>Requires attention</div>
       </Card>}
     </div>
-
     {/* Monthly payout summary */}
     <Div>Monthly Payouts</Div>
     <Card>
-      <Sec>Monthly Payout Summary</Sec>
+      <Sec icon={I.wallet(13,C.g500)}>Monthly Payout Summary</Sec>
       <div className="pp-table-wrap">
       <table style={{width:"100%",borderCollapse:"collapse",fontSize:13,minWidth:600}}>
         <thead><tr>{["Month","Gross Amount","Fee (5%)","Net Payout","Transactions","Status","Deposit Date"].map(h=><th key={h} style={{...TH,padding:"10px 12px"}}>{h}</th>)}</tr></thead>
@@ -2620,7 +3270,6 @@ function PayoutsReport(){
       </table>
       </div>
     </Card>
-
     <Div>Transaction Detail</Div>
     <Card>
       <div style={{display:"flex",justifyContent:"space-between",alignItems:"center",marginBottom:16}}>
@@ -2674,9 +3323,8 @@ function PayoutsReport(){
     </Card>
   </div>
 }
-
-/* ======== USERS & ROLE MANAGEMENT ======== */
 /* District staff only - participants are external and not managed here */
+/* ======== USERS & ROLE MANAGEMENT ======== */
 const staffData=[
   {name:"Marcus Williams",email:"m.williams@apsb.org",role:"District Admin",loc:"District Office",campus:"all",status:true,updated:"02/01/2026",initials:"MW",color:C.blue,phone:"(225) 391-7001"},
   {name:"Coach Tony Richard",email:"t.richard@apsb.org",role:"Site Admin",loc:"Dutchtown High School",campus:"dths",status:true,updated:"01/28/2026",initials:"TR",color:C.green,phone:"(225) 391-7145"},
@@ -2697,7 +3345,6 @@ const roleDefinitions=[
 const permFeatures=["reservations","dashboard","facilities","organizations","reporting","users","approvals","settings","payouts","roles"];
 const permLabels={reservations:"Reservations",dashboard:"Dashboard",facilities:"Facilities",organizations:"Organizations",reporting:"Reporting",users:"Users",approvals:"Approvals",settings:"Settings",payouts:"Payouts & Finance",roles:"Role Management"};
 const permTypes=["read","create","update","delete"];
-
 function Users(){
   const [search,setSearch]=useState("");
   const [roleFilter,setRoleFilter]=useState("all");
@@ -2712,7 +3359,6 @@ function Users(){
   const roleBadge=(r)=>{const m={"District Admin":{bg:C.blueL,c:C.blue},"Site Admin":{bg:C.blueL,c:C.blueDk},"Facility Manager":{bg:C.g100,c:C.g600},"Read Only":{bg:C.g100,c:C.g500}};const x=m[r]||m["Read Only"];return{background:x.bg,color:x.c,padding:"3px 10px",borderRadius:6,fontSize:11,fontWeight:700}};
   const campusLabel=(c)=>c==="all"?"All Campuses":campuses.find(x=>x.id===c)?.short||c;
   const togglePerm=(feat,perm)=>{if(!editPerms)return;const cur=editPerms[feat]||[];setEditPerms({...editPerms,[feat]:cur.includes(perm)?cur.filter(p=>p!==perm):[...cur,perm]})};
-
   return <div style={{display:"flex",flexDirection:"column",gap:20}}>
     {/* Role Editor Slideout */}
     {editRole!==null&&<SlidePanel open={true} onClose={()=>{setEditRole(null);setEditPerms(null)}} width={560}>
@@ -2765,7 +3411,6 @@ function Users(){
         <button style={{...btnO,color:C.red,borderColor:`${C.red}30`}}>Delete Role</button>
       </div>
     </SlidePanel>}
-
     {/* Header */}
     <div className="pp-users-toolbar" style={{display:"flex",justifyContent:"space-between",alignItems:"center",flexWrap:"wrap",gap:12}}>
       <div className="pp-users-filters" style={{display:"flex",gap:10,alignItems:"center",flexWrap:"wrap",flex:1,minWidth:0}}>
@@ -2778,10 +3423,9 @@ function Users(){
         <button style={btnP}><span style={{fontSize:15}}>+</span> Invite Staff</button>
       </div>
     </div>
-
     {/* Role Management Panel */}
     {showRoles&&<><Div>Role Definitions</Div><Card style={{border:`1px solid ${C.blue}20`,background:`linear-gradient(135deg,${C.blueL}40,${C.cardBg})`}}>
-      <Sec action={<button style={{...btnP,fontSize:12,padding:"6px 14px"}}>+ Create Role</button>}>Role Definitions</Sec>
+      <Sec action={<button style={{...btnP,fontSize:12,padding:"6px 14px"}}>+ Create Role</button>} icon={I.shield(13,C.g500)}>Role Definitions</Sec>
       <div style={{display:"grid",gridTemplateColumns:"repeat(auto-fill,minmax(240px,1fr))",gap:12}}>
         {roleDefinitions.map(rd=>{const count=staffData.filter(s=>s.role===rd.role).length;const permCount=Object.values(rd.perms).flat().length;
           return <div key={rd.role} onClick={()=>{setEditRole(rd);setEditPerms(null)}} style={{padding:"18px",background:C.cardBg,borderRadius:12,border:`1px solid ${C.cardBorder}`,cursor:"pointer",transition:"all .15s",position:"relative",overflow:"hidden"}} onMouseEnter={e=>{e.currentTarget.style.borderColor=rd.color;e.currentTarget.style.boxShadow=`0 2px 12px ${rd.color}18`}} onMouseLeave={e=>{e.currentTarget.style.borderColor=C.cardBorder;e.currentTarget.style.boxShadow="none"}}>
@@ -2818,14 +3462,12 @@ function Users(){
         </table>
       </div>
     </Card></>}
-
     <Div>Staff Directory</Div>
     {/* Info banner */}
     <div style={{padding:"10px 16px",background:C.g50,borderRadius:10,border:`1px solid ${C.g200}`,display:"flex",alignItems:"center",gap:10}}>
       <span>{I.alert(14,C.g400)}</span>
       <span style={{fontSize:12,color:C.g500}}>Participant organizations (Bayou City Volleyball, Gonzales FC, etc.) manage their own accounts externally. This panel manages district staff access only.</span>
     </div>
-
     {/* Staff table */}
     <Card np>
       <div className="pp-table-wrap">
@@ -2844,255 +3486,358 @@ function Users(){
       </table>
       </div>
     </Card>
+    {/* Partner Notes - Mini CRM */}
+    <Card>
+      <Sec icon={I.edit(13,C.g500)}>Partner Notes</Sec>
+      <div style={{fontSize:12,color:C.g500,marginBottom:14,lineHeight:1.5}}>Track conversations, follow-ups, and relationship notes for each partner. Internal only - not visible to partners.</div>
+      {[
+        {org:"Gonzales FC",contact:"Sarah Martinez",note:"Called about summer schedule - interested but waiting on budget approval from board. Follow up after March 15.",date:"Feb 18, 2026",author:"Marcus Williams",priority:"follow-up"},
+        {org:"Bayou City Volleyball",contact:"Mike Thibodaux",note:"Requested dedicated storage closet for nets. Checking with maintenance on availability at DT Gym.",date:"Feb 14, 2026",author:"Marcus Williams",priority:"pending"},
+        {org:"Ascension YMCA",contact:"Patricia Hebert",note:"New contact replacing James. Sent intro email with booking link. They want to expand from 1 to 3 weekly sessions.",date:"Feb 10, 2026",author:"David Chen",priority:"opportunity"},
+        {org:"River Parish Runners",contact:"Coach Boudreaux",note:"COI renewal reminder sent. They're shopping other venues for spring - we may need to offer competitive pricing.",date:"Feb 5, 2026",author:"Marcus Williams",priority:"at-risk"},
+      ].map((n,i,arr)=>{
+        const pMap={"follow-up":{c:C.blue,bg:C.blueL},"pending":{c:C.amber,bg:C.amberL},"opportunity":{c:C.green,bg:C.greenL},"at-risk":{c:C.red,bg:C.redL}};
+        const p=pMap[n.priority]||pMap["pending"];
+        return <div key={i} style={{padding:"12px 0",borderBottom:i<arr.length-1?`1px solid ${C.g100}`:"none"}}>
+          <div style={{display:"flex",alignItems:"center",gap:8,marginBottom:6}}>
+            <span style={{fontSize:13,fontWeight:700,color:C.g800}}>{n.org}</span>
+            <span style={{fontSize:9,fontWeight:700,color:p.c,background:p.bg,padding:"2px 8px",borderRadius:4,textTransform:"uppercase"}}>{n.priority}</span>
+            <div style={{flex:1}}/>
+            <span style={{fontSize:10,color:C.g400}}>{n.date}</span>
+          </div>
+          <div style={{fontSize:12,color:C.g600,lineHeight:1.6,marginBottom:4}}>{n.note}</div>
+          <div style={{fontSize:10,color:C.g400}}>Contact: {n.contact} - By: {n.author}</div>
+        </div>})}
+      <button style={{...btnO,width:"100%",justifyContent:"center",marginTop:10,fontSize:12,padding:"10px"}}>{I.edit(12,C.g500)} Add Note</button>
+    </Card>
+    {/* Delegation / Out of Office */}
+    <Card>
+      <Sec icon={I.users(13,C.g500)}>Delegation & Coverage</Sec>
+      <div style={{fontSize:12,color:C.g500,marginBottom:14,lineHeight:1.5}}>Set up automatic delegation when team members are out. Approval chain steps are auto-routed to the designated backup.</div>
+      {[
+        {member:"Coach Tony Richard",status:"active",backup:null,campus:"Dutchtown HS"},
+        {member:"Coach Ray Bourque",status:"ooo",backup:"Amy Melancon",returnDate:"Feb 28, 2026",reason:"Personal Leave",campus:"St. Amant HS"},
+        {member:"Denise Landry",status:"active",backup:null,campus:"East Ascension HS"},
+        {member:"Amy Melancon",status:"active",backup:null,campus:"Prairieville HS"},
+      ].map((m,i,arr)=><div key={i} style={{display:"flex",alignItems:"center",gap:12,padding:"12px 0",borderBottom:i<arr.length-1?`1px solid ${C.g100}`:"none"}}>
+        <div style={{width:32,height:32,borderRadius:8,background:m.status==="ooo"?C.g200:C.green+"15",display:"flex",alignItems:"center",justifyContent:"center",fontSize:10,fontWeight:800,color:m.status==="ooo"?C.g500:C.green}}>{m.member.split(" ").map(w=>w[0]).join("")}</div>
+        <div style={{flex:1,minWidth:0}}>
+          <div style={{display:"flex",alignItems:"center",gap:6}}>
+            <span style={{fontSize:13,fontWeight:600,color:C.g800}}>{m.member}</span>
+            {m.status==="ooo"&&<span style={{fontSize:9,fontWeight:700,color:C.amber,background:C.amberL,padding:"2px 6px",borderRadius:3}}>OUT OF OFFICE</span>}
+          </div>
+          <div style={{fontSize:11,color:C.g400}}>{m.campus}</div>
+          {m.backup&&<div style={{fontSize:11,color:C.blue,marginTop:2}}>Delegated to: {m.backup} (returns {m.returnDate})</div>}
+        </div>
+        <button style={{...btnO,fontSize:10,padding:"5px 10px"}}>{m.status==="ooo"?"Edit":"Set OOO"}</button>
+      </div>)}
+    </Card>
   </div>
 }
-
 /* ======== PAYMENTS (more rows, mixed statuses) ======== */
 /* ======== PROMOTE / GROWTH TOOLS ======== */
+/* ======== GROWTH - FACILITY INTELLIGENCE HUB ======== */
 function Promote(){
   const [showShare,setShowShare]=useState(false);
   const [copied,setCopied]=useState(false);
-  const ppUrl="https://book.practiceplan.com/ascension-parish";
-  const shareMsg="Reserve Ascension Parish facilities on PracticePlan - gyms, fields, and auditoriums available for your team or organization. Book online instantly!";
-
+  const [showAllPartners,setShowAllPartners]=useState(false);
+  const [gTab,setGTab]=useState(0);
+  const ppUrl="https://practiceplan.rentals/ascension-parish";
   const doCopy=()=>{setCopied(true);setTimeout(()=>setCopied(false),2000);if(globalShowToast)globalShowToast({type:"success",title:"Link Copied",msg:"Booking URL copied to clipboard",color:C.green})};
-
-  const tools=[
-    {icon:I.share(20,C.blue),title:"Share to Social",desc:"Post your booking link on social media, email, or messaging apps",action:()=>setShowShare(true),accent:C.blue},
-    {icon:I.mail(20,C.green),title:"Email Templates",desc:"Pre-written outreach emails for youth leagues, churches, and community orgs",accent:C.green},
-    {icon:I.download(20,"#8B5CF6"),title:"Marketing Assets",desc:"QR codes, printable flyers, digital graphics, and signage templates",accent:"#8B5CF6"},
-    {icon:I.link(20,C.amber),title:"Embed on Website",desc:"Add a booking widget or badge to your district website",accent:C.amber},
-    {icon:I.bulb(20,C.blue),title:"AI Growth Coach",desc:"Personalized suggestions to increase bookings and revenue",accent:C.blue},
-    {icon:I.calendar(20,C.green),title:"Seasonal Playbook",desc:"Maximize revenue with seasonal strategies - spring sports, summer camps, fall leagues",accent:C.green},
+  const openEmail=(type,org)=>{
+    const ppLink="https://practiceplan.rentals/ascension-parish";
+    const templates={
+      thanks:{subject:`Thank you from Ascension Parish - ${org.n}`,body:`Hi ${org.n.split(" ")[0]} team,\n\nJust wanted to reach out and say thanks for being one of our most valued facility partners. With ${org.b} bookings and counting, your organization has been a big part of making our rental program a success.\n\nWe appreciate your commitment and want to make sure you always have a great experience. If there's anything we can do to improve - different time slots, equipment, or facility requests - please don't hesitate to let us know.\n\nLooking forward to seeing you again soon!\n\nBest,\nMarcus Williams\nAscension Parish School Board`},
+      offer:{subject:`Exclusive offer for ${org.n} - Ascension Parish Facilities`,body:`Hi ${org.n.split(" ")[0]} team,\n\nAs one of our top organizations, we'd like to offer you a special seasonal rate for the upcoming quarter.\n\nHere's what we're thinking:\n- 10% off bookings of 4+ hours\n- Priority scheduling for your preferred time slots\n- Locked-in rates through June 2026\n\nThis is our way of saying thanks for being a consistent partner. If you're interested, just reply to this email or book directly at ${ppLink}.\n\nBest,\nMarcus Williams\nAscension Parish School Board`},
+      invite:{subject:`We miss you, ${org.n}! Come back to Ascension Parish facilities`,body:`Hi ${org.n.split(" ")[0]} team,\n\nIt's been a while since your last booking with us and we wanted to check in. We've made some improvements to our facilities and would love to have you back.\n\nTo make it easy, we're offering:\n- 15% off your next booking\n- Flexible cancellation on your first reservation back\n- New online booking at ${ppLink}\n\nWhether it's practice, games, or events - our gyms, fields, and stadiums are ready for your team.\n\nHope to see you soon!\n\nMarcus Williams\nAscension Parish School Board`}
+    };
+    const t=templates[type];
+    globalSetEmailModal({type,org,email:org.email,subject:t.subject,body:t.body});
+  };
+  const facs=[
+    {name:"Dutchtown Gymnasium",campus:"Dutchtown HS",bk:22,cap:32,rev:7700,trend:"up",peak:"Thu",gaps:["Tue AM","Wed PM","Fri AM"]},
+    {name:"Prairieville Athletic Complex",campus:"Prairieville HS",bk:16,cap:28,rev:6080,trend:"up",peak:"Sat",gaps:["Mon PM","Tue PM","Thu AM"]},
+    {name:"St. Amant Gymnasium",campus:"St. Amant HS",bk:10,cap:28,rev:3250,trend:"stable",peak:"Wed",gaps:["Mon AM","Tue AM","Thu PM","Fri PM","Sat AM"]},
+    {name:"East Ascension Gymnasium",campus:"East Ascension HS",bk:8,cap:28,rev:3200,trend:"down",peak:"Mon",gaps:["Tue PM","Wed AM","Wed PM","Thu AM","Fri AM","Sat PM"]},
+    {name:"Gator Stadium",campus:"St. Amant HS",bk:4,cap:20,rev:1580,trend:"down",peak:"Sat",gaps:["Most weekday slots"]},
   ];
-
-  const bestPractices=[
-    {title:"Add your booking link to the district website",desc:"Districts that link PracticePlan from their facilities page see 3x more organic bookings.",done:true},
-    {title:"Share with local youth sports leagues",desc:"Email your top 10 local organizations with your direct booking link and QR code.",done:true},
-    {title:"Post on community boards",desc:"Share on Nextdoor, local Facebook Groups, and your district's social accounts.",done:false},
-    {title:"Display QR codes at facilities",desc:"Print and post QR code flyers at each gym entrance and field gate.",done:false},
-    {title:"Set competitive weekday rates",desc:"Weekday evenings are underutilized - a lower rate can fill empty slots.",done:false},
-    {title:"Respond to inquiries within 24 hours",desc:"Fast response time is the #1 factor in converting first-time renters to repeat bookers.",done:true},
-  ];
-
-  const assets=[
-    {name:"Booking QR Code",type:"PNG",size:"42 KB",icon:"QR"},
-    {name:"Facility Rental Flyer",type:"PDF",size:"1.2 MB",icon:"FL"},
-    {name:"Social Media Graphics Pack",type:"ZIP",size:"3.8 MB",icon:"SM"},
-    {name:"Email Header Banner",type:"PNG",size:"186 KB",icon:"EM"},
-    {name:"Parking Lot Signage",type:"PDF",size:"890 KB",icon:"SN"},
-    {name:"Rate Card Template",type:"DOCX",size:"245 KB",icon:"RC"},
-  ];
-
-  return <div style={{display:"flex",flexDirection:"column",gap:20}}>
-    {/* Hero / CTA */}
-    <div style={{background:`linear-gradient(135deg, ${C.blue}, ${C.green})`,borderRadius:R.lg,padding:"28px 28px 24px",position:"relative",overflow:"hidden"}}>
-      <div style={{position:"absolute",top:-20,right:-20,width:120,height:120,borderRadius:60,background:"rgba(255,255,255,0.08)"}}/>
-      <div style={{position:"absolute",bottom:-30,right:60,width:80,height:80,borderRadius:40,background:"rgba(255,255,255,0.05)"}}/>
-      <div style={{position:"relative"}}>
-        <div style={{fontSize:22,fontWeight:800,color:"#fff",lineHeight:1.3,marginBottom:6}}>Promote Your Facilities</div>
-        <div style={{fontSize:13,color:"rgba(255,255,255,0.85)",lineHeight:1.6,maxWidth:480,marginBottom:18}}>Help community organizations find and book your spaces. The more visibility your facilities get, the more revenue they generate.</div>
-        <div style={{display:"flex",gap:10,flexWrap:"wrap"}}>
-          <button onClick={()=>setShowShare(true)} style={{background:"#fff",color:C.blue,border:"none",borderRadius:R.sm,padding:"11px 20px",fontSize:13,fontWeight:700,cursor:"pointer",fontFamily:font,display:"flex",alignItems:"center",gap:8}}>{I.share(14,C.blue)} Share Booking Link</button>
-          <button onClick={()=>{doCopy()}} style={{background:"rgba(255,255,255,0.15)",color:"#fff",border:"1px solid rgba(255,255,255,0.3)",borderRadius:R.sm,padding:"11px 20px",fontSize:13,fontWeight:600,cursor:"pointer",fontFamily:font,display:"flex",alignItems:"center",gap:8,backdropFilter:"blur(4px)"}}>{I.copy(14,"#fff")} Copy Link</button>
-        </div>
-      </div>
+  const totalBk=topCustData.reduce((s,c)=>s+c.b,0);
+  const totalRev=topCustData.reduce((s,c)=>s+c.s,0);
+  const activeOrgs=topCustData.filter(c=>c.t!=="down").length;
+  const lapsedOrgs=topCustData.filter(c=>{const d=c.hist[0];return d?Math.floor((new Date("2026-02-21")-new Date(d.date.replace(/(\d+)\/(\d+)\/(\d+)/,"$3-$1-$2")))/(864e5))>30:true}).length;
+  const util=Math.round(facs.reduce((s,f)=>s+f.bk,0)/facs.reduce((s,f)=>s+f.cap,0)*100);
+  const totalGaps=facs.reduce((s,f)=>s+f.gaps.length,0);
+  const gTabs=["Overview","Partners","Facilities","Outreach"];
+  return <div style={{display:"flex",flexDirection:"column",gap:16}}>
+    <div style={{display:"flex",gap:0,borderBottom:`2px solid ${C.g200}`,overflow:"auto",WebkitOverflowScrolling:"touch"}}>
+      {gTabs.map((t,i)=><button key={t} onClick={()=>setGTab(i)} style={{padding:"10px 20px",fontSize:13,fontWeight:gTab===i?700:500,color:gTab===i?C.blue:C.g500,background:"none",border:"none",borderBottom:gTab===i?`2px solid ${C.blue}`:"2px solid transparent",marginBottom:-2,cursor:"pointer",fontFamily:font,whiteSpace:"nowrap",transition:"all .15s"}}>{t}</button>)}
     </div>
-
-    {/* Quick URL bar */}
-    <Card>
-      <div style={{display:"flex",alignItems:"center",gap:10}}>
-        <div style={{flex:1,padding:"10px 14px",background:C.g50,borderRadius:R.sm,border:`1px solid ${C.cardBorder}`,fontSize:12,color:C.g600,fontFamily:numFont,overflow:"hidden",textOverflow:"ellipsis",whiteSpace:"nowrap"}}>{ppUrl}</div>
-        <button onClick={doCopy} style={{...btnP,padding:"10px 16px",flexShrink:0}}>{copied?<>{I.check(13,"#fff")} Copied</>:<>{I.copy(13,"#fff")} Copy</>}</button>
+    {/* ===== OVERVIEW ===== */}
+    {gTab===0&&<>
+      <div style={{display:"grid",gridTemplateColumns:"repeat(auto-fit,minmax(140px,1fr))",gap:10}}>
+        {[
+          {label:"Facility Utilization",val:`${util}%`,sub:"across all campuses",clr:util>=60?C.green:util>=40?C.amber:C.red},
+          {label:"Active Partners",val:`${activeOrgs}`,sub:`of ${topCustData.length} organizations`,clr:C.green},
+          {label:"Monthly Revenue",val:`$${Math.round(totalRev*0.38).toLocaleString()}`,sub:"pace this month",clr:C.blue},
+          {label:"Open Gaps",val:`${totalGaps}`,sub:"unfilled time slots",clr:totalGaps>10?C.amber:C.green},
+        ].map((m,i)=><Card key={i} style={{padding:"14px 16px",textAlign:"center"}}>
+          <div style={{fontSize:9,fontWeight:700,color:C.g400,textTransform:"uppercase",letterSpacing:"0.06em",marginBottom:6}}>{m.label}</div>
+          <div style={{fontSize:22,fontWeight:800,color:m.clr,fontFamily:numFont,lineHeight:1}}>{m.val}</div>
+          <div style={{fontSize:10,color:C.g400,marginTop:4}}>{m.sub}</div>
+        </Card>)}
       </div>
-    </Card>
-
-    {/* Growth Tools grid */}
-    <Div>Growth Tools</Div>
-    <div style={{display:"grid",gridTemplateColumns:"repeat(auto-fill,minmax(280px,1fr))",gap:12}}>
-      {tools.map((t,i)=><div key={i} onClick={t.action||undefined} style={{background:C.cardBg,borderRadius:R.lg,border:`1px solid ${C.cardBorder}`,padding:"18px 20px",cursor:t.action?"pointer":"default",transition:"all .15s",boxShadow:C.cardShadow}} onMouseEnter={e=>{if(t.action)e.currentTarget.style.borderColor=`${t.accent}40`}} onMouseLeave={e=>e.currentTarget.style.borderColor=C.cardBorder}>
-        <div style={{display:"flex",alignItems:"flex-start",gap:14}}>
-          <div style={{width:40,height:40,borderRadius:10,background:`${t.accent}12`,display:"flex",alignItems:"center",justifyContent:"center",flexShrink:0}}>{t.icon}</div>
-          <div style={{flex:1}}>
-            <div style={{fontSize:14,fontWeight:700,color:C.g800,marginBottom:3}}>{t.title}</div>
-            <div style={{fontSize:12,color:C.g500,lineHeight:1.5}}>{t.desc}</div>
-          </div>
-          {t.action&&<span style={{color:C.g300,fontSize:16,marginTop:2}}>›</span>}
-        </div>
-      </div>)}
-    </div>
-
-    {/* Best Practices checklist */}
-    <Div>Best Practices</Div>
-    <Card>
-      <div style={{display:"flex",alignItems:"center",justifyContent:"space-between",marginBottom:16}}>
-        <div style={{fontSize:13,fontWeight:700,color:C.g800}}>Onboarding Checklist</div>
-        <span style={{fontSize:11,fontWeight:600,color:C.green}}>{bestPractices.filter(b=>b.done).length} of {bestPractices.length} complete</span>
-      </div>
-      <div style={{display:"flex",gap:3,marginBottom:18}}>
-        {bestPractices.map((b,i)=><div key={i} style={{flex:1,height:3,borderRadius:2,background:b.done?C.green:C.g200,transition:"all .3s"}}/>)}
-      </div>
-      {bestPractices.map((b,i)=><div key={i} style={{display:"flex",alignItems:"flex-start",gap:12,padding:"12px 0",borderBottom:i<bestPractices.length-1?`1px solid ${C.g100}`:"none"}}>
-        <div style={{width:22,height:22,borderRadius:6,background:b.done?C.green:`${C.g200}`,border:b.done?"none":`2px solid ${C.g300}`,display:"flex",alignItems:"center",justifyContent:"center",flexShrink:0,marginTop:1,cursor:"pointer"}}>{b.done&&I.check(12,"#fff")}</div>
-        <div>
-          <div style={{fontSize:13,fontWeight:600,color:b.done?C.g500:C.g800,textDecoration:b.done?"line-through":"none"}}>{b.title}</div>
-          <div style={{fontSize:11,color:C.g400,marginTop:2,lineHeight:1.5}}>{b.desc}</div>
-        </div>
-      </div>)}
-    </Card>
-
-    {/* Marketing Assets / File Repository */}
-    <Div>Marketing Assets</Div>
-    <Card>
-      <Sec action={<button onClick={()=>{if(globalShowToast)globalShowToast({type:"success",title:"All Assets Downloaded",msg:"Marketing pack saved to your device",color:C.green})}} style={{...btnO,fontSize:11,padding:"6px 14px"}}>{I.download(12,C.g500)} Download All</button>}>Toolkit</Sec>
-      <div style={{display:"grid",gridTemplateColumns:"repeat(auto-fill,minmax(260px,1fr))",gap:8}}>
-        {assets.map((a,i)=><div key={i} style={{display:"flex",alignItems:"center",gap:12,padding:"12px 14px",background:C.g50,borderRadius:R.sm,border:`1px solid ${C.cardBorder}`,cursor:"pointer",transition:"all .12s"}} onMouseEnter={e=>e.currentTarget.style.borderColor=C.blue} onMouseLeave={e=>e.currentTarget.style.borderColor=C.cardBorder} onClick={()=>{if(globalShowToast)globalShowToast({type:"success",title:"Downloaded",msg:`${a.name}.${a.type.toLowerCase()} saved`,color:C.green})}}>
-          <div style={{width:36,height:36,borderRadius:8,background:C.blueL,display:"flex",alignItems:"center",justifyContent:"center",flexShrink:0}}>
-            <span style={{fontSize:9,fontWeight:800,color:C.blue,letterSpacing:"0.03em"}}>{a.icon}</span>
-          </div>
-          <div style={{flex:1,minWidth:0}}>
-            <div style={{fontSize:13,fontWeight:600,color:C.g700,whiteSpace:"nowrap",overflow:"hidden",textOverflow:"ellipsis"}}>{a.name}</div>
-            <div style={{fontSize:10,color:C.g400,marginTop:1}}>{a.type} - {a.size}</div>
-          </div>
-          {I.download(13,C.g400)}
-        </div>)}
-      </div>
-    </Card>
-
-    {/* Video Tutorials */}
-    <Div>Video Tutorials</Div>
-    <div style={{display:"grid",gridTemplateColumns:"repeat(auto-fill,minmax(240px,1fr))",gap:12}}>
-      {[
-        {title:"Getting Started with PracticePlan",duration:"3:24",desc:"Set up your district, add campuses, and publish your first facility",views:"1.2K"},
-        {title:"Managing Bookings & Approvals",duration:"4:51",desc:"Review requests, approve or decline, and communicate with renters",views:"847"},
-        {title:"Setting Rates & Availability",duration:"2:38",desc:"Configure hourly rates, blackout dates, and day-of-week availability",views:"634"},
-        {title:"Reading Your Revenue Reports",duration:"3:12",desc:"Understand your dashboard metrics, payout schedule, and growth trends",views:"521"},
-        {title:"Promoting Your Facilities",duration:"2:55",desc:"Share your booking page, use QR codes, and reach community organizations",views:"389"},
-        {title:"Adding Amenities & Add-ons",duration:"2:10",desc:"Offer equipment, AV, event staff, and concessions as bookable extras",views:"312"},
-      ].map((v,i)=><div key={i} style={{background:C.cardBg,borderRadius:R.lg,border:`1px solid ${C.cardBorder}`,overflow:"hidden",cursor:"pointer",transition:"all .15s",boxShadow:C.cardShadow}} onMouseEnter={e=>e.currentTarget.style.borderColor=`${C.blue}40`} onMouseLeave={e=>e.currentTarget.style.borderColor=C.cardBorder}>
-        {/* Video thumbnail placeholder */}
-        <div style={{height:120,background:`linear-gradient(135deg, ${C.g100}, ${C.g200})`,display:"flex",alignItems:"center",justifyContent:"center",position:"relative"}}>
-          <div style={{width:44,height:44,borderRadius:22,background:"rgba(0,0,0,0.6)",display:"flex",alignItems:"center",justifyContent:"center",backdropFilter:"blur(4px)"}}>
-            <div style={{width:0,height:0,borderTop:"8px solid transparent",borderBottom:"8px solid transparent",borderLeft:"14px solid #fff",marginLeft:3}}/>
-          </div>
-          <span style={{position:"absolute",bottom:8,right:8,background:"rgba(0,0,0,0.7)",color:"#fff",fontSize:10,fontWeight:700,padding:"2px 6px",borderRadius:4}}>{v.duration}</span>
-        </div>
-        <div style={{padding:"12px 14px"}}>
-          <div style={{fontSize:13,fontWeight:700,color:C.g800,lineHeight:1.3,marginBottom:4}}>{v.title}</div>
-          <div style={{fontSize:11,color:C.g400,lineHeight:1.4}}>{v.desc}</div>
-          <div style={{fontSize:10,color:C.g400,marginTop:6}}>{v.views} views</div>
-        </div>
-      </div>)}
-    </div>
-
-    {/* Success Stories */}
-    <Div>Success Stories</Div>
-    <div style={{display:"grid",gridTemplateColumns:"repeat(auto-fill,minmax(300px,1fr))",gap:12}}>
-      {[
-        {district:"Katy ISD",state:"Texas",stat:"$127K",label:"first-year revenue",quote:"PracticePlan turned our empty weekend gyms into a real revenue stream. Setup took less than a week.",person:"Mike Torres, Athletic Director"},
-        {district:"Gwinnett County Schools",state:"Georgia",stat:"340%",label:"booking increase",quote:"We went from managing rentals in spreadsheets to fully automated. The community loves how easy it is to book.",person:"Sarah Lin, Facilities Coordinator"},
-        {district:"City of Frisco",state:"Texas",stat:"$84K",label:"in 6 months",quote:"Our parks and rec facilities were underutilized. PracticePlan helped us fill evenings and weekends with zero added staff.",person:"James Okafor, Parks Director"},
-      ].map((s,i)=><Card key={i}>
+      <div>
         <div style={{display:"flex",alignItems:"center",gap:8,marginBottom:12}}>
-          <div style={{width:36,height:36,borderRadius:10,background:`linear-gradient(135deg, ${C.blue}15, ${C.green}15)`,display:"flex",alignItems:"center",justifyContent:"center",flexShrink:0}}>
-            <span style={{fontSize:10,fontWeight:800,color:C.blue}}>{s.district.split(" ")[0].slice(0,2).toUpperCase()}</span>
-          </div>
-          <div>
-            <div style={{fontSize:13,fontWeight:700,color:C.g800}}>{s.district}</div>
-            <div style={{fontSize:10,color:C.g400}}>{s.state}</div>
-          </div>
+          <span style={{fontSize:14,fontWeight:800,color:C.g800}}>Action Items</span>
+          <span style={{fontSize:10,color:C.g400}}>Updated today</span>
         </div>
-        <div style={{display:"flex",alignItems:"baseline",gap:6,marginBottom:10}}>
-          <span style={{fontSize:24,fontWeight:800,color:C.blue,fontFamily:numFont}}>{s.stat}</span>
-          <span style={{fontSize:11,color:C.g400}}>{s.label}</span>
-        </div>
-        <div style={{fontSize:12,color:C.g500,lineHeight:1.6,fontStyle:"italic",marginBottom:10}}>"{s.quote}"</div>
-        <div style={{fontSize:11,fontWeight:600,color:C.g600}}>- {s.person}</div>
-      </Card>)}
-    </div>
-
-    {/* Refer & Suggest */}
-    <div style={{display:"grid",gridTemplateColumns:"repeat(auto-fill,minmax(300px,1fr))",gap:12,marginTop:4}}>
-      {/* Refer a District */}
-      <div style={{background:`linear-gradient(135deg, ${C.blue}08, ${C.green}08)`,borderRadius:R.lg,border:`1px solid ${C.green}25`,padding:"22px 24px",cursor:"pointer"}} onClick={()=>globalShowReferral()}>
-        <div style={{display:"flex",alignItems:"center",gap:12,marginBottom:12}}>
-          <div style={{width:40,height:40,borderRadius:10,background:`linear-gradient(135deg, ${C.blue}, ${C.green})`,display:"flex",alignItems:"center",justifyContent:"center",flexShrink:0}}>{I.mail(18,"#fff")}</div>
-          <div>
-            <div style={{fontSize:15,fontWeight:800,color:C.g800}}>Refer a District</div>
-            <div style={{fontSize:12,color:C.g500,marginTop:2}}>Know a school or city that could benefit?</div>
+        <div style={{display:"flex",flexDirection:"column",gap:8}}>
+        {[
+          lapsedOrgs>0?{priority:"high",title:`${lapsedOrgs} lapsed partner${lapsedOrgs>1?"s":""}`,desc:"Haven't booked in 30+ days. A quick check-in can prevent losing them.",act:"View Partners",fn:()=>setGTab(1),icon:I.users(14,C.g500)}:null,
+          util<50?{priority:"medium",title:`${util}% utilization`,desc:`${totalGaps} open time slots could be generating revenue. Most gaps are weekday mornings.`,act:"View Facilities",fn:()=>setGTab(2),icon:I.bar(14,C.g500)}:null,
+          {priority:"low",title:`${activeOrgs} active partners`,desc:"Bayou City Volleyball and Gonzales FC are your most consistent. A thank-you goes a long way.",act:null,fn:null,icon:I.star(14,C.g500)},
+          {priority:"tip",title:"Boost visibility",desc:"Share your booking page on community boards or your district website to attract new organizations.",act:"Share Link",fn:()=>setGTab(3),icon:I.share(14,C.g500)},
+        ].filter(Boolean).map((s,i)=>{
+          const pMap={high:{bar:C.red},medium:{bar:C.amber},low:{bar:C.green},tip:{bar:C.blue}};
+          const p=pMap[s.priority];
+          return <div key={i} style={{background:C.cardBg,borderRadius:R.md,border:`1px solid ${C.cardBorder}`,overflow:"hidden",display:"flex",boxShadow:C.cardShadow}}>
+            <div style={{width:3,background:p.bar,flexShrink:0}}/>
+            <div style={{flex:1,padding:"12px 14px",display:"flex",alignItems:"center",gap:12}}>
+              <div style={{width:32,height:32,borderRadius:8,background:C.g100,display:"flex",alignItems:"center",justifyContent:"center",flexShrink:0}}>{s.icon}</div>
+              <div style={{flex:1,minWidth:0}}>
+                <div style={{fontSize:13,fontWeight:700,color:C.g800}}>{s.title}</div>
+                <div style={{fontSize:11,color:C.g500,lineHeight:1.5,marginTop:1}}>{s.desc}</div>
+              </div>
+              {s.act&&<button onClick={s.fn} style={{...btnO,fontSize:10,padding:"6px 12px",flexShrink:0,whiteSpace:"nowrap"}}>{s.act}</button>}
+            </div>
           </div>
+        })}
         </div>
-        <div style={{fontSize:12,color:C.g500,lineHeight:1.6,marginBottom:14}}>Help another district unlock revenue from their unused facilities. We'll reach out on your behalf - they get started completely free.</div>
-        <div style={{display:"flex",alignItems:"center",gap:6,color:C.blue,fontSize:12,fontWeight:700}}>Send an Invite <span style={{fontSize:15}}>→</span></div>
       </div>
-
-      {/* Suggest a Feature */}
-      <div style={{background:C.cardBg,borderRadius:R.lg,border:`1px solid ${C.cardBorder}`,padding:"22px 24px",cursor:"pointer",boxShadow:C.cardShadow}} onClick={()=>globalShowSuggest()}>
-        <div style={{display:"flex",alignItems:"center",gap:12,marginBottom:12}}>
-          <div style={{width:40,height:40,borderRadius:10,background:C.g100,display:"flex",alignItems:"center",justifyContent:"center",flexShrink:0}}>
-            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke={C.g500} strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M12 2v4M12 18v4M4.93 4.93l2.83 2.83M16.24 16.24l2.83 2.83M2 12h4M18 12h4M4.93 19.07l2.83-2.83M16.24 7.76l2.83-2.83"/></svg>
-          </div>
-          <div>
-            <div style={{fontSize:15,fontWeight:800,color:C.g800}}>Suggest a Feature</div>
-            <div style={{fontSize:12,color:C.g500,marginTop:2}}>Help us build what you need</div>
-          </div>
+      {/* Seasonal Playbook */}
+      <Card>
+        <Sec icon={I.calendar(13,C.g500)}>Seasonal Playbook</Sec>
+        <div style={{display:"flex",flexDirection:"column",gap:10}}>
+          {[
+            {season:"Spring Sports Ending",timeline:"3 weeks out",insight:"Gym utilization historically drops 30% in June when school sports wrap up. Last summer, 4 community orgs filled the gap.",action:"Reach out to last year's summer bookers",priority:"high",orgs:["Gonzales FC","Bayou City VB","Ascension YMCA"]},
+            {season:"Summer Registration Window",timeline:"Opens Mar 15",insight:"Organizations that booked summer 2025 slots haven't registered yet for 2026. Early outreach locks in revenue before they find alternatives.",action:"Send summer availability email",priority:"medium",orgs:["Louisiana Tigers AAU","River Parish Runners"]},
+          ].map((s,i)=><div key={i} style={{padding:"14px",borderRadius:R.md,background:C.g50,border:`1px solid ${C.cardBorder}`}}>
+            <div style={{display:"flex",alignItems:"center",justifyContent:"space-between",marginBottom:6}}>
+              <div style={{display:"flex",alignItems:"center",gap:8}}>
+                <span style={{fontSize:13,fontWeight:700,color:C.g800}}>{s.season}</span>
+                <span style={{fontSize:9,fontWeight:600,color:C.amber}}>{s.timeline}</span>
+              </div>
+            </div>
+            <div style={{fontSize:12,color:C.g600,lineHeight:1.6,marginBottom:8}}>{s.insight}</div>
+            <div style={{display:"flex",alignItems:"center",gap:8,flexWrap:"wrap"}}>
+              <span style={{fontSize:10,fontWeight:600,color:C.g500}}>Target:</span>
+              {s.orgs.map(o=><span key={o} style={{fontSize:10,fontWeight:600,color:C.blue,background:C.blueL,padding:"2px 8px",borderRadius:4}}>{o}</span>)}
+              <div style={{flex:1}}/>
+              <button style={{...btnO,fontSize:10,padding:"5px 12px"}}>{s.action}</button>
+            </div>
+          </div>)}
         </div>
-        <div style={{fontSize:12,color:C.g500,lineHeight:1.6,marginBottom:14}}>Have an idea for a tool, integration, or workflow that would make PracticePlan even better? We read every suggestion and ship fast.</div>
-        <div style={{display:"flex",alignItems:"center",gap:6,color:C.blue,fontSize:12,fontWeight:700}}>Share Your Idea <span style={{fontSize:15}}>→</span></div>
+      </Card>
+      {/* Competitive Benchmarking */}
+      <Card>
+        <Sec icon={I.chart(13,C.g500)}>District Benchmarking</Sec>
+        <div style={{padding:"14px",borderRadius:R.md,background:C.g50,border:`1px solid ${C.cardBorder}`,marginBottom:12}}>
+          <div style={{fontSize:11,fontWeight:700,color:C.g400,textTransform:"uppercase",letterSpacing:"0.06em",marginBottom:10}}>How you compare - Similar districts in Louisiana</div>
+          {[
+            {metric:"Facility Utilization",yours:`${util}%`,avg:"61%",top:"78%",status:util>=61?"above":"below"},
+            {metric:"Revenue per Facility",yours:"$4,362",avg:"$5,100",top:"$7,200",status:"below"},
+            {metric:"Active Partners",yours:`${activeOrgs}`,avg:"8",top:"14",status:activeOrgs>=8?"above":"below"},
+            {metric:"Avg Booking Rate",yours:"$318",avg:"$290",top:"$385",status:"above"},
+          ].map((b,i,arr)=><div key={i} style={{display:"flex",alignItems:"center",gap:12,padding:"10px 0",borderBottom:i<arr.length-1?`1px solid ${C.g200}`:"none"}}>
+            <span style={{fontSize:12,fontWeight:600,color:C.g700,width:140}}>{b.metric}</span>
+            <span style={{fontSize:13,fontWeight:800,color:b.status==="above"?C.green:C.amber,fontFamily:numFont,width:60}}>{b.yours}</span>
+            <span style={{fontSize:11,color:C.g400,width:60}}>Avg: {b.avg}</span>
+            <span style={{fontSize:11,color:C.g400,width:60}}>Top: {b.top}</span>
+            <span style={{fontSize:9,fontWeight:700,color:b.status==="above"?C.green:C.amber,background:b.status==="above"?C.greenL:C.amberL,padding:"2px 6px",borderRadius:3,textTransform:"uppercase"}}>{b.status} avg</span>
+          </div>)}
+        </div>
+        <div style={{fontSize:11,color:C.g500,lineHeight:1.6}}>
+          <strong style={{color:C.g700}}>Insight:</strong> Top-performing districts fill weekday morning gaps by partnering with homeschool co-ops and corporate wellness programs. Your morning utilization is 22% vs the top-performer average of 55%.
+        </div>
+      </Card>
+      <Card>
+        <Sec action={<button onClick={()=>setGTab(2)} style={{...btnO,fontSize:11,padding:"5px 14px"}}>Details</button>} icon={I.stadium(13,C.g500)}>Facility Snapshot</Sec>
+        {facs.slice(0,3).map((f,i)=>{const pct=Math.round(f.bk/f.cap*100);return <div key={i} style={{padding:"10px 0",borderBottom:i<2?`1px solid ${C.g100}`:"none"}}>
+          <div style={{display:"flex",justifyContent:"space-between",alignItems:"center",marginBottom:5}}>
+            <div><span style={{fontSize:13,fontWeight:700,color:C.g800}}>{f.name}</span><span style={{fontSize:10,color:f.trend==="up"?C.green:f.trend==="down"?C.red:C.g400,marginLeft:6}}>{f.trend==="up"?"↑ trending up":f.trend==="down"?"↓ declining":"\u2014 steady"}</span></div>
+            <span style={{fontSize:15,fontWeight:800,color:pct>=60?C.green:pct>=40?C.amber:C.red,fontFamily:numFont}}>{pct}%</span>
+          </div>
+          <div style={{height:4,background:C.g200,borderRadius:2,overflow:"hidden"}}><div style={{width:`${pct}%`,height:"100%",borderRadius:2,background:pct>=60?C.green:pct>=40?C.amber:C.red}}/></div>
+          <div style={{fontSize:10,color:C.g400,marginTop:3}}>{f.campus} {"\u2022"} {"$"}{f.rev.toLocaleString()} revenue {"\u2022"} {f.gaps.length} open slots</div>
+        </div>})}
+      </Card>
+      <Card>
+        <Sec action={<button onClick={()=>setGTab(1)} style={{...btnO,fontSize:11,padding:"5px 14px"}}>All Partners</button>} icon={I.star(13,C.g500)}>Top Partners</Sec>
+        {topCustData.slice(0,3).map((c,i)=>{const reviews=ratingsData.filter(r=>r.user===c.n);const avg=reviews.length?(reviews.reduce((s,r)=>s+r.rating,0)/reviews.length).toFixed(1):"--";return <div key={i} style={{display:"flex",alignItems:"center",gap:10,padding:"10px 0",borderBottom:i<2?`1px solid ${C.g100}`:"none"}}>
+          <div style={{width:32,height:32,borderRadius:8,background:`linear-gradient(135deg,${[C.blue,"#4DA8D8",C.orange][i]},${[C.blueDk,C.blue,C.amber][i]})`,display:"flex",alignItems:"center",justifyContent:"center",color:"#fff",fontWeight:800,fontSize:10,flexShrink:0}}>{c.photo}</div>
+          <div style={{flex:1,minWidth:0}}>
+            <span style={{fontSize:13,fontWeight:700,color:C.g800}}>{c.n}</span><span style={{fontSize:11,color:C.amber,marginLeft:6}}>{"\u2605"} {avg}</span>
+            <div style={{fontSize:10,color:C.g400,marginTop:1}}>{c.b} bookings {"\u2022"} {"$"}{c.s.toLocaleString()} total</div>
+          </div>
+        </div>})}
+      </Card>
+    </>}
+    {/* ===== PARTNERS ===== */}
+    {gTab===1&&<>
+      <div style={{display:"grid",gridTemplateColumns:"repeat(auto-fit,minmax(130px,1fr))",gap:10}}>
+        {[{label:"Total Partners",val:`${topCustData.length}`,clr:C.blue},{label:"Active",val:`${activeOrgs}`,clr:C.green},{label:"Needs Attention",val:`${lapsedOrgs}`,clr:lapsedOrgs>0?C.red:C.green},{label:"Total Revenue",val:`$${totalRev.toLocaleString()}`,clr:C.blue}].map((m,i)=><Card key={i} style={{padding:"12px 14px",textAlign:"center"}}>
+          <div style={{fontSize:9,fontWeight:700,color:C.g400,textTransform:"uppercase",letterSpacing:"0.06em",marginBottom:4}}>{m.label}</div>
+          <div style={{fontSize:18,fontWeight:800,color:m.clr,fontFamily:numFont}}>{m.val}</div>
+        </Card>)}
       </div>
-    </div>
-
+      <Card>
+        <Sec action={<span style={{fontSize:11,color:C.g400}}>Sorted by total bookings</span>} icon={I.users(13,C.g500)}>Partner Directory</Sec>
+        <div style={{fontSize:12,color:C.g500,lineHeight:1.5,marginBottom:14}}>Your community partners at a glance. Track reliability, booking history, and stay on top of relationships without scattered emails or spreadsheets.</div>
+        <div className="pp-renters">
+          {(showAllPartners?topCustData:topCustData.slice(0,3)).map((c,i)=>{
+            const reviews=ratingsData.filter(r=>r.user===c.n);const avg=reviews.length?(reviews.reduce((s,r)=>s+r.rating,0)/reviews.length).toFixed(1):"--";
+            const lastBook=c.hist[0];const daysSince=lastBook?Math.max(1,Math.floor((new Date("2026-02-21")-new Date(lastBook.date.replace(/(\d+)\/(\d+)\/(\d+)/,"$3-$1-$2")))/(864e5))):999;
+            const isLapsed=daysSince>30;const freq=c.b>=15?"Weekly":c.b>=10?"Bi-weekly":c.b>=6?"Monthly":"Occasional";
+            const stClr=isLapsed?C.orange:c.t==="up"?C.green:c.t==="down"?C.red:C.g400;
+            const stLbl=isLapsed?"Lapsed":c.t==="up"?"Active":"Stable";
+            return <div key={c.n} className="pp-renter-row" style={{display:"flex",alignItems:"center",gap:10,padding:"11px 0",borderBottom:i<(showAllPartners?topCustData.length:Math.min(3,topCustData.length))-1?`1px solid ${C.g100}`:"none"}}>
+              <div style={{width:34,height:34,borderRadius:10,background:`linear-gradient(135deg,${[C.blue,"#4DA8D8",C.orange,C.green,C.g500][i%5]},${[C.blueDk,C.blue,C.amber,C.blueDk,C.g600][i%5]})`,display:"flex",alignItems:"center",justifyContent:"center",color:"#fff",fontWeight:800,fontSize:11,flexShrink:0}}>{c.photo}</div>
+              <div style={{flex:1,minWidth:0}}>
+                <div style={{display:"flex",alignItems:"center",gap:5}}>
+                  <span style={{fontSize:13,fontWeight:700,color:C.g800,whiteSpace:"nowrap",overflow:"hidden",textOverflow:"ellipsis"}}>{c.n}</span>
+                  <span style={{fontSize:11,color:C.amber,flexShrink:0}}>{"\u2605"} {avg}</span>
+                  <span style={{fontSize:7,fontWeight:700,color:stClr,background:`${stClr}15`,padding:"2px 5px",borderRadius:3,lineHeight:1,flexShrink:0}}>{stLbl.toUpperCase()}</span>
+                </div>
+                <div style={{fontSize:10,color:C.g400,marginTop:1}}>{c.b} bookings {"\u2022"} {freq} {"\u2022"} {daysSince}d ago {"\u2022"} {"$"}{c.s.toLocaleString()}</div>
+              </div>
+              <div className="pp-renter-actions" style={{display:"flex",gap:4,flexShrink:0}}>
+                {isLapsed?<button onClick={()=>openEmail("invite",c)} style={{...btnP,fontSize:10,padding:"5px 10px"}}>Check In</button>
+                :<button onClick={()=>openEmail("thanks",c)} style={{...btnO,fontSize:10,padding:"5px 10px"}}>Thanks</button>}
+                <button onClick={()=>openEmail("offer",c)} style={{...btnO,fontSize:10,padding:"5px 10px"}}>Offer</button>
+              </div>
+            </div>
+          })}
+        </div>
+        {topCustData.length>3&&<button onClick={()=>setShowAllPartners(v=>!v)} style={{background:"none",border:"none",cursor:"pointer",fontFamily:font,fontSize:12,fontWeight:600,color:C.blue,padding:"12px 0 2px",display:"flex",alignItems:"center",gap:4,width:"100%",justifyContent:"center"}}>
+          {showAllPartners?<>Show Less <span style={{fontSize:10}}>{"\u25B2"}</span></>:<>View All {topCustData.length} Partners <span style={{fontSize:10}}>{"\u25BC"}</span></>}
+        </button>}
+      </Card>
+      <div style={{padding:"16px 20px",background:`${C.blue}06`,borderRadius:R.lg,border:`1px solid ${C.blue}15`,fontSize:12,color:C.g600,lineHeight:1.6}}>
+        <strong style={{color:C.g800}}>Why this matters:</strong> Districts that stay in touch with their top 5 partners see 40% higher rebooking rates. A quick thank-you or seasonal offer takes 30 seconds and keeps your facilities full.
+      </div>
+    </>}
+    {/* ===== FACILITIES ===== */}
+    {gTab===2&&<>
+      <div style={{display:"grid",gridTemplateColumns:"repeat(auto-fit,minmax(130px,1fr))",gap:10}}>
+        {[{label:"Avg Utilization",val:`${util}%`,clr:util>=50?C.green:C.amber},{label:"Total Revenue",val:`$${facs.reduce((s,f)=>s+f.rev,0).toLocaleString()}`,clr:C.blue},{label:"Open Gaps",val:`${totalGaps}`,clr:totalGaps>10?C.amber:C.green},{label:"Facilities",val:`${facs.length}`,clr:C.g700}].map((m,i)=><Card key={i} style={{padding:"12px 14px",textAlign:"center"}}>
+          <div style={{fontSize:9,fontWeight:700,color:C.g400,textTransform:"uppercase",letterSpacing:"0.06em",marginBottom:4}}>{m.label}</div>
+          <div style={{fontSize:18,fontWeight:800,color:m.clr,fontFamily:numFont}}>{m.val}</div>
+        </Card>)}
+      </div>
+      <Card>
+        <Sec icon={I.bar(13,C.g500)}>Utilization by Facility</Sec>
+        <div style={{fontSize:12,color:C.g500,lineHeight:1.5,marginBottom:14}}>See which spaces are earning and where you have room to grow. Open gaps represent unfilled time slots that could be generating revenue for the district.</div>
+        {facs.map((f,i)=>{const pct=Math.round(f.bk/f.cap*100);const clr=pct>=60?C.green:pct>=40?C.amber:C.red;return <div key={i} style={{padding:"14px 0",borderBottom:i<facs.length-1?`1px solid ${C.g100}`:"none"}}>
+          <div style={{display:"flex",justifyContent:"space-between",alignItems:"flex-start",marginBottom:6}}>
+            <div style={{flex:1,minWidth:0}}>
+              <div style={{fontSize:13,fontWeight:700,color:C.g800}}>{f.name}</div>
+              <div style={{fontSize:10,color:C.g400,marginTop:2}}>{f.campus} {"\u2022"} Peak: {f.peak} {"\u2022"} {"$"}{f.rev.toLocaleString()} earned</div>
+            </div>
+            <div style={{textAlign:"right",flexShrink:0,marginLeft:12}}>
+              <div style={{fontSize:18,fontWeight:800,color:clr,fontFamily:numFont}}>{pct}%</div>
+              <div style={{fontSize:9,color:C.g400}}>utilized</div>
+            </div>
+          </div>
+          <div style={{height:6,background:C.g200,borderRadius:3,overflow:"hidden",marginBottom:6}}><div style={{width:`${pct}%`,height:"100%",borderRadius:3,background:clr}}/></div>
+          {f.gaps.length>0&&<div style={{display:"flex",alignItems:"center",gap:6,flexWrap:"wrap"}}>
+            <span style={{fontSize:10,color:C.g400}}>Open:</span>
+            {f.gaps.map((g,j)=><span key={j} style={{fontSize:9,fontWeight:600,color:C.amber,background:C.amberL,padding:"2px 6px",borderRadius:3}}>{g}</span>)}
+          </div>}
+        </div>})}
+      </Card>
+      <div style={{padding:"16px 20px",background:`${C.green}06`,borderRadius:R.lg,border:`1px solid ${C.green}15`,fontSize:12,color:C.g600,lineHeight:1.6}}>
+        <strong style={{color:C.g800}}>Board-ready insight:</strong> Your facilities have generated {"$"}{facs.reduce((s,f)=>s+f.rev,0).toLocaleString()} this period at {util}% utilization. Filling the {totalGaps} open gaps at your average booking rate could add an estimated {"$"}{Math.round(totalGaps*185).toLocaleString()} in additional revenue.
+      </div>
+    </>}
+    {/* ===== OUTREACH ===== */}
+    {gTab===3&&<>
+      <Card>
+        <Sec icon={I.link(13,C.g500)}>Your Booking Page</Sec>
+        <div style={{fontSize:12,color:C.g500,lineHeight:1.5,marginBottom:12}}>This is the public link where community organizations can browse availability and request a booking. Share it anywhere you'd normally field a rental inquiry.</div>
+        <div style={{display:"flex",alignItems:"center",gap:8,marginBottom:14}}>
+          <div style={{flex:1,padding:"10px 12px",background:C.g50,borderRadius:R.sm,border:`1px solid ${C.cardBorder}`,fontSize:12,color:C.g600,fontFamily:numFont,overflow:"hidden",textOverflow:"ellipsis",whiteSpace:"nowrap"}}>{ppUrl}</div>
+          <button onClick={doCopy} style={{...btnO,padding:"10px 14px",flexShrink:0,fontSize:12}}>{copied?<>{I.check(12,C.green)} Copied</>:<>{I.copy(12,C.g500)} Copy</>}</button>
+          <button onClick={()=>setShowShare(true)} style={{...btnP,padding:"10px 14px",flexShrink:0,fontSize:12}}>{I.share(12,"#fff")} Share</button>
+        </div>
+        <div style={{display:"grid",gridTemplateColumns:"repeat(auto-fill,minmax(140px,1fr))",gap:8}}>
+          {[{label:"Social Media",icon:"\u{1F4F1}",desc:"Post to Facebook, X, or Nextdoor",action:()=>setShowShare(true)},{label:"Email Blast",icon:"\u2709\uFE0F",desc:"Send to local orgs and leagues",action:()=>{}},{label:"District Website",icon:"\u{1F517}",desc:"Embed widget or add a link",action:()=>{}},{label:"QR Code",icon:"\u{1F4F7}",desc:"Print for facility entrances",action:()=>{if(globalShowToast)globalShowToast({type:"success",title:"Downloaded",msg:"QR code saved",color:C.green})}}].map((a,i)=><button key={i} onClick={a.action} style={{padding:"14px 10px",background:C.g50,border:`1px solid ${C.cardBorder}`,borderRadius:R.sm,cursor:"pointer",fontFamily:font,textAlign:"center",transition:"all .12s"}} onMouseEnter={e=>e.currentTarget.style.borderColor=C.blue} onMouseLeave={e=>e.currentTarget.style.borderColor=C.cardBorder}>
+            <div style={{fontSize:20,marginBottom:4}}>{a.icon}</div>
+            <div style={{fontSize:11,fontWeight:600,color:C.g700}}>{a.label}</div>
+            <div style={{fontSize:9,color:C.g400,marginTop:2}}>{a.desc}</div>
+          </button>)}
+        </div>
+      </Card>
+      <Card>
+        <Sec action={<button onClick={()=>{if(globalShowToast)globalShowToast({type:"success",title:"All Downloaded",msg:"Materials saved",color:C.green})}} style={{...btnO,fontSize:11,padding:"6px 14px"}}>{I.download(12,C.g500)} Download All</button>} icon={I.download(13,C.g500)}>Printable Materials</Sec>
+        <div style={{fontSize:12,color:C.g500,lineHeight:1.5,marginBottom:12}}>Ready-to-print materials for facility entrances, school board meetings, or community newsletters.</div>
+        <div style={{display:"grid",gridTemplateColumns:"repeat(auto-fill,minmax(220px,1fr))",gap:8}}>
+          {[{name:"Booking QR Code",type:"PNG",size:"42 KB",ic:"QR"},{name:"Facility Rental Flyer",type:"PDF",size:"1.2 MB",ic:"FL"},{name:"Rate Card Template",type:"DOCX",size:"245 KB",ic:"RC"},{name:"Parking Lot Signage",type:"PDF",size:"890 KB",ic:"SN"}].map((a,i)=><div key={i} style={{display:"flex",alignItems:"center",gap:10,padding:"10px 12px",background:C.g50,borderRadius:R.sm,border:`1px solid ${C.cardBorder}`,cursor:"pointer",transition:"all .12s"}} onMouseEnter={e=>e.currentTarget.style.borderColor=C.blue} onMouseLeave={e=>e.currentTarget.style.borderColor=C.cardBorder} onClick={()=>{if(globalShowToast)globalShowToast({type:"success",title:"Downloaded",msg:`${a.name} saved`,color:C.green})}}>
+            <div style={{width:32,height:32,borderRadius:6,background:C.blueL,display:"flex",alignItems:"center",justifyContent:"center",flexShrink:0}}><span style={{fontSize:8,fontWeight:800,color:C.blue}}>{a.ic}</span></div>
+            <div style={{flex:1,minWidth:0}}><div style={{fontSize:12,fontWeight:600,color:C.g700}}>{a.name}</div><div style={{fontSize:10,color:C.g400}}>{a.type} - {a.size}</div></div>
+            {I.download(12,C.g400)}
+          </div>)}
+        </div>
+      </Card>
+      <Card>{(()=>{const steps=[{t:"Add booking link to your district website",d:true},{t:"Share with local youth sports leagues",d:true},{t:"Post on community boards (Nextdoor, Facebook Groups)",d:false},{t:"Display QR code flyers at each facility",d:false},{t:"Respond to all inquiries within 24 hours",d:true}];const done=steps.filter(s=>s.d).length;return <>
+        <div style={{display:"flex",alignItems:"center",justifyContent:"space-between",marginBottom:12}}><Sec icon={I.check(13,C.green)}>Visibility Checklist</Sec><span style={{fontSize:11,fontWeight:600,color:C.green}}>{done}/{steps.length}</span></div>
+        <div style={{display:"flex",gap:3,marginBottom:14}}>{steps.map((s,i)=><div key={i} style={{flex:1,height:3,borderRadius:2,background:s.d?C.green:C.g200}}/>)}</div>
+        {steps.map((s,i)=><div key={i} style={{display:"flex",alignItems:"center",gap:10,padding:"8px 0",borderBottom:i<steps.length-1?`1px solid ${C.g100}`:"none"}}>
+          <div style={{width:20,height:20,borderRadius:5,background:s.d?C.green:C.g200,border:s.d?"none":`2px solid ${C.g300}`,display:"flex",alignItems:"center",justifyContent:"center",flexShrink:0,cursor:"pointer"}}>{s.d&&I.check(10,"#fff")}</div>
+          <span style={{fontSize:12,fontWeight:500,color:s.d?C.g400:C.g700,textDecoration:s.d?"line-through":"none"}}>{s.t}</span>
+        </div>)}
+      </>})()}</Card>
+      <div style={{display:"grid",gridTemplateColumns:"repeat(auto-fill,minmax(240px,1fr))",gap:10}}>
+        <div style={{background:`${C.blue}06`,borderRadius:R.lg,border:`1px solid ${C.blue}20`,padding:"18px 20px",cursor:"pointer"}} onClick={()=>globalShowReferral()}>
+          <div style={{fontSize:14,fontWeight:800,color:C.g800,marginBottom:6}}>Know another district?</div>
+          <div style={{fontSize:11,color:C.g500,lineHeight:1.5,marginBottom:10}}>If you know a facilities director still managing rentals by email and spreadsheet, we'd love an introduction. They start free.</div>
+          <span style={{fontSize:12,fontWeight:700,color:C.blue}}>Refer a District {"→"}</span>
+        </div>
+        <div style={{background:C.cardBg,borderRadius:R.lg,border:`1px solid ${C.cardBorder}`,padding:"18px 20px",cursor:"pointer",boxShadow:C.cardShadow}} onClick={()=>globalShowSuggest()}>
+          <div style={{fontSize:14,fontWeight:800,color:C.g800,marginBottom:6}}>Missing something?</div>
+          <div style={{fontSize:11,color:C.g500,lineHeight:1.5,marginBottom:10}}>We build based on what facility managers actually need. If there's a feature or report that would help - tell us.</div>
+          <span style={{fontSize:12,fontWeight:700,color:C.blue}}>Suggest a Feature {"→"}</span>
+        </div>
+      </div>
+    </>}
     {/* Share Modal */}
     {showShare&&<div style={{position:"fixed",inset:0,background:"rgba(15,23,42,0.5)",backdropFilter:"blur(6px)",zIndex:300,display:"flex",alignItems:"center",justifyContent:"center",padding:20}} onClick={()=>setShowShare(false)}>
       <div onClick={e=>e.stopPropagation()} style={{background:C.cardBg,borderRadius:16,boxShadow:`0 24px 80px rgba(0,0,0,${C.bg==="#0F1318"?0.5:0.2})`,width:"100%",maxWidth:460,overflow:"hidden"}}>
-        {/* Header */}
         <div style={{background:`linear-gradient(135deg, ${C.blue}, ${C.green})`,padding:"24px 28px 20px",position:"relative"}}>
           <button onClick={()=>setShowShare(false)} style={{position:"absolute",top:14,right:14,background:"rgba(255,255,255,0.2)",border:"none",borderRadius:8,width:28,height:28,cursor:"pointer",display:"flex",alignItems:"center",justifyContent:"center"}}>{I.x(14,"#fff")}</button>
-          <div style={{fontSize:18,fontWeight:800,color:"#fff",lineHeight:1.3}}>Share Your Booking Page</div>
-          <div style={{fontSize:12,color:"rgba(255,255,255,0.8)",marginTop:6,lineHeight:1.5}}>Let your community know they can reserve Ascension Parish facilities online.</div>
+          <div style={{fontSize:18,fontWeight:800,color:"#fff"}}>Share Your Booking Page</div>
+          <div style={{fontSize:12,color:"rgba(255,255,255,0.8)",marginTop:6}}>Let your community know they can reserve facilities online.</div>
         </div>
-
         <div style={{padding:"24px 28px"}}>
-          {/* URL + Copy */}
           <div style={{display:"flex",gap:8,marginBottom:20}}>
             <div style={{flex:1,padding:"10px 14px",background:C.g50,borderRadius:R.sm,border:`1px solid ${C.cardBorder}`,fontSize:12,color:C.g600,fontFamily:numFont,overflow:"hidden",textOverflow:"ellipsis",whiteSpace:"nowrap"}}>{ppUrl}</div>
             <button onClick={doCopy} style={{...btnP,padding:"10px 14px",flexShrink:0,fontSize:12}}>{copied?"Copied!":"Copy"}</button>
           </div>
-
-          {/* Pre-filled message */}
-          <div style={{marginBottom:20}}>
-            <label style={{fontSize:10,fontWeight:700,color:C.g400,textTransform:"uppercase",letterSpacing:"0.06em",display:"block",marginBottom:6}}>Message</label>
-            <div style={{padding:"12px 14px",background:C.g50,borderRadius:R.sm,border:`1px solid ${C.cardBorder}`,fontSize:12,color:C.g600,lineHeight:1.6}}>{shareMsg}</div>
-          </div>
-
-          {/* Social buttons */}
-          <div style={{fontSize:10,fontWeight:700,color:C.g400,textTransform:"uppercase",letterSpacing:"0.06em",marginBottom:10}}>Share via</div>
-          <div style={{display:"grid",gridTemplateColumns:"repeat(3,1fr)",gap:8,marginBottom:16}}>
-            {[
-              ["X / Twitter","#000","𝕏"],
-              ["Facebook","#1877F2","f"],
-              ["Instagram","#E4405F","ig"],
-              ["LinkedIn","#0A66C2","in"],
-              ["Email","#EA4335","@"],
-              ["Text / SMS","#25D366","✉"],
-            ].map(([name,bg,abbr])=>
+          <div style={{padding:"12px 14px",background:C.g50,borderRadius:R.sm,border:`1px solid ${C.cardBorder}`,fontSize:12,color:C.g600,marginBottom:20,lineHeight:1.6}}>Reserve Ascension Parish facilities on PracticePlan - gyms, fields, and auditoriums available for your team or organization. Book online instantly!</div>
+          <div style={{display:"grid",gridTemplateColumns:"repeat(3,1fr)",gap:8}}>
+            {[["X / Twitter","X","#000"],["Facebook","f","#1877F2"],["Instagram","IG","#E4405F"],["LinkedIn","in","#0A66C2"],["Email","@","#EA4335"],["Text / SMS","\u{1F4AC}","#25D366"]].map(([name,abbr,bg])=>
               <button key={name} onClick={()=>{if(globalShowToast)globalShowToast({type:"success",title:`Shared on ${name}`,msg:"Your booking link has been shared",color:C.green});setShowShare(false)}} style={{display:"flex",flexDirection:"column",alignItems:"center",gap:6,padding:"14px 10px",background:C.g50,border:`1px solid ${C.cardBorder}`,borderRadius:R.sm,cursor:"pointer",fontFamily:font,transition:"all .12s"}} onMouseEnter={e=>{e.currentTarget.style.background=bg;e.currentTarget.style.borderColor=bg;e.currentTarget.querySelector(".sh-icon").style.background="#fff";e.currentTarget.querySelector(".sh-icon").style.color=bg;e.currentTarget.querySelector(".sh-lbl").style.color="#fff"}} onMouseLeave={e=>{e.currentTarget.style.background=C.g50;e.currentTarget.style.borderColor=C.cardBorder;e.currentTarget.querySelector(".sh-icon").style.background=bg;e.currentTarget.querySelector(".sh-icon").style.color="#fff";e.currentTarget.querySelector(".sh-lbl").style.color=C.g600}}>
                 <div className="sh-icon" style={{width:36,height:36,borderRadius:10,background:bg,color:"#fff",display:"flex",alignItems:"center",justifyContent:"center",fontSize:abbr.length>1?11:16,fontWeight:800,transition:"all .15s"}}>{abbr}</div>
                 <span className="sh-lbl" style={{fontSize:10,fontWeight:600,color:C.g600,transition:"color .15s"}}>{name}</span>
-              </button>
-            )}
+              </button>)}
           </div>
-
-          {/* Community boards suggestion */}
-          <div style={{padding:"12px 14px",background:`${C.blue}06`,borderRadius:8,border:`1px solid ${C.blue}15`,fontSize:11,color:C.g500,lineHeight:1.6}}>
-            <strong style={{color:C.g700}}>Tip:</strong> Post on Nextdoor, local Facebook Groups, and your district's official social accounts for maximum reach. Community boards often drive the most new bookings.
+          <div style={{padding:"12px 14px",background:`${C.blue}06`,borderRadius:8,border:`1px solid ${C.blue}15`,fontSize:11,color:C.g500,lineHeight:1.6,marginTop:16}}>
+            <strong style={{color:C.g700}}>Tip:</strong> Post on Nextdoor, local Facebook Groups, and your district's official social accounts for maximum reach.
           </div>
         </div>
       </div>
     </div>}
   </div>
 }
-
 /* ======== APP SHELL ======== */
 /* ======== COMMAND PALETTE (Cmd+K) ======== */
 function CmdPalette({open,onClose,onNavigate}){
@@ -3100,7 +3845,6 @@ function CmdPalette({open,onClose,onNavigate}){
   const ref=useRef(null);
   const [sel,setSel]=useState(0);
   useEffect(()=>{if(open){setQ("");setSel(0);setTimeout(()=>ref.current?.focus(),50)}},[open]);
-
   const cmdItems=[
     {type:"page",label:"Dashboard",desc:"Overview and metrics",icon:I.home(14,C.blue),action:()=>onNavigate("Dashboard")},
     {type:"page",label:"Rentals - Approvals",desc:"Review pending approvals",icon:I.key(14,C.blue),action:()=>{onNavigate("Rentals");setTimeout(()=>{if(globalSetRentalsTab)globalSetRentalsTab("approvals")},100)}},
@@ -3110,7 +3854,7 @@ function CmdPalette({open,onClose,onNavigate}){
     {type:"page",label:"Reporting",desc:"Revenue, ratings, and payouts",icon:I.chart(14,C.blue),action:()=>onNavigate("Reporting")},
     {type:"page",label:"Users & Roles",desc:"Manage team access",icon:I.user(14,C.blue),action:()=>onNavigate("Users")},
     {type:"page",label:"Bulk Payments",desc:"Bulk payment transactions",icon:I.wallet(14,C.blue),action:()=>{onNavigate("Reporting");setTimeout(()=>{if(globalSetRt)globalSetRt(5)},100)}},
-    {type:"page",label:"Promote",desc:"Growth tools, sharing, and marketing assets",icon:I.megaphone(14,C.blue),action:()=>onNavigate("Promote")},
+    {type:"page",label:"Playbook",desc:"Performance, renters, and growth tools",icon:I.megaphone(14,C.blue),action:()=>onNavigate("Playbook")},
     {type:"action",label:"Create Reservation",desc:"Open new booking form",icon:<span style={{fontSize:14}}>+</span>,action:()=>{onNavigate("Dashboard")}},
     {type:"action",label:"Toggle Dark Mode",desc:"Switch theme",icon:I.moon(14,C.g500),action:()=>{document.querySelector(".pp-theme-toggle")?.click()}},
     ...approvalsDataInit.filter(a=>a.status==="pending").map(a=>({type:"approval",label:`${a.id} - ${a.org}`,desc:`${a.campus} - ${a.bk.length} booking${a.bk.length>1?"s":""} - $${a.bk.reduce((s,b)=>s+b.rev,0).toLocaleString()}`,icon:I.alert(14,C.orange),action:()=>{onNavigate("Rentals");setTimeout(()=>{if(globalSetRentalsTab)globalSetRentalsTab("approvals")},100)}})),
@@ -3118,21 +3862,17 @@ function CmdPalette({open,onClose,onNavigate}){
     ...upcoming.slice(0,4).map(r=>({type:"reservation",label:`${r.id} - ${r.c}`,desc:`${r.a} - ${r.d} ${r.t}`,icon:I.key(14,C.g400),action:()=>onNavigate("Rentals")})),
     ...topCustData.map(c=>({type:"customer",label:c.n,desc:`${c.b} bookings - $${c.s.toLocaleString()}`,icon:I.user(14,C.g400),action:()=>onNavigate("Dashboard")})),
   ];
-
   const filtered=q.trim()===""?cmdItems:cmdItems.filter(it=>(it.label+it.desc).toLowerCase().includes(q.toLowerCase()));
   const capped=filtered.slice(0,10);
-
   const handleKey=(e)=>{
     if(e.key==="ArrowDown"){e.preventDefault();setSel(s=>Math.min(s+1,capped.length-1))}
     else if(e.key==="ArrowUp"){e.preventDefault();setSel(s=>Math.max(s-1,0))}
     else if(e.key==="Enter"&&capped[sel]){capped[sel].action();onClose()}
     else if(e.key==="Escape")onClose();
   };
-
   if(!open)return null;
   const grouped={};capped.forEach(it=>{const g=it.type==="page"?"Navigate":it.type==="action"?"Actions":it.type==="approval"?"Pending Approvals":it.type==="campus"?"Campuses":it.type==="reservation"?"Reservations":"Customers";if(!grouped[g])grouped[g]=[];grouped[g].push(it)});
   let flatIdx=0;
-
   return <><div onClick={onClose} style={{position:"fixed",inset:0,background:"rgba(15,23,42,0.45)",backdropFilter:"blur(4px)",zIndex:500,animation:"fadeIn .15s ease"}}/>
     <div style={{position:"fixed",top:"18%",left:"50%",transform:"translateX(-50%)",width:"100%",maxWidth:520,zIndex:501,animation:"slideUp .2s cubic-bezier(.22,1,.36,1)"}}>
       <div style={{background:C.cardBg,borderRadius:16,border:`1px solid ${C.cardBorder}`,boxShadow:`0 24px 80px rgba(0,0,0,${C.bg==="#0F1318"?0.5:0.2}), 0 8px 24px rgba(0,0,0,${C.bg==="#0F1318"?0.3:0.1})`,overflow:"hidden",fontFamily:font}}>
@@ -3167,7 +3907,6 @@ function CmdPalette({open,onClose,onNavigate}){
     </div>
   </>;
 }
-
 /* ======== AI INSIGHTS PANEL ======== */
 function AIInsights(){
   const [mode,setMode]=useState("idle"); /* idle | loading | active */
@@ -3177,16 +3916,13 @@ function AIInsights(){
   const [showDots,setShowDots]=useState(true);
   const [loadStep,setLoadStep]=useState(0);
   const [btnHover,setBtnHover]=useState(false);
-
   const insights=[
     {tag:"Action Required",title:"Gonzales FC has 2 bookings at risk",body:"Insurance expired 01/15/2026 for Gonzales FC, affecting their 2/22 and 3/1 bookings at Prairieville Complex ($950 revenue at risk). Request an updated COI immediately to avoid cancellation.",stat:"$950",statLabel:"at risk",priority:"high"},
     {tag:"Revenue Opportunity",title:"Saturday AM is your money maker",body:"Dutchtown and Prairieville 8-10 AM slots generate 38% of total revenue from just 12% of available hours. A $50 weekend premium could add $2,400/mo without impacting demand.",stat:"+$2.4k",statLabel:"/mo potential",priority:"info"},
     {tag:"Low Utilization",title:"Donaldsonville is 21% below average",body:"Donaldsonville HS (31%) and East Ascension (29%) are well below the 52% district average. Youth soccer and church groups in the Gonzales area are untapped demand - consider a targeted email campaign.",stat:"31%",statLabel:"utilization",priority:"warn"},
     {tag:"Retention",title:"3 customers ready for seasonal contracts",body:"Bayou City VB (weekly Fri), Gonzales FC (weekly Sat), and LA Tigers (bi-weekly Tue) show repeating patterns. Converting to quarterly contracts could lock in ~$18,000 in guaranteed revenue and reduce admin overhead by 40%.",stat:"~$18K",statLabel:"/qtr locked in",priority:"info"},
   ];
-
   const loadSteps=["Scanning 192 bookings...","Analyzing revenue patterns...","Checking insurance compliance...","Identifying opportunities..."];
-
   /* Loading sequence */
   useEffect(()=>{
     if(mode!=="loading")return;
@@ -3197,11 +3933,9 @@ function AIInsights(){
     const t=setTimeout(()=>setMode("active"),300);
     return ()=>clearTimeout(t);
   },[mode,loadStep]);
-
   const cur=insights[phase];
   const fullLen=cur.body.length;
   const isTyping=mode==="active"&&charIdx<fullLen;
-
   useEffect(()=>{
     if(mode!=="active")return;
     if(charIdx<fullLen){
@@ -3219,14 +3953,12 @@ function AIInsights(){
     }
     if(autoPlay&&phase===insights.length-1)setAutoPlay(false);
   },[mode,charIdx,phase,autoPlay,fullLen,showDots]);
-
   const goTo=(i)=>{
     setAutoPlay(false);
     setPhase(i);
     setCharIdx(insights[i].body.length);
     setShowDots(false);
   };
-
   /* ── Idle CTA ── */
   if(mode==="idle") return <div style={{display:"flex",alignItems:"center",justifyContent:"space-between",gap:12}}>
     <div style={{display:"flex",alignItems:"center",gap:10,minWidth:0}}>
@@ -3244,7 +3976,6 @@ function AIInsights(){
       {I.bulb(12,"#fff")} Generate
     </button>
   </div>
-
   /* ── Loading state ── */
   if(mode==="loading") return <div style={{animation:"fadeIn .3s ease"}}>
     <div style={{display:"flex",alignItems:"center",gap:8,marginBottom:16}}>
@@ -3273,7 +4004,6 @@ function AIInsights(){
       })}
     </div>
   </div>
-
   /* ── Active insights ── */
   return <div className="pp-ai-wrap" style={{animation:"fadeIn .4s ease"}}>
     <div style={{display:"flex",alignItems:"center",justifyContent:"space-between",marginBottom:16}}>
@@ -3286,7 +4016,6 @@ function AIInsights(){
       </div>
       <span style={{fontSize:10,color:C.g400,fontWeight:500}}>{phase+1} / {insights.length}</span>
     </div>
-
     <div style={{display:"flex",gap:4,marginBottom:16}}>
       {insights.map((_,i)=>{
         const done=i<phase||(i===phase&&charIdx>=insights[i].body.length);
@@ -3294,7 +4023,6 @@ function AIInsights(){
         return <div key={i} onClick={()=>goTo(i)} style={{flex:1,height:3,borderRadius:2,background:active?C.blue:done?`${C.blue}40`:C.g200,cursor:"pointer",transition:"all .3s"}}/>
       })}
     </div>
-
     <div>
       <div style={{display:"flex",alignItems:"center",gap:8,marginBottom:10}}>
         <span style={{fontSize:9,fontWeight:700,color:cur.priority==="high"?C.red:C.g500,textTransform:"uppercase",letterSpacing:"0.06em",background:cur.priority==="high"?C.redL:C.g100,padding:"3px 8px",borderRadius:4}}>{cur.tag}</span>
@@ -3315,7 +4043,6 @@ function AIInsights(){
         }
       </div>
     </div>
-
     <div style={{display:"flex",alignItems:"center",justifyContent:"space-between",marginTop:14,paddingTop:12,borderTop:`1px solid ${C.g100}`}}>
       <div style={{display:"flex",alignItems:"baseline",gap:6}}>
         <span style={{fontSize:22,fontWeight:800,color:C.g800,letterSpacing:"-0.02em",fontFamily:numFont}}>{cur.stat}</span>
@@ -3330,9 +4057,8 @@ function AIInsights(){
     </div>
   </div>
 }
-
-const pages={Dashboard,Rentals,Organization:Org,Reporting,Users,Promote};
-const tabIcons={Dashboard:"home",Rentals:"key",Organization:"building",Reporting:"chart",Users:"users",Promote:"megaphone"};
+const pages={Dashboard,Rentals,Organization:Org,Reporting,Users,Playbook:Promote};
+const tabIcons={Dashboard:"home",Rentals:"key",Organization:"building",Reporting:"chart",Users:"users",Playbook:"megaphone"};
 /* shared tab setter - set by App */
 let globalSetTab=()=>{};
 let globalSetRentalsTab=()=>{};
@@ -3344,9 +4070,9 @@ let globalSetShowPay=()=>{};
 let globalSetRt=()=>{};
 let globalShowReferral=()=>{};
 let globalShowSuggest=()=>{};
+let globalSetEmailModal=()=>{};
 let globalShowFacility=()=>{};
 let globalSetFacility=null;
-
 /* sparkline data for metrics */
 const sparkData={
   "YTD Revenue":[28,34,31,42,48,52,61],
@@ -3362,7 +4088,6 @@ function Sparkline({data,color=C.blue,w=60,h=24}){
   const areaPath=`M0,${h} L${pts.split(" ").map((p,i)=>i===0?p.replace(/^[^,]+,/,`0,`):p).join(" L")} L${w},${h} Z`;
   return <svg width={w} height={h} style={{display:"block"}}><defs><linearGradient id={`sg-${color.replace("#","")}`} x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stopColor={color} stopOpacity="0.15"/><stop offset="100%" stopColor={color} stopOpacity="0.02"/></linearGradient></defs><path d={`M${pts.replace(/ /g," L")}`} fill="none" stroke={color} strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/><path d={areaPath} fill={`url(#sg-${color.replace("#","")})`}/></svg>
 }
-
 /* Toast notifications */
 function ToastContainer({toasts,removeToast}){
   return <div style={{position:"fixed",bottom:24,right:24,zIndex:400,display:"flex",flexDirection:"column-reverse",gap:8,pointerEvents:"none"}}>
@@ -3378,7 +4103,6 @@ function ToastContainer({toasts,removeToast}){
     </div>)}
   </div>
 }
-
 export default function App(){
   /* Prevent iOS zoom on input focus */
   useEffect(()=>{
@@ -3426,6 +4150,11 @@ export default function App(){
   globalShowSuggest=()=>setShowSuggest(true);
   const [suggestText,setSuggestText]=useState("");
   const [helpOpen,setHelpOpen]=useState(false);
+  const [emailModal,setEmailModal]=useState(null);
+  globalSetEmailModal=setEmailModal;
+  const [npsState,setNpsState]=useState("idle"); /* idle | ask | followup | done | dismissed */
+  const [npsScore,setNpsScore]=useState(null);
+  const [npsFeedback,setNpsFeedback]=useState("");
   const [helpMsg,setHelpMsg]=useState("");
   const [helpMessages,setHelpMessages]=useState([{from:"bot",text:"Hi Marcus! How can we help you today?",time:"Just now"}]);
   const addToast=(t)=>{const id=Date.now();setToasts(ts=>[...ts,{...t,id}]);setTimeout(()=>setToasts(ts=>ts.filter(x=>x.id!==id)),4000)};
@@ -3434,7 +4163,6 @@ export default function App(){
   globalApprovals=approvals;globalSetApprovals=setApprovals;globalPrompt=prompt;globalSetPrompt=setPrompt;
   globalRequireSiteAdmin=requireSiteAdmin;globalSetRequireSiteAdmin=setRequireSiteAdmin;globalAssignedAdmins=assignedAdmins;globalSetAssignedAdmins=setAssignedAdmins;
   globalNotifs=notifs;
-
   /* Cmd+K listener */
   useEffect(()=>{
     const handler=(e)=>{if((e.metaKey||e.ctrlKey)&&e.key==="k"){e.preventDefault();setCmdOpen(o=>!o)}};
@@ -3444,7 +4172,6 @@ export default function App(){
   const Page=pages[tab];
   const unread=notifs.filter(n=>!n.read).length;
   const pendingApprovals=approvals.filter(a=>a.status==="pending");
-
   /* Loading skeleton - page-specific */
   const Skeleton=()=>{
     if(tab==="Dashboard")return <div style={{display:"flex",flexDirection:"column",gap:16}}>
@@ -3471,7 +4198,6 @@ export default function App(){
       <div className="pp-skeleton" style={{height:200,width:"100%"}}/>
     </div>;
   };
-
   return <ThemeCtx.Provider value={{dark,toggle:toggleDark}}>
   <div className={`pp-shell ${dark?"pp-dark":""}`} style={{minHeight:"100vh",background:C.bg,fontFamily:font,color:C.g700,display:"flex",overflow:"hidden"}}>
     <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700;800;900&family=Montserrat:wght@400;500;600;700;800;900&display=swap" rel="stylesheet"/>
@@ -3481,8 +4207,38 @@ export default function App(){
       .pp-shell td{font-family:'DM Sans','Montserrat',sans-serif;font-variant-numeric:tabular-nums}
       .pp-shell .pp-met{font-variant-numeric:tabular-nums}
       .pp-shell .pp-card [style*="fontWeight"]{font-variant-numeric:tabular-nums}
+      .pp-shell{font-variant-numeric:tabular-nums}
+      .pp-shell td,.pp-shell th,.pp-shell [style*="fontFamily"]{font-variant-numeric:tabular-nums}
+      @font-face{font-family:'DM Sans';font-display:swap}
+      .pp-shell .pp-card div,.pp-shell .pp-card span{font-variant-numeric:tabular-nums}
       html{-webkit-font-smoothing:antialiased;-moz-osx-font-smoothing:grayscale;color-scheme:${dark?"dark":"light"}}
-
+      /* Card hover lift */
+      .pp-card:hover{box-shadow:0 4px 12px rgba(0,0,0,${dark?0.25:0.06}), 0 1px 3px rgba(0,0,0,${dark?0.15:0.03})}
+      .pp-met:hover{border-color:${C.green}30}
+      /* Smooth scrollbars */
+      .pp-content::-webkit-scrollbar{width:6px}
+      .pp-content::-webkit-scrollbar-track{background:transparent}
+      .pp-content::-webkit-scrollbar-thumb{background:${C.g300};border-radius:3px}
+      .pp-content::-webkit-scrollbar-thumb:hover{background:${C.g400}}
+      /* Skeleton shimmer */
+      @keyframes ppShimmer{0%{background-position:-200% 0}100%{background-position:200% 0}}
+      .pp-skeleton,.pp-skel{background:linear-gradient(90deg,${C.g100} 25%,${C.g200} 50%,${C.g100} 75%) !important;background-size:200% 100%;animation:ppShimmer 1.8s ease infinite;border-radius:8px}
+      /* Page transition */
+      @keyframes ppPageIn{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:translateY(0)}}
+      .pp-main>div{animation:ppPageIn .3s cubic-bezier(.25,.46,.45,.94) both}
+      /* Button hover */
+      .pp-shell button:active{transform:scale(0.97)}
+      /* Live pulse */
+      @keyframes ppPulse{0%,100%{opacity:1}50%{opacity:0.4}}
+      .pp-live-dot{animation:ppPulse 2s ease-in-out infinite}
+      /* Table row hover */
+      .pp-shell tbody tr{transition:background .12s ease}
+      .pp-shell tbody tr:hover{background:${C.g50} !important}
+      /* Renter/partner row hover */
+      .pp-renter-row{transition:background .12s ease;border-radius:8px;margin:0 -8px;padding-left:8px !important;padding-right:8px !important}
+      .pp-renter-row:hover{background:${C.g50}}
+      .pp-renter-actions{opacity:0.5;transition:opacity .15s}
+      .pp-renter-row:hover .pp-renter-actions{opacity:1}
       /* ===== SIDEBAR ===== */
       .pp-sidebar{
         width:${sideOpen?220:64}px;min-height:100vh;background:${C.cardBg};
@@ -3508,8 +4264,8 @@ export default function App(){
         ${sideOpen?"":"justify-content:center;"}
         min-height:38px;
       }
-      .pp-side-btn:hover{background:${C.g50};color:${C.g700}}
-      .pp-side-btn.active{background:${C.blueL};color:${C.blue}}
+      .pp-side-btn:hover{background:${C.g100};color:${C.g800}}
+      .pp-side-btn.active{background:${C.blueL};color:${C.blue};font-weight:700;box-shadow:inset 3px 0 0 ${C.green}}
       .pp-side-label{opacity:${sideOpen?1:0};width:${sideOpen?"auto":"0px"};overflow:hidden;transition:opacity .15s .05s,width .2s;font-size:13px}
       .pp-side-badge{
         margin-left:auto;background:${C.blue};color:#fff;
@@ -3521,12 +4277,12 @@ export default function App(){
         display:flex;align-items:center;gap:12px;${sideOpen?"":"justify-content:center;"}
         flex-shrink:0;
       }
-
       /* ===== TOP BAR ===== */
       .pp-topbar{
         display:flex;align-items:center;justify-content:space-between;
         height:56px;padding:0 24px;background:${C.cardBg};
         border-bottom:1px solid ${C.cardBorder};position:sticky;top:0;z-index:100;
+        box-shadow:0 1px 3px rgba(0,0,0,${dark?0.15:0.04});
       }
       .pp-content{margin-left:${sideOpen?220:64}px;flex:1;min-width:0;transition:margin-left .25s cubic-bezier(.22,1,.36,1);height:100vh;overflow-y:auto;-webkit-overflow-scrolling:touch;overscroll-behavior:contain}
       .pp-search{position:relative}
@@ -3539,7 +4295,6 @@ export default function App(){
       .pp-shell option{background:${C.cardBg};color:${C.g700}}
       .pp-main{max-width:1200px;margin:0 auto;padding:24px 28px}
       .pp-notif-panel{width:360px;right:0}
-
       /* Dark mode toggle */
       .pp-theme-toggle{
         width:36px;height:36px;border-radius:${R.sm}px;
@@ -3548,14 +4303,12 @@ export default function App(){
         transition:all .25s;
       }
       .pp-theme-toggle:hover{background:${C.g50};border-color:${C.g300}}
-
       /* ===== TABLET ===== */
       @media(max-width:1024px){
         .pp-search input{width:140px}
         .pp-main{padding:16px}
         .pp-topbar{padding:0 16px}
       }
-
       /* ===== MOBILE ===== */
       @media(max-width:768px){
         .pp-sidebar{
@@ -3610,18 +4363,14 @@ export default function App(){
         .pp-side-badge{opacity:1 !important}
         .pp-side-btn{gap:12px !important;padding:10px 12px !important;justify-content:flex-start !important}
         .pp-side-user{padding:14px 16px !important;justify-content:flex-start !important}
-
         /* Table responsive */
         .pp-table-wrap{overflow-x:auto;-webkit-overflow-scrolling:touch;margin:0 -10px;padding:0 10px}
         .pp-table-wrap table{min-width:600px}
-
         /* All tables in cards should scroll on mobile */
         .pp-card{overflow-x:auto;-webkit-overflow-scrolling:touch}
         .pp-card table{min-width:500px}
-
         /* Card grid stacking */
         .pp-card{min-width:0 !important}
-
         /* Sub-tab scrolling */
         .pp-sub-tabs{overflow-x:auto;-webkit-overflow-scrolling:touch;scrollbar-width:none;position:sticky;top:56px;z-index:10;background:${C.bg};margin:-16px -16px 0;padding:0 16px}
         .pp-sub-tabs::-webkit-scrollbar{display:none}
@@ -3636,10 +4385,8 @@ export default function App(){
         .pp-report-range select{width:100% !important}
         .pp-report-actions{flex-direction:row !important;justify-content:stretch !important}
         .pp-report-actions button{flex:1 !important}
-
         /* Toast mobile */
         .pp-toast-container{right:12px !important;left:12px !important;bottom:12px !important}
-
         /* Users toolbar */
         .pp-users-toolbar{flex-direction:column !important;align-items:stretch !important;gap:10px !important}
         .pp-users-filters{flex-direction:column !important;align-items:stretch !important;gap:8px !important}
@@ -3647,22 +4394,19 @@ export default function App(){
         .pp-users-filters input{width:100% !important;max-width:none !important;box-sizing:border-box !important}
         .pp-users-filters select{width:100% !important}
         .pp-users-filters>span{text-align:center}
-
         /* Welcome banner */
         .pp-welcome{padding:16px 18px !important}
-
         /* Approval cards */
         /* Approval cards - now handled by pp-a-* classes */
         .pp-appr-contact{display:none !important}
-
         /* Theme toggle */
         .pp-theme-toggle{width:32px !important;height:32px !important}
-
         /* Mobile bottom nav */
         .pp-bottom-nav{display:flex !important}
         .pp-bottom-nav>div{flex-direction:row !important;justify-content:space-around !important;width:100%}
         .pp-create-modal{width:100vw !important;max-width:100vw !important;max-height:100vh !important;height:100vh !important;border-radius:0 !important;top:0 !important;left:0 !important;transform:none !important;z-index:350 !important;overflow-y:auto !important}
         .pp-help-fab{display:none !important}
+        .pp-nps-widget{bottom:72px !important;left:12px !important;max-width:calc(100vw - 24px) !important}
         .pp-help-chat{display:none !important}
         .pp-content{padding-bottom:64px}
         .pp-toast-container{bottom:72px !important}
@@ -3676,7 +4420,6 @@ export default function App(){
         .pp-hamburger{display:none !important}
         .pp-mobile-overlay{display:none !important}
       }
-
       /* ===== KEYFRAMES ===== */
       @keyframes pageEnter{from{opacity:0;transform:translateY(16px)}to{opacity:1;transform:translateY(0)}}
       @keyframes cardEnter{from{opacity:0;transform:translateY(20px) scale(0.97)}to{opacity:1;transform:translateY(0) scale(1)}}
@@ -3700,13 +4443,10 @@ export default function App(){
       @keyframes badgeBounce{0%{transform:scale(0)}50%{transform:scale(1.2)}100%{transform:scale(1)}}
       @keyframes checkPop{0%{transform:scale(0) rotate(-45deg);opacity:0}50%{transform:scale(1.2) rotate(0deg)}100%{transform:scale(1) rotate(0deg);opacity:1}}
       @keyframes progressFill{from{width:0}to{width:var(--target-w,100%)}}
-
       .pp-btn-short{display:none}
       .pp-btn-full{display:inline}
-
       /* ===== LOADING SKELETON ===== */
       .pp-skeleton{background:linear-gradient(90deg,${C.g100} 25%,${C.g50} 50%,${C.g100} 75%);background-size:400px 100%;animation:shimmer 1.5s infinite ease-in-out;border-radius:${R.sm}px}
-
       /* ===== PAGE TRANSITIONS ===== */
       .pp-page-enter{animation:pageEnter .4s cubic-bezier(.22,1,.36,1) forwards}
       .pp-page-enter>*:nth-child(1){animation:cardEnter .45s cubic-bezier(.22,1,.36,1) both;animation-delay:.02s}
@@ -3719,7 +4459,6 @@ export default function App(){
       .pp-page-enter>*:nth-child(8){animation:cardEnter .45s cubic-bezier(.22,1,.36,1) both;animation-delay:.37s}
       .pp-page-enter>*:nth-child(9){animation:cardEnter .45s cubic-bezier(.22,1,.36,1) both;animation-delay:.42s}
       .pp-page-enter>*:nth-child(10){animation:cardEnter .45s cubic-bezier(.22,1,.36,1) both;animation-delay:.47s}
-
       /* ===== INTERACTIVE CARD POLISH ===== */
       .pp-card{
         transition:transform .25s cubic-bezier(.22,1,.36,1), box-shadow .25s ease, border-color .25s, background .3s !important;
@@ -3729,31 +4468,25 @@ export default function App(){
         transform:translateY(-2px);
       }
       .pp-card:active{transform:translateY(0) !important;transition-duration:.1s !important}
-
       /* ===== BUTTON MAGIC ===== */
       button{transition:transform .15s cubic-bezier(.22,1,.36,1), box-shadow .15s, background .15s, color .15s, border-color .15s, opacity .15s, filter .15s !important;white-space:nowrap !important}
       button:hover{filter:brightness(${dark?1.12:1.04})}
       button:active{transform:scale(0.95) !important;transition-duration:.06s !important}
-
       /* ===== FOCUS RINGS ===== */
       select:focus,input:focus{outline:none;border-color:${C.blue} !important;box-shadow:0 0 0 3px ${C.blue}20 !important;transition:all .2s !important}
       textarea:focus{outline:none;border-color:${C.blue} !important;box-shadow:0 0 0 3px ${C.blue}20 !important}
       input,select,textarea{transition:border-color .2s,box-shadow .2s !important;color:${C.g700};background:${C.g50}}
       table{border-collapse:collapse}
-
       /* ===== ROW ANIMATIONS ===== */
       tr{transition:background .15s ease, box-shadow .15s !important}
       tbody tr:hover{box-shadow:inset 3px 0 0 ${C.blue}}
       a{transition:color .12s}
-
       /* ===== NOTIFICATION PANEL ===== */
       .pp-notif-panel{animation:notifSlide .3s cubic-bezier(.34,1.56,.64,1) forwards;transform-origin:top right}
-
       /* ===== TAB ANIMATIONS ===== */
       .pp-sub-tabs button,.pp-report-tabs button,.pp-rentals-tabs button{
         transition:color .2s, border-color .25s cubic-bezier(.22,1,.36,1), font-weight .1s, background .15s !important;
       }
-
       /* ===== SIDEBAR ACTIVE GLOW ===== */
       .pp-side-btn.active{position:relative}
       .pp-side-btn.active::before{
@@ -3761,21 +4494,16 @@ export default function App(){
         width:3px;height:20px;border-radius:0 3px 3px 0;background:${C.blue};
         animation:popIn .25s cubic-bezier(.22,1,.36,1) forwards;
       }
-
       /* ===== BADGE POP ===== */
       .pp-side-badge{animation:badgeBounce .35s cubic-bezier(.22,1,.36,1) forwards}
-
       /* ===== PENDING BAR GLOW ===== */
       .pp-pending-bar{animation:glowPulse 2.5s ease-in-out infinite}
-
       /* ===== SLIDE PANELS ===== */
       .slide-panel{animation:slideIn .38s cubic-bezier(.16,1,.3,1) forwards !important}
       .slide-overlay{animation:fadeIn .25s ease forwards}
-
       /* ===== TOGGLE SWITCHES - elastic snap ===== */
       [style*="borderRadius: 11"]{transition:background .25s cubic-bezier(.22,1,.36,1) !important}
       [style*="borderRadius: 11"]>div{transition:left .3s cubic-bezier(.34,1.56,.64,1), right .3s cubic-bezier(.34,1.56,.64,1) !important}
-
       /* ===== METRIC NUMBERS ===== */
       .pp-metrics .pp-card{animation:metricPop .5s cubic-bezier(.22,1,.36,1) both}
       .pp-metrics .pp-card:nth-child(1){animation-delay:.05s}
@@ -3784,24 +4512,19 @@ export default function App(){
       .pp-metrics .pp-card:nth-child(4){animation-delay:.2s}
       .pp-metrics .pp-card:nth-child(5){animation-delay:.25s}
       .pp-metrics .pp-card:nth-child(6){animation-delay:.3s}
-
       .pp-org-stats .pp-card{animation:metricPop .5s cubic-bezier(.22,1,.36,1) both}
       .pp-org-stats .pp-card:nth-child(1){animation-delay:.05s}
       .pp-org-stats .pp-card:nth-child(2){animation-delay:.1s}
       .pp-org-stats .pp-card:nth-child(3){animation-delay:.15s}
       .pp-org-stats .pp-card:nth-child(4){animation-delay:.2s}
-
       /* ===== UTILIZATION BAR FILL ===== */
       [style*="borderRadius: 3"] > div[style*="height: 100%"]{animation:progressFill .8s cubic-bezier(.22,1,.36,1) forwards}
-
       /* ===== SMOOTH THEME TRANSITION ===== */
       .pp-shell,.pp-sidebar,.pp-topbar,.pp-card,.pp-main{transition:background .35s cubic-bezier(.22,1,.36,1),border-color .35s,color .3s}
-
       @media(hover:none){
         .pp-card:hover{transform:none !important;box-shadow:none !important}
         tbody tr:hover{box-shadow:none !important}
       }
-
       /* ===== GLOBAL MOBILE FOUNDATION ===== */
       @media(max-width:768px){
         table{font-size:12px !important}
@@ -3822,7 +4545,6 @@ export default function App(){
         .pp-main [style*="display: flex"][style*="flex-wrap: wrap"],
         .pp-main [style*="display:flex"][style*="flexWrap:wrap"]{flex-direction:column !important}
       }
-
       /* ===== DASHBOARD MOBILE ===== */
       @media(max-width:768px){
         .pp-welcome{padding:16px 18px !important;border-radius:12px !important}
@@ -3862,7 +4584,6 @@ export default function App(){
       }
       @media(min-width:769px) and (max-width:1100px){}
       }
-
       /* ===== RENTALS - DESKTOP ===== */
       .pp-rentals-tabs{overflow-x:auto;-webkit-overflow-scrolling:touch;scrollbar-width:none}
       .pp-rentals-tabs::-webkit-scrollbar{display:none}
@@ -3871,14 +4592,12 @@ export default function App(){
       .pp-calendar-wrap{overflow-x:auto;-webkit-overflow-scrolling:touch;max-width:100%}
       .pp-cal-agenda{display:none}
       .pp-cal-grid{display:block}
-
       /* ===== RENTALS - MOBILE ===== */
       @media(max-width:768px){
         .pp-cal-grid{display:none !important}
         .pp-cal-agenda{display:block !important}
         .pp-calendar-wrap{overflow-x:visible}
         .pp-r-district{display:none !important}
-
         .pp-r-row1{flex-wrap:wrap}
         .pp-r-row1 button{font-size:11px !important;padding:8px 12px !important}
         .pp-r-row2{padding:12px 14px !important;gap:8px !important}
@@ -3890,25 +4609,23 @@ export default function App(){
         .pp-r-pills button{flex-shrink:0;font-size:11px !important;padding:6px 10px !important}
         .pp-amen-pills{overflow-x:auto;-webkit-overflow-scrolling:touch;max-width:calc(100vw - 48px);scrollbar-width:none}
         .pp-amen-pills::-webkit-scrollbar{display:none}
-
         .pp-r-toolbar{flex-direction:column !important;align-items:stretch !important;gap:10px !important}
         .pp-r-filters{width:100%;gap:8px !important}
         .pp-r-filters select{width:auto !important}
         .pp-r-search{width:100% !important;max-width:none !important;flex:none !important}
         .pp-r-search input{width:100% !important;box-sizing:border-box !important}
-
         .pp-loc-desktop{display:none !important}
         .pp-loc-mobile{display:flex !important}
-
         .pp-appr-contact{display:none !important}
         .pp-appr-bk{flex-direction:column !important;align-items:flex-start !important;gap:4px !important}
         .pp-appr-bk-meta{width:100% !important;justify-content:space-between !important}
         .pp-appr-btns{width:100% !important}
         .pp-appr-btns button{flex:1 !important}
       }
-
       @media(max-width:768px){
         .pp-pay-filters{flex-direction:column !important;align-items:stretch !important;gap:8px !important}
+        .pp-renter-row{gap:10px !important}
+        .pp-renter-actions button{font-size:9px !important;padding:4px 8px !important}
         .pp-pay-filters>div{width:100% !important}
         .pp-pay-filters input{width:100% !important;box-sizing:border-box}
       }
@@ -3924,12 +4641,18 @@ export default function App(){
         .pp-report-tabs::-webkit-scrollbar{display:none}
         .pp-report-tabs button{flex-shrink:0 !important;white-space:nowrap}
       }
+      @media(max-width:640px){
+        .pp-promo-modal{
+          position:fixed !important;inset:0 !important;max-width:100% !important;max-height:100% !important;
+          margin:0 !important;border-radius:0 !important;
+          animation:pmSheetMobile .45s cubic-bezier(.16,1,.3,1) both !important;
+        }
+        .pp-promo-handle{display:flex !important}
+      }
     `}</style>
-
     <ApprovalPrompt/>
     <ToastContainer toasts={toasts} removeToast={removeToast}/>
     <CmdPalette open={cmdOpen} onClose={()=>setCmdOpen(false)} onNavigate={(t)=>{switchTab(t);setCmdOpen(false)}}/>
-
     {/* ===== SIDEBAR ===== */}
     <aside className="pp-sidebar">
       <div className="pp-sidebar-head">
@@ -3971,10 +4694,8 @@ export default function App(){
     <div className="pp-sidebar-toggle" onClick={()=>setSideOpen(!sideOpen)}>
       {sideOpen?I.chevL(14,C.g400):I.chevR(14,C.g400)}
     </div>
-
     {/* Mobile overlay */}
     <div className="pp-mobile-overlay" onClick={()=>setMobileNav(false)} style={{position:"fixed",inset:0,background:`rgba(15,23,42,${mobileNav?0.35:0})`,zIndex:100,display:"none"}}/>
-
     {/* ===== CONTENT AREA ===== */}
     <div className="pp-content">
       {/* Top bar */}
@@ -4024,11 +4745,10 @@ export default function App(){
           </div>
         </div>
       </div>
-
       {/* Main content */}
       <main className="pp-main" onClick={()=>{showNotifs&&setShowNotifs(false)}}>
         <div key={pageKey} className="pp-page-enter">
-        <div className="pp-page-header" style={{display:"flex",alignItems:"center",justifyContent:"space-between",marginBottom:24,padding:"14px 20px",borderRadius:R.lg,background:C.cardBg,border:`1px solid ${C.cardBorder}`,boxShadow:C.cardShadow}}>
+        <div className="pp-page-header" style={{display:"flex",alignItems:"center",justifyContent:"space-between",marginBottom:24,padding:"16px 20px",borderRadius:R.lg,background:`linear-gradient(135deg, ${C.cardBg} 0%, ${C.cardBg} 70%, ${C.blueL} 85%, ${C.greenL} 100%)`,border:`1px solid ${C.cardBorder}`,boxShadow:C.cardShadow}}>
           <div className="pp-page-header-left" style={{display:"flex",alignItems:"center",gap:12}}>
             <div className="pp-page-logo" style={{width:36,height:36,borderRadius:10,background:"#1B3A5C",display:"flex",alignItems:"center",justifyContent:"center",flexShrink:0}}>
               <img src={DISTRICT_LOGO} alt="" style={{height:22,width:"auto"}}/>
@@ -4038,13 +4758,13 @@ export default function App(){
               <div style={{fontSize:11,color:C.g400,marginTop:2,fontWeight:500,display:"flex",alignItems:"center",gap:4}}>
                 <span style={{cursor:"pointer",transition:"color .12s"}} onClick={()=>switchTab("Dashboard")} onMouseEnter={e=>e.target.style.color=C.blue} onMouseLeave={e=>e.target.style.color=C.g400}>Home</span>
                 <span style={{color:C.g300}}>›</span>
-                <span style={{color:C.g600,fontWeight:600}}>{tab==="Dashboard"?"District Overview":tab==="Rentals"?"Rentals & Scheduling":tab==="Organization"?"District Settings":tab==="Reporting"?"Reports & Analytics":tab==="Users"?"Team Management":"Payments & Billing"}</span>
+                <span style={{color:C.g600,fontWeight:600}}>{tab==="Dashboard"?"District Overview":tab==="Rentals"?"Rentals & Scheduling":tab==="Organization"?"District Settings":tab==="Reporting"?"Reports & Analytics":tab==="Users"?"Team Management":"Growth Playbook"}</span>
               </div>
             </div>
           </div>
           <div className="pp-page-header-right" style={{display:"flex",alignItems:"center",gap:6}}>
             <span style={{fontSize:10,color:C.g400,fontWeight:500}}>Feb 2026</span>
-            <span style={{width:6,height:6,borderRadius:3,background:C.green}}/>
+            <span className="pp-live-dot" style={{width:6,height:6,borderRadius:3,background:C.green}}/>
             <span style={{fontSize:10,color:C.green,fontWeight:700}}>Live</span>
           </div>
         </div>
@@ -4056,8 +4776,55 @@ export default function App(){
         </div>
       </main>
     </div>
-
     {/* ===== REFERRAL MODAL ===== */}
+    {/* Email Compose Modal (App-level for z-index) */}
+    {emailModal&&<div style={{position:"fixed",inset:0,background:"rgba(15,23,42,0.5)",backdropFilter:"blur(6px)",zIndex:300,display:"flex",alignItems:"center",justifyContent:"center",padding:20}} onClick={()=>setEmailModal(null)}>
+      <div className="pp-email-modal" onClick={e=>e.stopPropagation()} style={{background:C.cardBg,borderRadius:16,boxShadow:`0 24px 80px rgba(0,0,0,${dark?0.5:0.2})`,width:"100%",maxWidth:520,maxHeight:"85vh",display:"flex",flexDirection:"column",overflow:"hidden"}}>
+        {/* Header */}
+        <div style={{padding:"18px 20px 14px",borderBottom:`1px solid ${C.g200}`,flexShrink:0}}>
+          <div style={{display:"flex",justifyContent:"space-between",alignItems:"center"}}>
+            <div style={{display:"flex",alignItems:"center",gap:8}}>
+              <span style={{fontSize:15,fontWeight:800,color:C.g800}}>{emailModal.type==="thanks"?"Say Thanks":emailModal.type==="offer"?"Send Offer":"Invite Back"}</span>
+              <span style={{fontSize:10,fontWeight:600,color:emailModal.type==="invite"?C.orange:emailModal.type==="offer"?C.blue:C.green,background:emailModal.type==="invite"?C.orangeL:emailModal.type==="offer"?C.blueL:C.greenL,padding:"2px 8px",borderRadius:4}}>{emailModal.type==="thanks"?"Thank You":emailModal.type==="offer"?"Seasonal Deal":"Re-engage"}</span>
+            </div>
+            <button onClick={()=>setEmailModal(null)} style={{background:C.g100,border:"none",width:28,height:28,borderRadius:8,cursor:"pointer",display:"flex",alignItems:"center",justifyContent:"center"}}>{I.x(12,C.g500)}</button>
+          </div>
+        </div>
+        {/* Scrollable form */}
+        <div style={{flex:1,overflow:"auto",WebkitOverflowScrolling:"touch",padding:"16px 20px"}}>
+          {/* To */}
+          <div style={{marginBottom:14}}>
+            <label style={{fontSize:9,fontWeight:700,color:C.g400,textTransform:"uppercase",letterSpacing:"0.06em",display:"block",marginBottom:4}}>To</label>
+            <div style={{display:"flex",alignItems:"center",gap:8,padding:"10px 12px",background:C.g50,borderRadius:R.sm,border:`1px solid ${C.cardBorder}`}}>
+              <div style={{width:24,height:24,borderRadius:6,background:C.blue,display:"flex",alignItems:"center",justifyContent:"center",color:"#fff",fontSize:8,fontWeight:800,flexShrink:0}}>{emailModal.org.photo}</div>
+              <div style={{flex:1,minWidth:0}}>
+                <div style={{fontSize:12,fontWeight:600,color:C.g700}}>{emailModal.org.n}</div>
+                <div style={{fontSize:11,color:C.g400}}>{emailModal.email}</div>
+              </div>
+            </div>
+          </div>
+          {/* Subject */}
+          <div style={{marginBottom:14}}>
+            <label style={{fontSize:9,fontWeight:700,color:C.g400,textTransform:"uppercase",letterSpacing:"0.06em",display:"block",marginBottom:4}}>Subject</label>
+            <input value={emailModal.subject} onChange={e=>setEmailModal(m=>({...m,subject:e.target.value}))} style={{width:"100%",padding:"10px 12px",border:`1px solid ${C.cardBorder}`,borderRadius:R.sm,fontSize:16,fontFamily:font,background:C.bg,color:C.g700,boxSizing:"border-box"}}/>
+          </div>
+          {/* Body */}
+          <div style={{marginBottom:14}}>
+            <label style={{fontSize:9,fontWeight:700,color:C.g400,textTransform:"uppercase",letterSpacing:"0.06em",display:"block",marginBottom:4}}>Message</label>
+            <textarea value={emailModal.body} onChange={e=>setEmailModal(m=>({...m,body:e.target.value}))} rows={10} style={{width:"100%",padding:"12px",border:`1px solid ${C.cardBorder}`,borderRadius:R.sm,fontSize:16,fontFamily:font,background:C.bg,color:C.g700,resize:"vertical",boxSizing:"border-box",lineHeight:1.6}}/>
+          </div>
+          {/* Helpful context */}
+          <div style={{padding:"10px 12px",background:`${C.blue}06`,borderRadius:R.sm,border:`1px solid ${C.blue}15`,fontSize:11,color:C.g500,lineHeight:1.5}}>
+            <strong style={{color:C.g700}}>About {emailModal.org.n}:</strong> {emailModal.org.b} bookings, ${emailModal.org.s.toLocaleString()} total spend, favorite facility is {emailModal.org.fav}. {emailModal.org.t==="up"?"Booking frequency is increasing.":emailModal.org.t==="down"?"Booking frequency has been declining.":"Booking frequency is stable."}
+          </div>
+        </div>
+        {/* Footer */}
+        <div style={{padding:"14px 20px",paddingBottom:"max(14px, env(safe-area-inset-bottom, 14px))",borderTop:`1px solid ${C.g200}`,display:"flex",gap:10,flexShrink:0}}>
+          <button onClick={()=>setEmailModal(null)} style={{...btnO,flex:1,display:"flex",justifyContent:"center",padding:"12px 14px"}}>Cancel</button>
+          <button onClick={()=>{const name=emailModal.org.n;setEmailModal(null);if(globalShowToast)globalShowToast({type:"success",title:"Email Sent!",msg:`Your message to ${name} has been delivered`,color:C.green})}} style={{...btnP,flex:2,justifyContent:"center",padding:"12px 14px"}}>{I.mail(14,"#fff")} Send Email</button>
+        </div>
+      </div>
+    </div>}
     {showReferral&&<div style={{position:"fixed",inset:0,background:"rgba(15,23,42,0.5)",backdropFilter:"blur(6px)",zIndex:300,display:"flex",alignItems:"center",justifyContent:"center",padding:20}} onClick={()=>{setShowReferral(false);setReferralSent(false);setReferralEmail("");setReferralName("")}}>
       <div onClick={e=>e.stopPropagation()} style={{background:C.cardBg,borderRadius:16,boxShadow:`0 24px 80px rgba(0,0,0,${dark?0.5:0.2})`,width:"100%",maxWidth:420,overflow:"hidden"}}>
         {!referralSent?<>
@@ -4067,7 +4834,6 @@ export default function App(){
             <div style={{fontSize:20,fontWeight:800,color:"#fff",lineHeight:1.3}}>Know someone who could use PracticePlan?</div>
             <div style={{fontSize:13,color:"rgba(255,255,255,0.85)",marginTop:8,lineHeight:1.5}}>Help a school, church, or city unlock revenue from their unused facilities. We'll reach out on your behalf - they get started free.</div>
           </div>
-
           {/* Form */}
           <div style={{padding:"24px 28px"}}>
             <div style={{marginBottom:14}}>
@@ -4078,7 +4844,6 @@ export default function App(){
               <label style={{fontSize:12,fontWeight:600,color:C.g600,marginBottom:6,display:"block"}}>Their email</label>
               <input type="email" value={referralEmail} onChange={e=>setReferralEmail(e.target.value)} placeholder="admin@theirorganization.org" style={{width:"100%",padding:"11px 14px",border:`1px solid ${C.cardBorder}`,borderRadius:10,fontSize:13,fontFamily:font,background:C.bg,color:C.g700,boxSizing:"border-box",outline:"none",transition:"border-color .15s"}} onFocus={e=>e.target.style.borderColor=C.blue} onBlur={e=>e.target.style.borderColor=C.cardBorder}/>
             </div>
-
             {/* Preview */}
             <div style={{padding:"14px 16px",background:C.g50,borderRadius:10,border:`1px solid ${C.g100}`,marginBottom:20}}>
               <div style={{fontSize:10,fontWeight:700,color:C.g400,textTransform:"uppercase",letterSpacing:"0.06em",marginBottom:8}}>Email preview</div>
@@ -4088,7 +4853,6 @@ export default function App(){
                 <span style={{color:C.blue,fontWeight:600}}>Get started at practiceplan.com →</span>
               </div>
             </div>
-
             <button onClick={()=>{if(referralEmail.includes("@")){setReferralSent(true);if(globalShowToast)globalShowToast({type:"success",title:"Sent!",msg:`Invitation sent to ${referralEmail}`,color:C.green})}}} style={{width:"100%",background:`linear-gradient(135deg, ${C.blue}, ${C.green})`,color:"#fff",border:"none",borderRadius:10,padding:"13px 20px",fontSize:14,fontWeight:700,cursor:"pointer",fontFamily:font,opacity:referralEmail.includes("@")?1:0.4,transition:"opacity .15s"}}>
               Send the Invite
             </button>
@@ -4107,7 +4871,6 @@ export default function App(){
         </>}
       </div>
     </div>}
-
     {/* ===== SUGGEST FEATURE MODAL ===== */}
     {showSuggest&&<div style={{position:"fixed",inset:0,background:"rgba(15,23,42,0.4)",backdropFilter:"blur(4px)",zIndex:300,display:"flex",alignItems:"center",justifyContent:"center",padding:20}} onClick={()=>{setShowSuggest(false);setSuggestText("")}}>
       <div onClick={e=>e.stopPropagation()} style={{background:C.cardBg,borderRadius:R.lg,border:`1px solid ${C.cardBorder}`,boxShadow:`0 20px 60px rgba(0,0,0,${dark?0.4:0.15})`,width:"100%",maxWidth:440,overflow:"hidden"}}>
@@ -4128,7 +4891,6 @@ export default function App(){
         </div>
       </div>
     </div>}
-
     {/* ===== HELP CHAT WIDGET ===== */}
     {helpOpen&&<div className="pp-help-chat" style={{position:"fixed",bottom:80,right:24,width:340,maxHeight:480,background:C.cardBg,borderRadius:16,border:`1px solid ${C.cardBorder}`,boxShadow:`0 16px 48px rgba(0,0,0,${dark?0.35:0.15}), 0 4px 12px rgba(0,0,0,${dark?0.2:0.06})`,zIndex:250,display:"flex",flexDirection:"column",overflow:"hidden"}}>
       <div style={{padding:"14px 18px",background:C.blue,color:"#fff",display:"flex",alignItems:"center",justifyContent:"space-between"}}>
@@ -4154,7 +4916,7 @@ export default function App(){
     <button onClick={()=>setHelpOpen(!helpOpen)} style={{position:"fixed",bottom:24,right:24,width:52,height:52,borderRadius:26,background:helpOpen?C.g600:C.blue,color:"#fff",border:"none",boxShadow:`0 4px 16px rgba(0,0,0,${dark?0.3:0.2})`,cursor:"pointer",display:"flex",alignItems:"center",justifyContent:"center",zIndex:250,transition:"all .2s"}} className="pp-help-fab">
       {helpOpen?I.x(22,"#fff"):<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#fff" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>}
     </button>
-
+    {/* NPS Survey - inline banner, not overlay */}
     {/* App-level panels (outside pp-main for mobile z-index) */}
     {appSelCust!==null&&<CustomerPanel cust={topCustData[appSelCust]} onClose={()=>setAppSelCust(null)}/>}
     {appSelFacility!==null&&<FacilityPanel selFacility={appSelFacility} setSelFacility={setAppSelFacility}/>}
@@ -4205,11 +4967,10 @@ export default function App(){
       </div>
     </SlidePanel>})()}
     <CreateResModal open={showCreateRes} onClose={()=>setShowCreateRes(false)}/>
-
     {/* Mobile bottom nav */}
     <nav className="pp-bottom-nav" style={{position:"fixed",bottom:0,left:0,right:0,background:C.cardBg,borderTop:`1px solid ${C.cardBorder}`,display:"none",zIndex:200,padding:"6px 0 env(safe-area-inset-bottom, 8px)"}}>
       <div style={{display:"flex",justifyContent:"space-around",alignItems:"center"}}>
-        {[["Dashboard",I.home],["Rentals",I.key],["Organization",I.building],["Reporting",I.chart],["Users",I.user],["Promote",I.megaphone]].map(([t,icon])=>{
+        {[["Dashboard",I.home],["Rentals",I.key],["Organization",I.building],["Reporting",I.chart],["Users",I.user],["Playbook",I.megaphone]].map(([t,icon])=>{
           const active=tab===t;
           return <button key={t} onClick={()=>{switchTab(t);setMobileNav(false)}} style={{display:"flex",flexDirection:"column",alignItems:"center",gap:2,background:"none",border:"none",cursor:"pointer",fontFamily:font,padding:"6px 8px",minWidth:0,flex:1,position:"relative"}}>
             {active&&<div style={{position:"absolute",top:-1,width:24,height:3,borderRadius:2,background:C.blue}}/>}
@@ -4219,7 +4980,6 @@ export default function App(){
         })}
       </div>
     </nav>
-
   </div>
   </ThemeCtx.Provider>
 }
