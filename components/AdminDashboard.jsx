@@ -1392,7 +1392,26 @@ function Rentals(){
             <td style={{..._TD(),textAlign:"right"}}><button onClick={()=>globalShowFacility(i)} style={{background:C.blue,color:"#fff",border:"none",borderRadius:R.sm,padding:"5px 12px",fontSize:11,fontWeight:700,cursor:"pointer",fontFamily:font}}>Manage</button></td>
           </tr>)}</tbody>
         </table>
-      </div></Card></>}
+      </div>
+      {/* Mobile card layout */}
+      <div className="pp-loc-mobile" style={{display:"none",flexDirection:"column",gap:10,padding:"12px 14px"}}>
+        {campuses.map((c,i)=><div key={c.id} style={{padding:"14px 16px",background:C.cardBg,borderRadius:R.md,border:`1px solid ${C.cardBorder}`}}>
+          <div style={{display:"flex",justifyContent:"space-between",alignItems:"flex-start",marginBottom:10}}>
+            <div>
+              <div style={{fontSize:14,fontWeight:700,color:C.g700}}>{c.name}</div>
+              <div style={{fontSize:12,color:C.g400,marginTop:2}}>{c.city}, LA</div>
+            </div>
+            <span style={{...statusBadge("completed"),fontSize:10}}><span style={{width:5,height:5,borderRadius:"50%",background:"currentColor"}}/>Published</span>
+          </div>
+          <div style={{display:"flex",gap:10,alignItems:"center",marginBottom:12}}>
+            <span style={{fontSize:12,color:C.blue,fontWeight:700}}>{[3,3,2,2,2][i]} assets</span>
+            <span style={{fontSize:11,color:C.g400}}>$175/hr</span>
+            <span style={{fontSize:11,color:C.g400}}>Updated 02/04/2026</span>
+          </div>
+          <button onClick={()=>globalShowFacility(i)} style={{background:C.blue,color:"#fff",border:"none",borderRadius:R.sm,padding:"8px 16px",fontSize:12,fontWeight:700,cursor:"pointer",fontFamily:font,width:"100%"}}>Manage</button>
+        </div>)}
+      </div>
+      </Card></>}
     </>}
     {/* ============ PROMOTIONS TAB ============ */}
     {subTab==="promotions"&&(()=>{
@@ -4437,7 +4456,9 @@ export default function App(){
         /* Sub-tab scrolling */
         .pp-sub-tabs{overflow-x:auto;-webkit-overflow-scrolling:touch;scrollbar-width:none;position:sticky;top:56px;z-index:10;background:${C.bg};margin:-16px -16px 0;padding:0 16px}
         .pp-sub-tabs::-webkit-scrollbar{display:none}
-        .pp-rentals-tabs{position:sticky;top:56px;z-index:10;background:${C.bg};margin:-16px -16px 0;padding:0 16px;justify-content:center}
+        .pp-rentals-tabs{overflow-x:auto;-webkit-overflow-scrolling:touch;scrollbar-width:none;position:sticky;top:56px;z-index:10;background:${C.bg};margin:-16px -16px 0;padding:0 16px;flex-wrap:nowrap}
+        .pp-rentals-tabs::-webkit-scrollbar{display:none}
+        .pp-rentals-tabs button{white-space:nowrap;flex-shrink:0;padding:10px 14px !important;font-size:12px !important}
         .pp-report-tabs{overflow-x:auto;-webkit-overflow-scrolling:touch;flex-wrap:nowrap !important;scrollbar-width:none;position:sticky;top:56px;z-index:10;background:${C.bg};margin:-16px -16px 0;padding:0 16px}
         .pp-report-tabs::-webkit-scrollbar{display:none}
         .pp-report-tabs button{white-space:nowrap;flex-shrink:0;padding:10px 12px !important;font-size:11px !important}
