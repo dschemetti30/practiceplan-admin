@@ -10,7 +10,10 @@ let C={...lightC};
 const ThemeCtx=createContext({dark:false,toggle:()=>{}});
 const LOGO=`data:image/svg+xml,${encodeURIComponent(`<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 396.37 66.7"><path fill="#f15a29" d="M.72,49.7c-.24-.04-.48-.09-.72-.14.24.05.48.09.72.14Z"/><path fill="#00a84f" stroke="#fff" stroke-miterlimit="10" stroke-width="1.4" d="M38.52,31.97l-18.72-7.88c-1.03-.43-1.86-1.68-1.86-2.8v-8.53c0-1.11.83-1.67,1.86-1.23l20.95,8.82c3.5,1.47,5.25,3.41,5.25,5.34,0,1.93-1.75,3.87-5.25,5.34l-2.23.94Z"/><path fill="#00a84f" stroke="#fff" stroke-miterlimit="10" stroke-width="1.4" d="M29.74,48.22v11.43c0,1.11-.83,2.37-1.86,2.8l-8.08,3.4c-1.03.43-1.86-.12-1.86-1.23v-21.97c0-1.11.83-2.37,1.86-2.8l20.95-8.82c3.5-1.47,5.25-3.41,5.25-5.34v10.81c0,3.03-1.75,5.61-5.25,7.09l-11.01,4.64Z"/><path fill="#0076bb" stroke="#fff" stroke-miterlimit="10" stroke-width="1.4" d="M24.43,21.29L5.71,13.41c-1.03-.43-1.86-1.68-1.86-2.8V2.08c0-1.11.83-1.67,1.86-1.23l20.95,8.82c3.5,1.47,5.25,3.41,5.25,5.34,0,1.93-1.75,3.87-5.25,5.34l-2.23.94Z"/><path fill="#0076bb" stroke="#fff" stroke-miterlimit="10" stroke-width="1.4" d="M15.65,37.54v11.43c0,1.11-.83,2.37-1.86,2.8l-8.08,3.4c-1.03.43-1.86-.12-1.86-1.23v-21.97c0-1.11.83-2.37,1.86-2.8l20.95-8.82c3.5-1.47,5.25-3.41,5.25-5.34v10.81c0,3.03-1.75,5.61-5.25,7.09l-11.01,4.64Z"/><path fill="#0076bb" d="M87.8,38.08h-11.64l-1,5.69h-6.85l2-11.38h19.16c2.39,0,3.86-1.23,3.86-2.96,0-1.3-1.03-2.13-2.96-2.13h-19.16l1.32-5.79h18.24c6.19,0,9.58,2.89,9.58,7.15,0,5.52-4.82,9.41-12.54,9.41Z"/><path fill="#0076bb" d="M130.29,43.77h-9.21l-3.92-5.89h-10.58l-1.03,5.89h-6.88l2-11.38h19.36c2.29,0,4.29-1.1,4.29-2.89,0-1.46-1.26-2.2-3.39-2.2h-19.36l1.33-5.79h18.5c4.66,0,10.18,1.43,10.18,6.75,0,4.02-2.89,7.42-7.18,8.25.63.57,1.33,1.36,2.56,2.93l3.36,4.32Z"/><path fill="#0076bb" d="M138,43.77l5.19-5.72h5.55c1.36,0,2.89,0,3.96.07-.47-.8-1.16-2.16-1.7-3.23l-2.96-5.89-13.04,14.77h-8.15l17.83-20.12c1.16-1.3,2.73-2.49,4.89-2.49s3.23,1.1,3.96,2.49l10.34,20.12h-25.88Z"/><path fill="#0076bb" d="M190.18,38.05l-5.42,5.72h-11.18c-6.95,0-11.57-4.19-11.57-9.81,0-7.32,6.98-12.44,15.5-12.44h15.6l-5.45,5.79h-11.18c-4.09,0-7.55,2.63-7.55,6.15,0,2.76,2.29,4.59,5.65,4.59h15.6Z"/><path fill="#0076bb" d="M216.65,21.52l-1.08,5.79h-8l-2.93,16.46h-6.88l2.89-16.46h-10.44l5.52-5.79h20.93Z"/><path fill="#0076bb" d="M221.18,43.77h-6.88l3.96-22.25h6.85l-3.93,22.25Z"/><path fill="#0076bb" d="M251.47,38.05l-1.64,5.72h-14.05c-6.95,0-11.57-4.19-11.57-9.81,0-7.32,6.98-12.44,15.5-12.44h14.93l-1.83,5.79h-14.14c-4.09,0-7.55,2.63-7.55,6.15,0,2.76,2.29,4.59,5.65,4.59h14.69Z"/><path fill="#0076bb" d="M278.35,38.05l-4.59,5.72h-21.42l3.96-22.25h24.88l-4.62,5.79h-14.4l-.47,2.66h16.73l-3.92,5.06h-13.7l-.53,3.03h18.09Z"/><path fill="#0076bb" d="M298.05,38.08h-11.64l-1,5.69h-6.85l2-11.38h19.16c2.39,0,3.86-1.23,3.86-2.96,0-1.3-1.03-2.13-2.96-2.13h-19.16l4.14-5.79h15.42c6.19,0,9.58,2.89,9.58,7.15,0,5.52-4.82,9.41-12.54,9.41Z"/><path fill="#0076bb" d="M334.61,38.05l-5.49,5.72h-19.66l3.96-22.25h6.85l-2.93,16.53h17.26Z"/><path fill="#0076bb" d="M342.3,43.77l5.19-5.72h5.55c1.36,0,2.89,0,3.96.07-.47-.8-1.16-2.16-1.7-3.23l-2.96-5.89-13.04,14.77h-8.15l17.83-20.12c1.16-1.3,2.73-2.49,4.89-2.49s3.23,1.1,3.96,2.49l10.34,20.12h-25.88Z"/><path fill="#0076bb" d="M386.02,42.94l-11.47-12.24-2.3,13.07h-6.25l3.23-18.46c.5-2.96,2.46-4.16,4.52-4.16.83,0,1.66.2,2.56,1.2l11.47,12.24,2.33-13.07h6.25l-3.29,18.43c-.53,2.96-2.49,4.19-4.49,4.19-.93,0-1.63-.2-2.56-1.2Z"/></svg>`)}`;
 const FAVICON=`data:image/svg+xml,${encodeURIComponent(`<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 116.58 179.72"><path fill="#00a84f" stroke="#fff" stroke-miterlimit="10" stroke-width="1.62" d="M95.35,86.09l-51.05-21.49c-2.8-1.18-5.07-4.59-5.07-7.63v-23.26c0-3.04,2.27-4.54,5.07-3.36l57.14,24.06c9.55,4.02,14.33,9.29,14.33,14.56,0,5.27-4.78,10.54-14.33,14.56l-6.09,2.56Z"/><path fill="#00a84f" stroke="#fff" stroke-miterlimit="10" stroke-width="1.62" d="M71.41,130.43v31.17c0,3.04-2.27,6.45-5.07,7.63l-22.04,9.28c-2.8,1.18-5.07-.33-5.07-3.36v-59.93c0-3.04,2.27-6.45,5.07-7.63l57.14-24.06c9.55-4.02,14.33-9.29,14.33-14.56v29.49c0,8.26-4.78,15.31-14.33,19.33l-30.03,12.64Z"/><path fill="#0077bc" stroke="#fff" stroke-miterlimit="10" stroke-width="1.62" d="M56.93,56.96L5.88,35.47c-2.8-1.18-5.07-4.59-5.07-7.63V4.58C.81,1.54,3.08.03,5.88,1.21l57.14,24.06c9.55,4.02,14.33,9.29,14.33,14.56,0,5.27-4.78,10.54-14.33,14.56l-6.09,2.56Z"/><path fill="#0077bc" stroke="#fff" stroke-miterlimit="10" stroke-width="1.62" d="M32.98,101.3v31.17c0,3.04-2.27,6.45-5.07,7.63l-22.04,9.28c-2.8,1.18-5.07-.33-5.07-3.36v-59.93c0-3.04,2.27-6.45,5.07-7.63l57.14-24.06c9.55-4.02,14.33-9.29,14.33-14.56v29.49c0,8.26-4.78,15.31-14.33,19.33l-30.03,12.64Z"/></svg>`)}`;
-const DISTRICT_LOGO=`data:image/svg+xml,${encodeURIComponent(`<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 170 191"><path fill="#fff" d="M76,31c-.89-1.01-.89-.9-1.05-2.4-.96-8.9.82-19.5.05-28.6h93.5c.11,0,1.5,1.39,1.5,1.5v86c0,.54-1.55,2.22-1,3.5h-31v-34c-54.19,17.28-82.06,80.36-81,134H0v-31h26.5c1.25,0,4.25-17.25,4.99-20.01,13.09-48.88,38.06-82.11,81.51-106.99.82-.47,2.82-.06,3-1.99-11.65.14-23.35-.22-35,0-.67.01-1.33-.02-2,0h-3Z"/><path fill="#fff" d="M169,104v87h-30v-56h-59c3.41-11.28,9.59-21.56,16.5-31h72.5Z"/><path fill="#fff" d="M81,31c11.64-.21,23.35.15,35,0-.17,1.93-2.17,1.52-3,1.99l-32-2Z"/><path fill="#fff" d="M79,31c-.51.01-1.11,2.15-3,0h3Z"/></svg>`)}`;/* ======== ASCENSION PARISH SCHOOL DISTRICT DATA ======== */
+const DISTRICT_LOGO=`data:image/svg+xml,${encodeURIComponent(`<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 170 191"><path fill="#fff" d="M76,31c-.89-1.01-.89-.9-1.05-2.4-.96-8.9.82-19.5.05-28.6h93.5c.11,0,1.5,1.39,1.5,1.5v86c0,.54-1.55,2.22-1,3.5h-31v-34c-54.19,17.28-82.06,80.36-81,134H0v-31h26.5c1.25,0,4.25-17.25,4.99-20.01,13.09-48.88,38.06-82.11,81.51-106.99.82-.47,2.82-.06,3-1.99-11.65.14-23.35-.22-35,0-.67.01-1.33-.02-2,0h-3Z"/><path fill="#fff" d="M169,104v87h-30v-56h-59c3.41-11.28,9.59-21.56,16.5-31h72.5Z"/><path fill="#fff" d="M81,31c11.64-.21,23.35.15,35,0-.17,1.93-2.17,1.52-3,1.99l-32-2Z"/><path fill="#fff" d="M79,31c-.51.01-1.11,2.15-3,0h3Z"/></svg>`)}`;
+const MW_PHOTO="https://res.cloudinary.com/dpj2i1xui/image/upload/v1771873530/Marcus-Williams_q1kx6l.png";
+const PP_FAVICON=`data:image/svg+xml,${encodeURIComponent(`<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 116.58 179.72"><style>.a{fill:#00a84f;stroke:#fff;stroke-miterlimit:10;stroke-width:1.62px}.b{fill:#0077bc;stroke:#fff;stroke-miterlimit:10;stroke-width:1.62px}</style><path class="a" d="M95.35,86.09l-51.05-21.49c-2.8-1.18-5.07-4.59-5.07-7.63v-23.26c0-3.04,2.27-4.54,5.07-3.36l57.14,24.06c9.55,4.02,14.33,9.29,14.33,14.56,0,5.27-4.78,10.54-14.33,14.56l-6.09,2.56Z"/><path class="a" d="M71.41,130.43v31.17c0,3.04-2.27,6.45-5.07,7.63l-22.04,9.28c-2.8,1.18-5.07-.33-5.07-3.36v-59.93c0-3.04,2.27-6.45,5.07-7.63l57.14-24.06c9.55-4.02,14.33-9.29,14.33-14.56v29.49c0,8.26-4.78,15.31-14.33,19.33l-30.03,12.64Z"/><path class="b" d="M56.93,56.96L5.88,35.47c-2.8-1.18-5.07-4.59-5.07-7.63V4.58C.81,1.54,3.08.03,5.88,1.21l57.14,24.06c9.55,4.02,14.33,9.29,14.33,14.56,0,5.27-4.78,10.54-14.33,14.56l-6.09,2.56Z"/><path class="b" d="M32.98,101.3v31.17c0,3.04-2.27,6.45-5.07,7.63l-22.04,9.28c-2.8,1.18-5.07-.33-5.07-3.36v-59.93c0-3.04,2.27-6.45,5.07-7.63l57.14-24.06c9.55-4.02,14.33-9.29,14.33-14.56v29.49c0,8.26-4.78,15.31-14.33,19.33l-30.03,12.64Z"/></svg>`)}`;
+/* ======== ASCENSION PARISH SCHOOL DISTRICT DATA ======== */
 /* Campuses (locations) */
 const campuses=[
   {id:"dths",name:"Dutchtown High School",short:"Dutchtown HS",city:"Geismar"},
@@ -1348,7 +1351,23 @@ function Rentals(){
         <button onClick={()=>{if(globalShowToast)globalShowToast({type:"success",title:"Location Added",msg:"New location configured",color:C.green})}} style={btnP}>+ Add Location</button>
       </div>
       {locView==="map"&&<Card style={{padding:0,overflow:"hidden"}}>
-        <iframe title="District Campuses" src="https://www.google.com/maps/embed/v1/place?key=AIzaSyBFw0Qbyq9zTFTd-tUY6dZWTgaQzuU17R8&q=Ascension+Parish+School+Board,+Donaldsonville+LA&zoom=11" style={{width:"100%",height:340,border:"none",display:"block",filter:dark?"invert(90%) hue-rotate(180deg) brightness(0.95) contrast(0.9)":"none"}} loading="lazy"/>
+        <div style={{position:"relative",width:"100%",height:380,background:dark?"#1a1f2e":"#e8ecf1"}}>
+          <iframe title="District Campuses" src={"https://www.google.com/maps/embed/v1/view?key=AIzaSyBFw0Qbyq9zTFTd-tUY6dZWTgaQzuU17R8&center=30.22,-90.92&zoom=11&maptype=roadmap"} style={{width:"100%",height:"100%",border:"none",display:"block",filter:dark?"invert(90%) hue-rotate(180deg) brightness(0.95) contrast(0.9)":"saturate(0.85) contrast(1.05) brightness(1.02)"}} loading="lazy"/>
+          {/* Campus pin overlays */}
+          {[
+            {name:"Dutchtown HS",x:"62%",y:"22%",color:C.blue},
+            {name:"East Ascension HS",x:"72%",y:"52%",color:C.green},
+            {name:"St. Amant HS",x:"52%",y:"38%",color:"#F59E0B"},
+            {name:"Prairieville HS",x:"38%",y:"28%",color:"#7C3AED"},
+            {name:"Donaldsonville HS",x:"25%",y:"68%",color:C.orange},
+          ].map((pin,i)=><div key={i} style={{position:"absolute",left:pin.x,top:pin.y,transform:"translate(-50%,-100%)",display:"flex",flexDirection:"column",alignItems:"center",zIndex:10,pointerEvents:"auto",cursor:"pointer"}}>
+            <div style={{background:pin.color,borderRadius:8,padding:"4px 10px",boxShadow:"0 2px 8px rgba(0,0,0,0.2)",display:"flex",alignItems:"center",gap:5,whiteSpace:"nowrap",border:"2px solid #fff"}}>
+              <span style={{width:6,height:6,borderRadius:3,background:"#fff",flexShrink:0}}/>
+              <span style={{fontSize:10,fontWeight:700,color:"#fff"}}>{pin.name}</span>
+            </div>
+            <svg width="10" height="6" viewBox="0 0 10 6" style={{marginTop:-1}}><polygon points="0,0 10,0 5,6" fill={pin.color}/></svg>
+          </div>)}
+        </div>
         <div style={{padding:"14px 18px",borderTop:`1px solid ${C.cardBorder}`,display:"flex",gap:8,flexWrap:"wrap"}}>
           {campuses.map((c,i)=><div key={c.id} style={{display:"flex",alignItems:"center",gap:8,padding:"8px 12px",background:C.g50,borderRadius:8,border:`1px solid ${C.cardBorder}`,flex:"1 1 200px"}}>
             <div style={{width:8,height:8,borderRadius:4,background:[C.blue,C.green,"#F59E0B","#7C3AED",C.orange][i],flexShrink:0}}/>
@@ -1402,13 +1421,13 @@ function Rentals(){
           <div style={{fontSize:12,color:C.g500,lineHeight:1.5,marginBottom:14}}>Start from a template to create common promotion types. Each can be customized after creation.</div>
           <div style={{display:"grid",gridTemplateColumns:"repeat(auto-fill,minmax(160px,1fr))",gap:8}}>
             {[
-              {label:"Partner Loyalty",desc:"Reward repeat bookers",icon:"\u2B50",pct:"10%",bg:`linear-gradient(135deg,${C.blue}10,${C.green}10)`,border:`${C.green}30`,tpl:"loyalty"},
-              {label:"Seasonal Deal",desc:"Fill slow periods",icon:"\u2744\uFE0F",pct:"15-20%",bg:`linear-gradient(135deg,${C.blue}10,${C.blue}05)`,border:`${C.blue}30`,tpl:"seasonal"},
-              {label:"Re-engagement",desc:"Win back lapsed orgs",icon:"\u{1F504}",pct:"20%",bg:`linear-gradient(135deg,${C.amber}08,${C.orange}08)`,border:`${C.amber}30`,tpl:"reengage"},
-              {label:"First-Time",desc:"New org welcome",icon:"\u{1F44B}",pct:"25%",bg:`linear-gradient(135deg,${C.green}08,${C.green}05)`,border:`${C.green}30`,tpl:"firsttime"},
+              {label:"Partner Loyalty",desc:"Reward repeat bookers",icon:I.star(18,C.green),pct:"10%",bg:`linear-gradient(135deg,${C.blue}10,${C.green}10)`,border:`${C.green}30`,tpl:"loyalty"},
+              {label:"Seasonal Deal",desc:"Fill slow periods",icon:I.calendar(18,C.blue),pct:"15-20%",bg:`linear-gradient(135deg,${C.blue}10,${C.blue}05)`,border:`${C.blue}30`,tpl:"seasonal"},
+              {label:"Re-engagement",desc:"Win back lapsed orgs",icon:I.sync(18,C.amber),pct:"20%",bg:`linear-gradient(135deg,${C.amber}08,${C.orange}08)`,border:`${C.amber}30`,tpl:"reengage"},
+              {label:"First-Time",desc:"New org welcome",icon:I.hand(18,C.green),pct:"25%",bg:`linear-gradient(135deg,${C.green}08,${C.green}05)`,border:`${C.green}30`,tpl:"firsttime"},
             ].map((t,i)=><button key={i} onClick={()=>openPromoFromTemplate(t.tpl)} style={{padding:"16px 14px",background:t.bg,border:`1px solid ${t.border}`,borderRadius:R.sm,cursor:"pointer",fontFamily:font,textAlign:"left",transition:"all .12s"}} onMouseEnter={e=>e.currentTarget.style.transform="translateY(-1px)"} onMouseLeave={e=>e.currentTarget.style.transform="none"}>
               <div style={{display:"flex",alignItems:"center",justifyContent:"space-between",marginBottom:6}}>
-                <span style={{fontSize:18}}>{t.icon}</span>
+                <span>{t.icon}</span>
                 <span style={{fontSize:10,fontWeight:700,color:C.g400,background:C.g100,padding:"2px 6px",borderRadius:3}}>{t.pct}</span>
               </div>
               <div style={{fontSize:12,fontWeight:700,color:C.g800}}>{t.label}</div>
@@ -1580,7 +1599,7 @@ function Rentals(){
         </div>
         {/* Empty state for filtered views */}
         {(()=>{const totalVisible=Object.values(calEvents).flat().filter(e=>filterEvts([e]).length>0).length;return totalVisible===0?<div style={{padding:"40px 20px",textAlign:"center",color:C.g400}}>
-          <div style={{fontSize:32,marginBottom:8}}>📅</div>
+          <div style={{display:"flex",alignItems:"center",justifyContent:"center",width:48,height:48,borderRadius:12,background:C.blueL,margin:"0 auto 8px"}}>{I.calendar(24,C.blue)}</div>
           <div style={{fontSize:14,fontWeight:600,color:C.g600}}>No events found</div>
           <div style={{fontSize:12,marginTop:4}}>No {srcFilt==="pp"?"PracticePlan bookings":srcFilt==="synced"?"synced events":"events"} match the current filters{campusFilt!=="all"?` for ${campusFilt}`:""}{facilityFilt!=="all"?` at ${facilityFull[facilityFilt]||facilityFilt}`:""}.</div>
         </div>:null})()}
@@ -2041,7 +2060,7 @@ function Org(){
           <iframe
             title="District Location"
             src={"https://www.google.com/maps/embed/v1/place?key=AIzaSyBFw0Qbyq9zTFTd-tUY6dZWTgaQzuU17R8&q=1100+Webster+St,+Donaldsonville,+LA+70346&zoom=13"+(dark?"&maptype=roadmap":"&maptype=roadmap")}
-            style={{width:"100%",height:"100%",minHeight:260,border:"none",display:"block",filter:dark?"invert(90%) hue-rotate(180deg) brightness(0.95) contrast(0.9)":"none"}}
+            style={{width:"100%",height:"100%",minHeight:260,border:"none",display:"block",filter:dark?"invert(90%) hue-rotate(180deg) brightness(0.95) contrast(0.9)":"saturate(0.85) contrast(1.05) brightness(1.02)"}}
             loading="lazy"
             referrerPolicy="no-referrer-when-downgrade"
           />
@@ -2079,7 +2098,7 @@ function Org(){
       <div style={{display:"flex",gap:20,flexWrap:"wrap"}}>
         <Card style={{flex:1}}><Sec icon={I.bell(13,C.g500)}>Notification Preferences</Sec>
         <div style={{padding:'12px 14px',background:`linear-gradient(135deg, ${C.blueL}, ${C.greenL})`,borderRadius:R.md,marginBottom:14,display:'flex',alignItems:'center',gap:12}}>
-          <span style={{fontSize:22}}>📱</span>
+          <div style={{width:36,height:36,borderRadius:9,background:"rgba(255,255,255,0.5)",display:"flex",alignItems:"center",justifyContent:"center"}}>{I.phone(18,C.blue)}</div>
           <div style={{flex:1}}><div style={{fontSize:12,fontWeight:700,color:C.g700}}>Push Notifications</div><div style={{fontSize:11,color:C.g500}}>Get instant approval requests on your phone. Approve or deny without opening the app.</div></div>
           <span style={{fontSize:9,fontWeight:700,color:C.green,background:C.greenL,padding:'3px 8px',borderRadius:4}}>ENABLED</span>
         </div>
@@ -3563,7 +3582,7 @@ function Promote(){
           {quickReplies.map(function(qr,i){var isOpen=previewQR===i;return <div key={i} style={{borderRadius:R.sm,border:"1px solid "+(isOpen?C.blue+"40":C.cardBorder),overflow:"hidden",transition:"all .15s"}}>
             <div style={{display:"flex",alignItems:"center",justifyContent:"space-between",padding:"11px 14px",background:isOpen?C.blueL:C.g50,cursor:"pointer",transition:"all .12s"}} onClick={function(){setPreviewQR(isOpen?null:i)}}>
               <div style={{display:"flex",alignItems:"center",gap:10}}>
-                <span style={{fontSize:16}}>{["\u2753","\u274C","\u{1F4C5}","\u{1F6E1}","\u{1F4B0}"][i]}</span>
+                <span style={{display:"flex",alignItems:"center",justifyContent:"center",width:28,height:28,borderRadius:7,background:[C.blueL,C.redL,C.greenL,C.amberL,C.purpleL][i],flexShrink:0}}>{[I.search(14,C.blue),I.calendar(14,C.red),I.calendar(14,C.green),I.shield(14,C.amber),I.tag(14,C.purple)][i]}</span>
                 <span style={{fontSize:12,fontWeight:600,color:C.g700}}>{qr.label}</span>
               </div>
               <span style={{fontSize:10,color:isOpen?C.blue:C.g400,fontWeight:600,display:"flex",alignItems:"center",gap:4}}>{isOpen?"Hide":"Preview"} <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke={isOpen?C.blue:C.g400} strokeWidth="2.5" strokeLinecap="round" style={{transition:"transform .2s",transform:isOpen?"rotate(180deg)":"rotate(0)"}}><path d="M6 9l6 6 6-6"/></svg></span>
@@ -3640,8 +3659,8 @@ function Promote(){
           <button onClick={function(){setShowShare(true)}} style={Object.assign({},btnP,{padding:"10px 14px",flexShrink:0,fontSize:12})}>{I.share(12,"#fff")} Share</button>
         </div>
         <div style={{display:"grid",gridTemplateColumns:"repeat(auto-fill,minmax(140px,1fr))",gap:8}}>
-          {[{label:"Social Media",icon:"\u{1F4F1}",desc:"Facebook, X, Nextdoor"},{label:"Email Blast",icon:"\u2709\uFE0F",desc:"Local orgs and leagues"},{label:"District Website",icon:"\u{1F517}",desc:"Embed or link"},{label:"QR Code",icon:"\u{1F4F7}",desc:"Print for entrances"}].map(function(a,i){return <button key={i} onClick={function(){if(i===3&&globalShowToast)globalShowToast({type:"success",title:"Downloaded",msg:"QR code saved",color:C.green});else setShowShare(true)}} style={{padding:"14px 10px",background:C.g50,border:"1px solid "+C.cardBorder,borderRadius:R.sm,cursor:"pointer",fontFamily:font,textAlign:"center",transition:"all .12s"}} onMouseEnter={function(e){e.currentTarget.style.borderColor=C.blue}} onMouseLeave={function(e){e.currentTarget.style.borderColor=C.cardBorder}}>
-            <div style={{fontSize:20,marginBottom:4}}>{a.icon}</div>
+          {[{label:"Social Media",icon:I.share(16,C.blue),desc:"Facebook, X, Nextdoor"},{label:"Email Blast",icon:I.mail(16,C.blue),desc:"Local orgs and leagues"},{label:"District Website",icon:I.link(16,C.blue),desc:"Embed or link"},{label:"QR Code",icon:I.grid(16,C.blue),desc:"Print for entrances"}].map(function(a,i){return <button key={i} onClick={function(){if(i===3&&globalShowToast)globalShowToast({type:"success",title:"Downloaded",msg:"QR code saved",color:C.green});else setShowShare(true)}} style={{padding:"14px 10px",background:C.g50,border:"1px solid "+C.cardBorder,borderRadius:R.sm,cursor:"pointer",fontFamily:font,textAlign:"center",transition:"all .12s"}} onMouseEnter={function(e){e.currentTarget.style.borderColor=C.blue}} onMouseLeave={function(e){e.currentTarget.style.borderColor=C.cardBorder}}>
+            <div style={{display:"flex",alignItems:"center",justifyContent:"center",width:36,height:36,borderRadius:8,background:C.blueL,marginBottom:4,margin:"0 auto 4px"}}>{a.icon}</div>
             <div style={{fontSize:11,fontWeight:600,color:C.g700}}>{a.label}</div>
             <div style={{fontSize:9,color:C.g400,marginTop:2}}>{a.desc}</div>
           </button>})}
@@ -4231,6 +4250,8 @@ export default function App(){
   globalRequireSiteAdmin=requireSiteAdmin;globalSetRequireSiteAdmin=setRequireSiteAdmin;globalAssignedAdmins=assignedAdmins;globalSetAssignedAdmins=setAssignedAdmins;
   globalNotifs=notifs;
   globalNpsState=npsState;globalSetNpsState=setNpsState;globalNpsScore=npsScore;globalSetNpsScore=setNpsScore;globalNpsFeedback=npsFeedback;globalSetNpsFeedback=setNpsFeedback;
+  /* Set favicon */
+  useEffect(()=>{let link=document.querySelector("link[rel='icon']");if(!link){link=document.createElement("link");link.rel="icon";document.head.appendChild(link)}link.href=PP_FAVICON},[]);
   /* Cmd+K listener */
   useEffect(()=>{
     const handler=(e)=>{if((e.metaKey||e.ctrlKey)&&e.key==="k"){e.preventDefault();setCmdOpen(o=>!o)}};
@@ -4272,7 +4293,7 @@ export default function App(){
     <style>{`
       *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
       .pp-num{font-family:'DM Sans','Montserrat',sans-serif;font-variant-numeric:tabular-nums}
-      .pp-shell td{font-family:'DM Sans','Montserrat',sans-serif;font-variant-numeric:tabular-nums}
+      .pp-shell td{font-family:'Montserrat',sans-serif}
       .pp-shell .pp-met{font-variant-numeric:tabular-nums}
       .pp-shell .pp-card [style*="fontWeight"]{font-variant-numeric:tabular-nums}
       .pp-shell{font-variant-numeric:tabular-nums}
@@ -4754,7 +4775,7 @@ export default function App(){
           </button>
         </div>
         <div className="pp-side-user">
-          <div style={{width:32,height:32,borderRadius:10,background:`linear-gradient(135deg,${C.blue},${C.green})`,display:"flex",alignItems:"center",justifyContent:"center",color:"#fff",fontWeight:800,fontSize:12,flexShrink:0}}>MW</div>
+          <img src={MW_PHOTO} alt="MW" style={{width:32,height:32,borderRadius:10,objectFit:"cover",flexShrink:0}}/>
           {sideOpen&&<div style={{minWidth:0,overflow:"hidden"}}><div style={{fontSize:12,fontWeight:700,color:C.g700,whiteSpace:"nowrap",overflow:"hidden",textOverflow:"ellipsis"}}>Marcus Williams</div><div style={{fontSize:11,color:C.g400}}>District Admin</div></div>}
         </div>
       </div>
