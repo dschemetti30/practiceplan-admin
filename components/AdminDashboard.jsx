@@ -969,8 +969,7 @@ function Dashboard(){
               {/* Hour grid lines */}
               {[6,8,10,12,14,16,18,20,22].map((h,i)=><div key={h} style={{position:"absolute",left:`${((h-6)/16)*100}%`,top:0,bottom:0,width:1,background:C.g200}}/>)}
               {/* Now indicator */}
-              <div style={{position:"absolute",left:`${((9-6)/16)*100}%`,top:0,bottom:0,width:2,background:C.red,borderRadius:1,zIndex:2}}>
-                <div style={{position:"absolute",top:-3,left:-3,width:8,height:8,borderRadius:4,background:C.red}}/>
+              <div style={{position:"absolute",left:`${((9-6)/16)*100}%`,top:0,bottom:0,width:2,background:C.blue,borderRadius:1,zIndex:2}}>
               </div>
               {/* Events */}
               {row.events.map((ev,ei)=>{
@@ -996,11 +995,11 @@ function Dashboard(){
       <Met label="Util. Rate" value="52%" change="+9%" dir="up" sub="all assets"/>
       <Met label="Customers" value="23" change="+5" dir="up" sub="trailing 90 days"/>
     </div>
-    {/* ─── AI Insights ─── */}
+    {/* --- AI Insights --- */}
     <Card>
       <AIInsights/>
     </Card>
-    {/* ─── SECTION: Revenue ─── */}
+    {/* --- SECTION: Revenue --- */}
     <Div>Revenue</Div>
     {/* Revenue Trend - full width */}
     <Card><Sec action={<div style={{display:"flex",gap:6,alignItems:"center"}}><div style={{display:"flex",gap:0,border:`1px solid ${C.cardBorder}`,borderRadius:R.sm,overflow:"hidden"}}>{[["6m","6 Mo"],["ytd","YTD"],["1y","1 Year"]].map(([k,l])=><button key={k} onClick={()=>setRevPeriod(k)} style={{padding:"4px 10px",fontSize:10,fontWeight:revPeriod===k?700:500,background:revPeriod===k?C.blue:C.cardBg,color:revPeriod===k?"#fff":C.g400,border:"none",cursor:"pointer",fontFamily:font,transition:"all .12s"}}>{l}</button>)}</div>{selMonth&&<button onClick={()=>setSelMonth(null)} style={{...btnO,fontSize:10,padding:"3px 10px",color:C.blue,borderColor:`${C.blue}30`}}>Clear x</button>}</div>} icon={I.chart(13,C.g500)}>Revenue Trend {selMonth&&<span style={{fontSize:12,fontWeight:500,color:C.blue}}>- {selMonth}</span>}</Sec><ResponsiveContainer width="100%" height={220}><AreaChart data={revPeriod==="6m"?monthlyRev.slice(-6):revPeriod==="1y"?monthlyRev:monthlyRev} onClick={(e)=>{if(e&&e.activeLabel)setSelMonth(prev=>prev===e.activeLabel?null:e.activeLabel)}}><defs><linearGradient id="gr" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stopColor={C.blue} stopOpacity={.15}/><stop offset="100%" stopColor={C.blue} stopOpacity={.01}/></linearGradient></defs><CartesianGrid strokeDasharray="3 3" stroke={C.g200} vertical={false}/><XAxis dataKey="m" axisLine={false} tickLine={false} tick={{fontSize:11,fill:C.g400,fontFamily:font}}/><YAxis axisLine={false} tickLine={false} tick={{fontSize:11,fill:C.g400,fontFamily:font}} tickFormatter={v=>"$"+(v/1000).toFixed(1)+"k"}/><Tooltip content={<Tip/>}/><Area type="monotone" dataKey="r" name="Revenue" stroke={C.blue} strokeWidth={2} fill="url(#gr)" dot={(props)=>{const {cx,cy,payload,index}=props;return (<circle key={index} cx={cx} cy={cy} r={selMonth===payload.m?6:3} fill={C.blue} stroke={selMonth===payload.m?"#fff":C.cardBg} strokeWidth={selMonth===payload.m?3:2} style={{cursor:"pointer",transition:"r .2s"}}/>)}} activeDot={{r:5,stroke:C.blue,strokeWidth:2,fill:C.cardBg}}/></AreaChart></ResponsiveContainer>
@@ -3457,304 +3456,450 @@ function Users(){
 /* ======== PROMOTE / GROWTH TOOLS ======== */
 /* ======== GROWTH - FACILITY INTELLIGENCE HUB ======== */
 function Promote(){
-  const [showShare,setShowShare]=useState(false);
-  const [copied,setCopied]=useState(false);
-  const [showAllPartners,setShowAllPartners]=useState(false);
-  const [gTab,setGTab]=useState(0);
-  const ppUrl="https://practiceplan.rentals/ascension-parish";
-  const doCopy=()=>{setCopied(true);setTimeout(()=>setCopied(false),2000);if(globalShowToast)globalShowToast({type:"success",title:"Link Copied",msg:"Booking URL copied to clipboard",color:C.green})};
-  const openEmail=(type,org)=>{
-    const ppLink="https://practiceplan.rentals/ascension-parish";
-    const templates={
-      thanks:{subject:`Thank you from Ascension Parish - ${org.n}`,body:`Hi ${org.n.split(" ")[0]} team,\n\nJust wanted to reach out and say thanks for being one of our most valued facility partners. With ${org.b} bookings and counting, your organization has been a big part of making our rental program a success.\n\nWe appreciate your commitment and want to make sure you always have a great experience. If there's anything we can do to improve - different time slots, equipment, or facility requests - please don't hesitate to let us know.\n\nLooking forward to seeing you again soon!\n\nBest,\nMarcus Williams\nAscension Parish School Board`},
-      offer:{subject:`Exclusive offer for ${org.n} - Ascension Parish Facilities`,body:`Hi ${org.n.split(" ")[0]} team,\n\nAs one of our top organizations, we'd like to offer you a special seasonal rate for the upcoming quarter.\n\nHere's what we're thinking:\n- 10% off bookings of 4+ hours\n- Priority scheduling for your preferred time slots\n- Locked-in rates through June 2026\n\nThis is our way of saying thanks for being a consistent partner. If you're interested, just reply to this email or book directly at ${ppLink}.\n\nBest,\nMarcus Williams\nAscension Parish School Board`},
-      invite:{subject:`We miss you, ${org.n}! Come back to Ascension Parish facilities`,body:`Hi ${org.n.split(" ")[0]} team,\n\nIt's been a while since your last booking with us and we wanted to check in. We've made some improvements to our facilities and would love to have you back.\n\nTo make it easy, we're offering:\n- 15% off your next booking\n- Flexible cancellation on your first reservation back\n- New online booking at ${ppLink}\n\nWhether it's practice, games, or events - our gyms, fields, and stadiums are ready for your team.\n\nHope to see you soon!\n\nMarcus Williams\nAscension Parish School Board`}
+  var [gTab,setGTab]=useState(-1);
+  var [expandedPartner,setExpandedPartner]=useState(null);
+  var [showAllPartners,setShowAllPartners]=useState(false);
+  var [showShare,setShowShare]=useState(false);
+  var [briefingOpen,setBriefingOpen]=useState(true);
+  var [copied,setCopied]=useState(false);
+  var [winMonth,setWinMonth]=useState("Feb 2026");
+  var [previewQR,setPreviewQR]=useState(null);
+  var [previewTpl,setPreviewTpl]=useState(null);
+  useEffect(function(){if(gTab>=0)window.scrollTo(0,0)},[gTab]);
+  var ppUrl="https://practiceplan.rentals/ascension-parish";
+  var doCopy=function(){setCopied(true);setTimeout(function(){setCopied(false)},2000);if(globalShowToast)globalShowToast({type:"success",title:"Link Copied",msg:"Booking URL copied to clipboard",color:C.green})};
+  var openEmail=function(type,org){
+    var ppLink="https://practiceplan.rentals/ascension-parish";
+    var templates={
+      thanks:{subject:"Thank you from Ascension Parish - "+org.n,body:"Hi "+org.n.split(" ")[0]+" team,\n\nJust wanted to reach out and say thanks for being one of our most valued facility partners. With "+org.b+" bookings and counting, your organization has been a big part of making our rental program a success.\n\nWe appreciate your commitment and want to make sure you always have a great experience. If there's anything we can do to improve - different time slots, equipment, or facility requests - please don't hesitate to let us know.\n\nLooking forward to seeing you again soon!\n\nBest,\nMarcus Williams\nAscension Parish School Board"},
+      offer:{subject:"Exclusive offer for "+org.n+" - Ascension Parish Facilities",body:"Hi "+org.n.split(" ")[0]+" team,\n\nAs one of our top organizations, we'd like to offer you a special seasonal rate for the upcoming quarter.\n\nHere's what we're thinking:\n- 10% off bookings of 4+ hours\n- Priority scheduling for your preferred time slots\n- Locked-in rates through June 2026\n\nThis is our way of saying thanks for being a consistent partner. If you're interested, just reply to this email or book directly at "+ppLink+".\n\nBest,\nMarcus Williams\nAscension Parish School Board"},
+      invite:{subject:"We miss you, "+org.n+"! Come back to Ascension Parish facilities",body:"Hi "+org.n.split(" ")[0]+" team,\n\nIt's been a while since your last booking with us and we wanted to check in. We've made some improvements to our facilities and would love to have you back.\n\nTo make it easy, we're offering:\n- 15% off your next booking\n- Flexible cancellation on your first reservation back\n- New online booking at "+ppLink+"\n\nWhether it's practice, games, or events - our gyms, fields, and stadiums are ready for your team.\n\nHope to see you soon!\n\nMarcus Williams\nAscension Parish School Board"},
+      followup:{subject:"Following up - "+org.n+" booking inquiry",body:"Hi "+org.n.split(" ")[0]+" team,\n\nJust wanted to follow up on your recent inquiry about facility availability. We'd love to get you scheduled.\n\nYou can view real-time availability and submit a request at "+ppLink+".\n\nLet me know if you have any questions or need help finding the right space for your group.\n\nBest,\nMarcus Williams\nAscension Parish School Board"}
     };
-    const t=templates[type];
-    globalSetEmailModal({type,org,email:org.email,subject:t.subject,body:t.body});
+    var t=templates[type];
+    globalSetEmailModal({type:type,org:org,email:org.email,subject:t.subject,body:t.body});
   };
-  const facs=[
+  var facs=[
     {name:"Dutchtown Gymnasium",campus:"Dutchtown HS",bk:22,cap:32,rev:7700,trend:"up",peak:"Thu",gaps:["Tue AM","Wed PM","Fri AM"]},
     {name:"Prairieville Athletic Complex",campus:"Prairieville HS",bk:16,cap:28,rev:6080,trend:"up",peak:"Sat",gaps:["Mon PM","Tue PM","Thu AM"]},
     {name:"St. Amant Gymnasium",campus:"St. Amant HS",bk:10,cap:28,rev:3250,trend:"stable",peak:"Wed",gaps:["Mon AM","Tue AM","Thu PM","Fri PM","Sat AM"]},
     {name:"East Ascension Gymnasium",campus:"East Ascension HS",bk:8,cap:28,rev:3200,trend:"down",peak:"Mon",gaps:["Tue PM","Wed AM","Wed PM","Thu AM","Fri AM","Sat PM"]},
     {name:"Gator Stadium",campus:"St. Amant HS",bk:4,cap:20,rev:1580,trend:"down",peak:"Sat",gaps:["Most weekday slots"]},
   ];
-  const totalBk=topCustData.reduce((s,c)=>s+c.b,0);
-  const totalRev=topCustData.reduce((s,c)=>s+c.s,0);
-  const activeOrgs=topCustData.filter(c=>c.t!=="down").length;
-  const lapsedOrgs=topCustData.filter(c=>{const d=c.hist[0];return d?Math.floor((new Date("2026-02-21")-new Date(d.date.replace(/(\d+)\/(\d+)\/(\d+)/,"$3-$1-$2")))/(864e5))>30:true}).length;
-  const util=Math.round(facs.reduce((s,f)=>s+f.bk,0)/facs.reduce((s,f)=>s+f.cap,0)*100);
-  const totalGaps=facs.reduce((s,f)=>s+f.gaps.length,0);
-  const gTabs=["Overview","Partners","Facilities","Outreach"];
+  var totalRev=topCustData.reduce(function(s,c){return s+c.s},0);
+  var activeOrgs=topCustData.filter(function(c){return c.t!=="down"}).length;
+  var lapsedOrgs=topCustData.filter(function(c){var d=c.hist[0];return d?Math.floor((new Date("2026-02-21")-new Date(d.date.replace(/(\d+)\/(\d+)\/(\d+)/,"$3-$1-$2")))/(864e5))>30:true}).length;
+  var util=Math.round(facs.reduce(function(s,f){return s+f.bk},0)/facs.reduce(function(s,f){return s+f.cap},0)*100);
+  var totalGaps=facs.reduce(function(s,f){return s+f.gaps.length},0);
+  var lastMonthRev=Math.round(totalRev*0.34);
+  var thisMonthRev=Math.round(totalRev*0.38);
+  var revChange=Math.round((thisMonthRev-lastMonthRev)/lastMonthRev*100);
+  var partnerContacts=[
+    {org:"Bayou City Volleyball",contact:"Sarah Mitchell",title:"Club Director",email:"sarah@bayoucityvb.com",phone:"(225) 555-0142",lastEmail:"Feb 12",nextBook:"Feb 28"},
+    {org:"Gonzales FC",contact:"Luis Ramirez",title:"League President",email:"luis@gonzalesfc.org",phone:"(225) 555-0198",lastEmail:"Feb 5",nextBook:"Mar 3"},
+    {org:"Ascension Elite Cheer",contact:"Brittany Fontenot",title:"Owner/Coach",email:"brittany@ascensioncheer.com",phone:"(225) 555-0231",lastEmail:"Jan 28",nextBook:"Feb 25"},
+    {org:"River Parish Runners",contact:"James Hebert",title:"Club President",email:"james@rivparish.run",phone:"(225) 555-0177",lastEmail:"Jan 15",nextBook:null},
+    {org:"Louisiana Tigers AAU",contact:"DeShawn Brooks",title:"Program Director",email:"deshawn@latigersaau.com",phone:"(225) 555-0264",lastEmail:"Feb 18",nextBook:"Mar 1"},
+  ];
+  /* Quick reply templates */
+  var quickReplies=[
+    {label:"How do I book?",reply:"Great question! You can browse availability and submit a booking request at "+ppUrl+". Just select your preferred facility, date, and time - and we'll confirm within 24 hours."},
+    {label:"Cancellation policy",reply:"We ask for at least 48 hours notice for cancellations. If you need to reschedule, just reply to your confirmation email or submit a new request through our booking page and we'll get you sorted."},
+    {label:"Saturday availability",reply:"Weekend slots are popular! You can check real-time Saturday availability at "+ppUrl+". I'd recommend booking at least a week ahead to secure your preferred time."},
+    {label:"Insurance requirements",reply:"We require a current Certificate of Insurance (COI) naming Ascension Parish School Board as additionally insured. You can upload it directly through PracticePlan when you submit your booking request."},
+    {label:"Pricing info",reply:"Our standard rate is $175/hour for gymnasium use and rates vary by facility. Volume discounts are available for organizations booking 4+ hours per week. Full rate details are on our booking page."},
+  ];
+  var tabs=["Outreach","Partners","Win Report","Benchmarking"];
+  /* ===== MY WEEK BRIEFING (always visible at top) ===== */
+  var briefingItems=[
+    {type:"urgent",icon:I.alert(13,"#fff"),bg:C.red,title:"Gonzales FC insurance expires in 9 days",desc:"Their COI expires Mar 4. Send a reminder now to avoid a gap in coverage.",act:"Send Reminder",fn:function(){openEmail("followup",topCustData[1])}},
+    {type:"action",icon:I.calendar(13,"#fff"),bg:C.amber,title:"3 bookings tomorrow need site admin confirmation",desc:"Dutchtown Gym (2) and Prairieville Athletic Complex (1) - all evening slots.",act:"Review",fn:function(){globalSetTab("Rentals");setTimeout(function(){if(globalSetRentalsTab)globalSetRentalsTab("approvals")},100)}},
+    {type:"opportunity",icon:I.star(13,"#fff"),bg:C.blue,title:"East Ascension Gym has 6 open slots this week",desc:"Tue PM, Wed AM/PM, Thu AM, Fri AM, Sat PM. Draft an email to fill them?",act:"Draft Email",fn:function(){var ea=topCustData.find(function(c){return c.n.includes("Ascension")})||topCustData[2];openEmail("offer",ea)}},
+    lapsedOrgs>0?{type:"followup",icon:I.users(13,"#fff"),bg:C.green,title:lapsedOrgs+" partner"+(lapsedOrgs>1?"s haven't":" hasn't")+" booked in 30+ days",desc:"A quick check-in can prevent churn. Re-engagement emails get a 23% response rate.",act:"View Partners",fn:function(){setGTab(1)}}:null,
+  ].filter(Boolean);
   return <div style={{display:"flex",flexDirection:"column",gap:16}}>
-    <div style={{display:"flex",gap:0,borderBottom:`2px solid ${C.g200}`,overflow:"auto",WebkitOverflowScrolling:"touch"}}>
-      {gTabs.map((t,i)=><button key={t} onClick={()=>setGTab(i)} style={{padding:"10px 20px",fontSize:13,fontWeight:gTab===i?700:500,color:gTab===i?C.blue:C.g500,background:"none",border:"none",borderBottom:gTab===i?`2px solid ${C.blue}`:"2px solid transparent",marginBottom:-2,cursor:"pointer",fontFamily:font,whiteSpace:"nowrap",transition:"all .15s"}}>{t}</button>)}
-    </div>
-    {/* ===== OVERVIEW ===== */}
-    {gTab===0&&<>
-      <div style={{display:"grid",gridTemplateColumns:"repeat(auto-fit,minmax(140px,1fr))",gap:10}}>
-        {[
-          {label:"Facility Utilization",val:`${util}%`,sub:"across all campuses",clr:util>=60?C.green:util>=40?C.amber:C.red},
-          {label:"Active Partners",val:`${activeOrgs}`,sub:`of ${topCustData.length} organizations`,clr:C.green},
-          {label:"Monthly Revenue",val:`$${Math.round(totalRev*0.38).toLocaleString()}`,sub:"pace this month",clr:C.blue},
-          {label:"Open Gaps",val:`${totalGaps}`,sub:"unfilled time slots",clr:totalGaps>10?C.amber:C.green},
-        ].map((m,i)=><Card key={i} style={{padding:"14px 16px",textAlign:"center"}}>
-          <div style={{fontSize:9,fontWeight:700,color:C.g400,textTransform:"uppercase",letterSpacing:"0.06em",marginBottom:6}}>{m.label}</div>
-          <div style={{fontSize:22,fontWeight:800,color:m.clr,fontFamily:numFont,lineHeight:1}}>{m.val}</div>
-          <div style={{fontSize:10,color:C.g400,marginTop:4}}>{m.sub}</div>
-        </Card>)}
-      </div>
-      <div>
-        <div style={{display:"flex",alignItems:"center",gap:8,marginBottom:12}}>
-          <span style={{fontSize:14,fontWeight:800,color:C.g800}}>Action Items</span>
-          <span style={{fontSize:10,color:C.g400}}>Updated today</span>
-        </div>
-        <div style={{display:"flex",flexDirection:"column",gap:8}}>
-        {[
-          lapsedOrgs>0?{priority:"high",title:`${lapsedOrgs} lapsed partner${lapsedOrgs>1?"s":""}`,desc:"Haven't booked in 30+ days. A quick check-in can prevent losing them.",act:"View Partners",fn:()=>setGTab(1),icon:I.users(14,C.g500)}:null,
-          util<50?{priority:"medium",title:`${util}% utilization`,desc:`${totalGaps} open time slots could be generating revenue. Most gaps are weekday mornings.`,act:"View Facilities",fn:()=>setGTab(2),icon:I.bar(14,C.g500)}:null,
-          {priority:"low",title:`${activeOrgs} active partners`,desc:"Bayou City Volleyball and Gonzales FC are your most consistent. A thank-you goes a long way.",act:null,fn:null,icon:I.star(14,C.g500)},
-          {priority:"tip",title:"Boost visibility",desc:"Share your booking page on community boards or your district website to attract new organizations.",act:"Share Link",fn:()=>setGTab(3),icon:I.share(14,C.g500)},
-        ].filter(Boolean).map((s,i)=>{
-          const pMap={high:{bar:C.red},medium:{bar:C.amber},low:{bar:C.green},tip:{bar:C.blue}};
-          const p=pMap[s.priority];
-          return <div key={i} style={{background:C.cardBg,borderRadius:R.md,border:`1px solid ${C.cardBorder}`,overflow:"hidden",display:"flex",boxShadow:C.cardShadow}}>
-            <div style={{width:3,background:p.bar,flexShrink:0}}/>
-            <div style={{flex:1,padding:"12px 14px",display:"flex",alignItems:"center",gap:12}}>
-              <div style={{width:32,height:32,borderRadius:8,background:C.g100,display:"flex",alignItems:"center",justifyContent:"center",flexShrink:0}}>{s.icon}</div>
-              <div style={{flex:1,minWidth:0}}>
-                <div style={{fontSize:13,fontWeight:700,color:C.g800}}>{s.title}</div>
-                <div style={{fontSize:11,color:C.g500,lineHeight:1.5,marginTop:1}}>{s.desc}</div>
-              </div>
-              {s.act&&<button onClick={s.fn} style={{...btnO,fontSize:10,padding:"6px 12px",flexShrink:0,whiteSpace:"nowrap"}}>{s.act}</button>}
-            </div>
+    {/* MY WEEK BRIEFING */}
+    {briefingOpen!==null&&<Card style={{border:"1px solid "+C.blue+"20",background:"linear-gradient(135deg, "+C.cardBg+" 0%, "+C.blueL+" 100%)"}}>
+      <div style={{display:"flex",alignItems:"center",justifyContent:"space-between",marginBottom:briefingOpen?14:0,cursor:"pointer"}} onClick={function(){setBriefingOpen(!briefingOpen)}}>
+        <div style={{display:"flex",alignItems:"center",gap:10}}>
+          <div style={{width:32,height:32,borderRadius:8,background:C.blue,display:"flex",alignItems:"center",justifyContent:"center"}}>{I.bulb(15,"#fff")}</div>
+          <div>
+            <div style={{fontSize:15,fontWeight:800,color:C.g800}}>Your Week at a Glance</div>
+            {!briefingOpen&&<div style={{fontSize:11,color:C.g500}}>{briefingItems.length} items need attention</div>}
+            {briefingOpen&&<div style={{fontSize:11,color:C.g500}}>Monday, Feb 23 - Here's what needs your attention</div>}
           </div>
-        })}
+        </div>
+        <div style={{display:"flex",gap:6,alignItems:"center"}}>
+          <span style={{fontSize:10,fontWeight:700,color:C.blue,background:C.blueL,padding:"3px 10px",borderRadius:6}}>{briefingItems.length} items</span>
+          <button onClick={function(e){e.stopPropagation();setBriefingOpen(!briefingOpen)}} style={{display:"flex",alignItems:"center",gap:4,background:C.g100,border:"1px solid "+C.cardBorder,borderRadius:6,padding:"4px 10px",cursor:"pointer",fontFamily:font,fontSize:10,fontWeight:600,color:C.g500,transition:"all .15s"}}>
+            {briefingOpen?"Collapse":"Expand"}
+            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke={C.g500} strokeWidth="2.5" strokeLinecap="round" style={{transition:"transform .2s",transform:briefingOpen?"rotate(180deg)":"rotate(0)"}}><path d="M6 9l6 6 6-6"/></svg>
+          </button>
+          <button onClick={function(e){e.stopPropagation();setBriefingOpen(null)}} style={{display:"flex",alignItems:"center",justifyContent:"center",width:24,height:24,background:C.g100,border:"1px solid "+C.cardBorder,borderRadius:6,cursor:"pointer"}} title="Dismiss">{I.x(12,C.g400)}</button>
         </div>
       </div>
-      {/* Seasonal Playbook */}
-      <Card>
-        <Sec icon={I.calendar(13,C.g500)}>Seasonal Playbook</Sec>
-        <div style={{display:"flex",flexDirection:"column",gap:10}}>
-          {[
-            {season:"Spring Sports Ending",timeline:"3 weeks out",insight:"Gym utilization historically drops 30% in June when school sports wrap up. Last summer, 4 community orgs filled the gap.",action:"Reach out to last year's summer bookers",priority:"high",orgs:["Gonzales FC","Bayou City VB","Ascension YMCA"]},
-            {season:"Summer Registration Window",timeline:"Opens Mar 15",insight:"Organizations that booked summer 2025 slots haven't registered yet for 2026. Early outreach locks in revenue before they find alternatives.",action:"Send summer availability email",priority:"medium",orgs:["Louisiana Tigers AAU","River Parish Runners"]},
-          ].map((s,i)=><div key={i} style={{padding:"14px",borderRadius:R.md,background:C.g50,border:`1px solid ${C.cardBorder}`}}>
-            <div style={{display:"flex",alignItems:"center",justifyContent:"space-between",marginBottom:6}}>
-              <div style={{display:"flex",alignItems:"center",gap:8}}>
-                <span style={{fontSize:13,fontWeight:700,color:C.g800}}>{s.season}</span>
-                <span style={{fontSize:9,fontWeight:600,color:C.amber}}>{s.timeline}</span>
-              </div>
-            </div>
-            <div style={{fontSize:12,color:C.g600,lineHeight:1.6,marginBottom:8}}>{s.insight}</div>
-            <div style={{display:"flex",alignItems:"center",gap:8,flexWrap:"wrap"}}>
-              <span style={{fontSize:10,fontWeight:600,color:C.g500}}>Target:</span>
-              {s.orgs.map(o=><span key={o} style={{fontSize:10,fontWeight:600,color:C.blue,background:C.blueL,padding:"2px 8px",borderRadius:4}}>{o}</span>)}
-              <div style={{flex:1}}/>
-              <button style={{...btnO,fontSize:10,padding:"5px 12px"}}>{s.action}</button>
-            </div>
-          </div>)}
-        </div>
-      </Card>
-      {/* Competitive Benchmarking */}
-      <Card>
-        <Sec icon={I.chart(13,C.g500)}>District Benchmarking</Sec>
-        <div style={{padding:"14px",borderRadius:R.md,background:C.g50,border:`1px solid ${C.cardBorder}`,marginBottom:12}}>
-          <div style={{fontSize:11,fontWeight:700,color:C.g400,textTransform:"uppercase",letterSpacing:"0.06em",marginBottom:10}}>How you compare - Similar districts in Louisiana</div>
-          {[
-            {metric:"Facility Utilization",yours:`${util}%`,avg:"61%",top:"78%",status:util>=61?"above":"below"},
-            {metric:"Revenue per Facility",yours:"$4,362",avg:"$5,100",top:"$7,200",status:"below"},
-            {metric:"Active Partners",yours:`${activeOrgs}`,avg:"8",top:"14",status:activeOrgs>=8?"above":"below"},
-            {metric:"Avg Booking Rate",yours:"$318",avg:"$290",top:"$385",status:"above"},
-          ].map((b,i,arr)=><div key={i} style={{display:"flex",alignItems:"center",gap:12,padding:"10px 0",borderBottom:i<arr.length-1?`1px solid ${C.g200}`:"none"}}>
-            <span style={{fontSize:12,fontWeight:600,color:C.g700,width:140}}>{b.metric}</span>
-            <span style={{fontSize:13,fontWeight:800,color:b.status==="above"?C.green:C.amber,fontFamily:numFont,width:60}}>{b.yours}</span>
-            <span style={{fontSize:11,color:C.g400,width:60}}>Avg: {b.avg}</span>
-            <span style={{fontSize:11,color:C.g400,width:60}}>Top: {b.top}</span>
-            <span style={{fontSize:9,fontWeight:700,color:b.status==="above"?C.green:C.amber,background:b.status==="above"?C.greenL:C.amberL,padding:"2px 6px",borderRadius:3,textTransform:"uppercase"}}>{b.status} avg</span>
-          </div>)}
-        </div>
-        <div style={{fontSize:11,color:C.g500,lineHeight:1.6}}>
-          <strong style={{color:C.g700}}>Insight:</strong> Top-performing districts fill weekday morning gaps by partnering with homeschool co-ops and corporate wellness programs. Your morning utilization is 22% vs the top-performer average of 55%.
-        </div>
-      </Card>
-      <Card>
-        <Sec action={<button onClick={()=>setGTab(2)} style={{...btnO,fontSize:11,padding:"5px 14px"}}>Details</button>} icon={I.stadium(13,C.g500)}>Facility Snapshot</Sec>
-        {facs.slice(0,3).map((f,i)=>{const pct=Math.round(f.bk/f.cap*100);return <div key={i} style={{padding:"10px 0",borderBottom:i<2?`1px solid ${C.g100}`:"none"}}>
-          <div style={{display:"flex",justifyContent:"space-between",alignItems:"center",marginBottom:5}}>
-            <div><span style={{fontSize:13,fontWeight:700,color:C.g800}}>{f.name}</span><span style={{fontSize:10,color:f.trend==="up"?C.green:f.trend==="down"?C.red:C.g400,marginLeft:6}}>{f.trend==="up"?"↑ trending up":f.trend==="down"?"↓ declining":"\u2014 steady"}</span></div>
-            <span style={{fontSize:15,fontWeight:800,color:pct>=60?C.green:pct>=40?C.amber:C.red,fontFamily:numFont}}>{pct}%</span>
-          </div>
-          <div style={{height:4,background:C.g200,borderRadius:2,overflow:"hidden"}}><div style={{width:`${pct}%`,height:"100%",borderRadius:2,background:pct>=60?C.green:pct>=40?C.amber:C.red}}/></div>
-          <div style={{fontSize:10,color:C.g400,marginTop:3}}>{f.campus} {"\u2022"} {"$"}{f.rev.toLocaleString()} revenue {"\u2022"} {f.gaps.length} open slots</div>
-        </div>})}
-      </Card>
-      <Card>
-        <Sec action={<button onClick={()=>setGTab(1)} style={{...btnO,fontSize:11,padding:"5px 14px"}}>All Partners</button>} icon={I.star(13,C.g500)}>Top Partners</Sec>
-        {topCustData.slice(0,3).map((c,i)=>{const reviews=ratingsData.filter(r=>r.user===c.n);const avg=reviews.length?(reviews.reduce((s,r)=>s+r.rating,0)/reviews.length).toFixed(1):"--";return <div key={i} style={{display:"flex",alignItems:"center",gap:10,padding:"10px 0",borderBottom:i<2?`1px solid ${C.g100}`:"none"}}>
-          <div style={{width:32,height:32,borderRadius:8,background:`linear-gradient(135deg,${[C.blue,"#4DA8D8",C.orange][i]},${[C.blueDk,C.blue,C.amber][i]})`,display:"flex",alignItems:"center",justifyContent:"center",color:"#fff",fontWeight:800,fontSize:10,flexShrink:0}}>{c.photo}</div>
+      {briefingOpen&&<div style={{display:"flex",flexDirection:"column",gap:8}}>
+        {briefingItems.map(function(item,i){return <div key={i} style={{display:"flex",alignItems:"center",gap:12,padding:"12px 14px",background:C.cardBg,borderRadius:R.md,border:"1px solid "+C.cardBorder}}>
+          <div style={{width:30,height:30,borderRadius:8,background:item.bg,display:"flex",alignItems:"center",justifyContent:"center",flexShrink:0}}>{item.icon}</div>
           <div style={{flex:1,minWidth:0}}>
-            <span style={{fontSize:13,fontWeight:700,color:C.g800}}>{c.n}</span><span style={{fontSize:11,color:C.amber,marginLeft:6}}>{"\u2605"} {avg}</span>
-            <div style={{fontSize:10,color:C.g400,marginTop:1}}>{c.b} bookings {"\u2022"} {"$"}{c.s.toLocaleString()} total</div>
+            <div style={{fontSize:13,fontWeight:700,color:C.g800}}>{item.title}</div>
+            <div style={{fontSize:11,color:C.g500,marginTop:2}}>{item.desc}</div>
           </div>
+          <button onClick={item.fn} style={Object.assign({},btnP,{padding:"6px 14px",fontSize:11,flexShrink:0,whiteSpace:"nowrap"})}>{item.act}</button>
         </div>})}
-      </Card>
-    </>}
-    {/* ===== PARTNERS ===== */}
-    {gTab===1&&<>
-      <div style={{display:"grid",gridTemplateColumns:"repeat(auto-fit,minmax(130px,1fr))",gap:10}}>
-        {[{label:"Total Partners",val:`${topCustData.length}`,clr:C.blue},{label:"Active",val:`${activeOrgs}`,clr:C.green},{label:"Needs Attention",val:`${lapsedOrgs}`,clr:lapsedOrgs>0?C.red:C.green},{label:"Total Revenue",val:`$${totalRev.toLocaleString()}`,clr:C.blue}].map((m,i)=><Card key={i} style={{padding:"12px 14px",textAlign:"center"}}>
-          <div style={{fontSize:9,fontWeight:700,color:C.g400,textTransform:"uppercase",letterSpacing:"0.06em",marginBottom:4}}>{m.label}</div>
-          <div style={{fontSize:18,fontWeight:800,color:m.clr,fontFamily:numFont}}>{m.val}</div>
-        </Card>)}
-      </div>
+      </div>}
+    </Card>}
+    {/* TAB BAR */}
+    <div style={{display:"flex",gap:0,borderBottom:"2px solid "+C.g200,overflow:"auto",WebkitOverflowScrolling:"touch"}}>
+      {tabs.map(function(t,i){return <button key={t} onClick={function(){setGTab(i)}} style={{padding:"10px 20px",fontSize:13,fontWeight:gTab===i?700:500,color:gTab===i?C.blue:C.g500,background:"none",border:"none",borderBottom:gTab===i?"2px solid "+C.blue:"2px solid transparent",marginBottom:-2,cursor:"pointer",fontFamily:font,whiteSpace:"nowrap",transition:"all .15s"}}>{t}</button>})}
+    </div>
+    {/* ===== OUTREACH TAB ===== */}
+    {gTab===0&&<>
+      {/* Quick Replies */}
       <Card>
-        <Sec action={<span style={{fontSize:11,color:C.g400}}>Sorted by total bookings</span>} icon={I.users(13,C.g500)}>Partner Directory</Sec>
-        <div style={{fontSize:12,color:C.g500,lineHeight:1.5,marginBottom:14}}>Your community partners at a glance. Track reliability, booking history, and stay on top of relationships without scattered emails or spreadsheets.</div>
-        <div className="pp-renters">
-          {(showAllPartners?topCustData:topCustData.slice(0,3)).map((c,i)=>{
-            const reviews=ratingsData.filter(r=>r.user===c.n);const avg=reviews.length?(reviews.reduce((s,r)=>s+r.rating,0)/reviews.length).toFixed(1):"--";
-            const lastBook=c.hist[0];const daysSince=lastBook?Math.max(1,Math.floor((new Date("2026-02-21")-new Date(lastBook.date.replace(/(\d+)\/(\d+)\/(\d+)/,"$3-$1-$2")))/(864e5))):999;
-            const isLapsed=daysSince>30;const freq=c.b>=15?"Weekly":c.b>=10?"Bi-weekly":c.b>=6?"Monthly":"Occasional";
-            const stClr=isLapsed?C.orange:c.t==="up"?C.green:c.t==="down"?C.red:C.g400;
-            const stLbl=isLapsed?"Lapsed":c.t==="up"?"Active":"Stable";
-            return <div key={c.n} className="pp-renter-row" style={{display:"flex",alignItems:"center",gap:10,padding:"11px 0",borderBottom:i<(showAllPartners?topCustData.length:Math.min(3,topCustData.length))-1?`1px solid ${C.g100}`:"none"}}>
-              <div style={{width:34,height:34,borderRadius:10,background:`linear-gradient(135deg,${[C.blue,"#4DA8D8",C.orange,C.green,C.g500][i%5]},${[C.blueDk,C.blue,C.amber,C.blueDk,C.g600][i%5]})`,display:"flex",alignItems:"center",justifyContent:"center",color:"#fff",fontWeight:800,fontSize:11,flexShrink:0}}>{c.photo}</div>
-              <div style={{flex:1,minWidth:0}}>
-                <div style={{display:"flex",alignItems:"center",gap:5}}>
-                  <span style={{fontSize:13,fontWeight:700,color:C.g800,whiteSpace:"nowrap",overflow:"hidden",textOverflow:"ellipsis"}}>{c.n}</span>
-                  <span style={{fontSize:11,color:C.amber,flexShrink:0}}>{"\u2605"} {avg}</span>
-                  <span style={{fontSize:7,fontWeight:700,color:stClr,background:`${stClr}15`,padding:"2px 5px",borderRadius:3,lineHeight:1,flexShrink:0}}>{stLbl.toUpperCase()}</span>
-                </div>
-                <div style={{fontSize:10,color:C.g400,marginTop:1}}>{c.b} bookings {"\u2022"} {freq} {"\u2022"} {daysSince}d ago {"\u2022"} {"$"}{c.s.toLocaleString()}</div>
+        <Sec icon={I.mail(13,C.g500)}>Quick Replies</Sec>
+        <div style={{fontSize:12,color:C.g500,lineHeight:1.5,marginBottom:12}}>Common questions from coaches, league directors, and community organizations. Preview the response, then copy or customize.</div>
+        <div style={{display:"flex",flexDirection:"column",gap:6}}>
+          {quickReplies.map(function(qr,i){var isOpen=previewQR===i;return <div key={i} style={{borderRadius:R.sm,border:"1px solid "+(isOpen?C.blue+"40":C.cardBorder),overflow:"hidden",transition:"all .15s"}}>
+            <div style={{display:"flex",alignItems:"center",justifyContent:"space-between",padding:"11px 14px",background:isOpen?C.blueL:C.g50,cursor:"pointer",transition:"all .12s"}} onClick={function(){setPreviewQR(isOpen?null:i)}}>
+              <div style={{display:"flex",alignItems:"center",gap:10}}>
+                <span style={{fontSize:16}}>{["\u2753","\u274C","\u{1F4C5}","\u{1F6E1}","\u{1F4B0}"][i]}</span>
+                <span style={{fontSize:12,fontWeight:600,color:C.g700}}>{qr.label}</span>
               </div>
-              <div className="pp-renter-actions" style={{display:"flex",gap:4,flexShrink:0}}>
-                {isLapsed?<button onClick={()=>openEmail("invite",c)} style={{...btnP,fontSize:10,padding:"5px 10px"}}>Check In</button>
-                :<button onClick={()=>openEmail("thanks",c)} style={{...btnO,fontSize:10,padding:"5px 10px"}}>Thanks</button>}
-                <button onClick={()=>openEmail("offer",c)} style={{...btnO,fontSize:10,padding:"5px 10px"}}>Offer</button>
-              </div>
+              <span style={{fontSize:10,color:isOpen?C.blue:C.g400,fontWeight:600,display:"flex",alignItems:"center",gap:4}}>{isOpen?"Hide":"Preview"} <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke={isOpen?C.blue:C.g400} strokeWidth="2.5" strokeLinecap="round" style={{transition:"transform .2s",transform:isOpen?"rotate(180deg)":"rotate(0)"}}><path d="M6 9l6 6 6-6"/></svg></span>
             </div>
-          })}
+            {isOpen&&<div style={{padding:"12px 14px",background:C.cardBg,borderTop:"1px solid "+C.cardBorder}}>
+              <div style={{fontSize:12,color:C.g600,lineHeight:1.7,padding:"10px 14px",background:C.g50,borderRadius:R.sm,border:"1px solid "+C.g200,marginBottom:10,whiteSpace:"pre-wrap"}}>{qr.reply}</div>
+              <div style={{display:"flex",gap:6}}>
+                <button onClick={function(){if(globalShowToast)globalShowToast({type:"success",title:"Copied!",msg:"Reply copied to clipboard",color:C.green})}} style={Object.assign({},btnP,{padding:"7px 14px",fontSize:11})}>{I.copy(11,"#fff")} Copy Reply</button>
+                <button onClick={function(){if(globalShowToast)globalShowToast({type:"info",title:"Edit Mode",msg:"Customize this reply before sending",color:C.blue})}} style={Object.assign({},btnO,{padding:"7px 14px",fontSize:11})}>{I.edit(11,C.g500)} Edit</button>
+              </div>
+            </div>}
+          </div>})}
+          <div onClick={function(){if(globalShowToast)globalShowToast({type:"info",title:"New Quick Reply",msg:"Create a custom quick reply for common questions",color:C.blue})}} style={{display:"flex",alignItems:"center",justifyContent:"center",gap:6,padding:"11px 14px",background:"transparent",borderRadius:R.sm,border:"1px dashed "+C.g200,cursor:"pointer",transition:"all .12s"}} onMouseEnter={function(e){e.currentTarget.style.borderColor=C.blue;e.currentTarget.style.background=C.blueL}} onMouseLeave={function(e){e.currentTarget.style.borderColor=C.g200;e.currentTarget.style.background="transparent"}}>
+            <span style={{fontSize:16,color:C.blue,fontWeight:700}}>+</span>
+            <span style={{fontSize:12,fontWeight:600,color:C.blue}}>Create New Quick Reply</span>
+          </div>
         </div>
-        {topCustData.length>3&&<button onClick={()=>setShowAllPartners(v=>!v)} style={{background:"none",border:"none",cursor:"pointer",fontFamily:font,fontSize:12,fontWeight:600,color:C.blue,padding:"12px 0 2px",display:"flex",alignItems:"center",gap:4,width:"100%",justifyContent:"center"}}>
-          {showAllPartners?<>Show Less <span style={{fontSize:10}}>{"\u25B2"}</span></>:<>View All {topCustData.length} Partners <span style={{fontSize:10}}>{"\u25BC"}</span></>}
-        </button>}
       </Card>
-      <div style={{padding:"16px 20px",background:`${C.blue}06`,borderRadius:R.lg,border:`1px solid ${C.blue}15`,fontSize:12,color:C.g600,lineHeight:1.6}}>
-        <strong style={{color:C.g800}}>Why this matters:</strong> Districts that stay in touch with their top 5 partners see 40% higher rebooking rates. A quick thank-you or seasonal offer takes 30 seconds and keeps your facilities full.
-      </div>
-    </>}
-    {/* ===== FACILITIES ===== */}
-    {gTab===2&&<>
-      <div style={{display:"grid",gridTemplateColumns:"repeat(auto-fit,minmax(130px,1fr))",gap:10}}>
-        {[{label:"Avg Utilization",val:`${util}%`,clr:util>=50?C.green:C.amber},{label:"Total Revenue",val:`$${facs.reduce((s,f)=>s+f.rev,0).toLocaleString()}`,clr:C.blue},{label:"Open Gaps",val:`${totalGaps}`,clr:totalGaps>10?C.amber:C.green},{label:"Facilities",val:`${facs.length}`,clr:C.g700}].map((m,i)=><Card key={i} style={{padding:"12px 14px",textAlign:"center"}}>
-          <div style={{fontSize:9,fontWeight:700,color:C.g400,textTransform:"uppercase",letterSpacing:"0.06em",marginBottom:4}}>{m.label}</div>
-          <div style={{fontSize:18,fontWeight:800,color:m.clr,fontFamily:numFont}}>{m.val}</div>
-        </Card>)}
-      </div>
+      {/* Email Templates */}
       <Card>
-        <Sec icon={I.bar(13,C.g500)}>Utilization by Facility</Sec>
-        <div style={{fontSize:12,color:C.g500,lineHeight:1.5,marginBottom:14}}>See which spaces are earning and where you have room to grow. Open gaps represent unfilled time slots that could be generating revenue for the district.</div>
-        {facs.map((f,i)=>{const pct=Math.round(f.bk/f.cap*100);const clr=pct>=60?C.green:pct>=40?C.amber:C.red;return <div key={i} style={{padding:"14px 0",borderBottom:i<facs.length-1?`1px solid ${C.g100}`:"none"}}>
-          <div style={{display:"flex",justifyContent:"space-between",alignItems:"flex-start",marginBottom:6}}>
-            <div style={{flex:1,minWidth:0}}>
-              <div style={{fontSize:13,fontWeight:700,color:C.g800}}>{f.name}</div>
-              <div style={{fontSize:10,color:C.g400,marginTop:2}}>{f.campus} {"\u2022"} Peak: {f.peak} {"\u2022"} {"$"}{f.rev.toLocaleString()} earned</div>
+        <Sec icon={I.mail(13,C.g500)}>Email Templates</Sec>
+        <div style={{fontSize:12,color:C.g500,lineHeight:1.5,marginBottom:14}}>Pre-written emails ready to customize and send. Preview the content, then pick a recipient.</div>
+        <div style={{display:"flex",flexDirection:"column",gap:8}}>
+          {[
+            {label:"Thank a Partner",desc:"Strengthen relationships with your most active organizations",icon:I.star(14,C.amber),clr:C.amber,type:"thanks",who:"Best for: partners with 10+ bookings",
+              subject:"Thank you from Ascension Parish - [Organization]",
+              body:"Hi [Organization] team,\n\nJust wanted to reach out and say thanks for being one of our most valued facility partners. With [X] bookings and counting, your organization has been a big part of making our rental program a success.\n\nWe appreciate your commitment and want to make sure you always have a great experience. If there's anything we can do to improve - different time slots, equipment, or facility requests - please don't hesitate to let us know.\n\nLooking forward to seeing you again soon!\n\nBest,\nMarcus Williams\nAscension Parish School Board"},
+            {label:"Fill Open Slots",desc:"Offer a seasonal rate to drive bookings during slow periods",icon:I.calendar(14,C.blue),clr:C.blue,type:"offer",who:"Best for: partners who book monthly or more",
+              subject:"Exclusive offer for [Organization] - Ascension Parish Facilities",
+              body:"Hi [Organization] team,\n\nAs one of our top organizations, we'd like to offer you a special seasonal rate for the upcoming quarter.\n\nHere's what we're thinking:\n- 10% off bookings of 4+ hours\n- Priority scheduling for your preferred time slots\n- Locked-in rates through June 2026\n\nThis is our way of saying thanks for being a consistent partner. If you're interested, just reply to this email or book directly at practiceplan.rentals/ascension-parish.\n\nBest,\nMarcus Williams\nAscension Parish School Board"},
+            {label:"Win Back Lapsed Orgs",desc:"Re-engage partners who haven't booked in 30+ days",icon:I.hand(14,C.green),clr:C.green,type:"invite",who:"Best for: "+lapsedOrgs+" organizations at risk of churning",
+              subject:"We miss you, [Organization]! Come back to Ascension Parish facilities",
+              body:"Hi [Organization] team,\n\nIt's been a while since your last booking with us and we wanted to check in. We've made some improvements to our facilities and would love to have you back.\n\nTo make it easy, we're offering:\n- 15% off your next booking\n- Flexible cancellation on your first reservation back\n- New online booking at practiceplan.rentals/ascension-parish\n\nWhether it's practice, games, or events - our gyms, fields, and stadiums are ready for your team.\n\nHope to see you soon!\n\nMarcus Williams\nAscension Parish School Board"},
+            {label:"Follow Up on Inquiry",desc:"Respond to a booking question or nudge a pending request",icon:I.mail(14,C.purple),clr:C.purple,type:"followup",who:"Best for: new inquiries or unanswered requests",
+              subject:"Following up - [Organization] booking inquiry",
+              body:"Hi [Organization] team,\n\nJust wanted to follow up on your recent inquiry about facility availability. We'd love to get you scheduled.\n\nYou can view real-time availability and submit a request at practiceplan.rentals/ascension-parish.\n\nLet me know if you have any questions or need help finding the right space for your group.\n\nBest,\nMarcus Williams\nAscension Parish School Board"},
+          ].map(function(tpl,i){var isOpen=previewTpl===i;return <div key={i} style={{borderRadius:R.md,border:"1px solid "+(isOpen?tpl.clr+"40":C.cardBorder),overflow:"hidden",transition:"all .15s"}}>
+            <div style={{display:"flex",alignItems:"center",gap:12,padding:"14px 16px",background:isOpen?tpl.clr+"06":C.g50,transition:"all .12s"}}>
+              <div style={{width:36,height:36,borderRadius:10,background:tpl.clr+"12",display:"flex",alignItems:"center",justifyContent:"center",flexShrink:0}}>{tpl.icon}</div>
+              <div style={{flex:1,minWidth:0}}>
+                <div style={{fontSize:13,fontWeight:700,color:C.g800}}>{tpl.label}</div>
+                <div style={{fontSize:11,color:C.g500,marginTop:1}}>{tpl.desc}</div>
+                <div style={{fontSize:10,color:C.g400,marginTop:3,fontStyle:"italic"}}>{tpl.who}</div>
+              </div>
+              <button onClick={function(){setPreviewTpl(isOpen?null:i)}} style={Object.assign({},btnO,{padding:"6px 14px",fontSize:11,flexShrink:0,color:isOpen?tpl.clr:C.g500,borderColor:isOpen?tpl.clr+"40":C.cardBorder})}>{isOpen?"Hide Preview":"Preview"}</button>
             </div>
-            <div style={{textAlign:"right",flexShrink:0,marginLeft:12}}>
-              <div style={{fontSize:18,fontWeight:800,color:clr,fontFamily:numFont}}>{pct}%</div>
-              <div style={{fontSize:9,color:C.g400}}>utilized</div>
-            </div>
+            {isOpen&&<div style={{padding:"14px 16px",background:C.cardBg,borderTop:"1px solid "+C.cardBorder}}>
+              <div style={{marginBottom:10}}>
+                <div style={{fontSize:10,fontWeight:700,color:C.g400,textTransform:"uppercase",letterSpacing:"0.06em",marginBottom:4}}>Subject</div>
+                <div style={{fontSize:12,fontWeight:600,color:C.g700}}>{tpl.subject}</div>
+              </div>
+              <div style={{fontSize:12,color:C.g600,lineHeight:1.7,padding:"12px 14px",background:C.g50,borderRadius:R.sm,border:"1px solid "+C.g200,marginBottom:12,whiteSpace:"pre-wrap",maxHeight:200,overflow:"auto"}}>{tpl.body}</div>
+              <div style={{display:"flex",alignItems:"center",justifyContent:"space-between",flexWrap:"wrap",gap:8}}>
+                <div style={{display:"flex",gap:6,flexWrap:"wrap"}}>
+                  <span style={{fontSize:11,fontWeight:600,color:C.g500,lineHeight:"28px"}}>Send to:</span>
+                  {topCustData.slice(0,3).map(function(c,ci){return <button key={ci} onClick={function(){openEmail(tpl.type,c)}} style={Object.assign({},btnO,{padding:"4px 12px",fontSize:11})}>{c.photo} {c.n.split(" ")[0]}</button>})}
+                </div>
+                <button onClick={function(){if(globalShowToast)globalShowToast({type:"success",title:"Template Copied",msg:"Paste into your email client and customize",color:C.green})}} style={Object.assign({},btnO,{padding:"6px 14px",fontSize:11})}>{I.copy(11,C.g500)} Copy Template</button>
+              </div>
+            </div>}
+          </div>})}
+          <div onClick={function(){if(globalShowToast)globalShowToast({type:"info",title:"New Email Template",msg:"Create a custom email template for your outreach",color:C.blue})}} style={{display:"flex",alignItems:"center",justifyContent:"center",gap:6,padding:"14px 16px",background:"transparent",borderRadius:R.md,border:"1px dashed "+C.g200,cursor:"pointer",transition:"all .12s"}} onMouseEnter={function(e){e.currentTarget.style.borderColor=C.blue;e.currentTarget.style.background=C.blueL}} onMouseLeave={function(e){e.currentTarget.style.borderColor=C.g200;e.currentTarget.style.background="transparent"}}>
+            <span style={{fontSize:16,color:C.blue,fontWeight:700}}>+</span>
+            <span style={{fontSize:12,fontWeight:600,color:C.blue}}>Create New Email Template</span>
           </div>
-          <div style={{height:6,background:C.g200,borderRadius:3,overflow:"hidden",marginBottom:6}}><div style={{width:`${pct}%`,height:"100%",borderRadius:3,background:clr}}/></div>
-          {f.gaps.length>0&&<div style={{display:"flex",alignItems:"center",gap:6,flexWrap:"wrap"}}>
-            <span style={{fontSize:10,color:C.g400}}>Open:</span>
-            {f.gaps.map((g,j)=><span key={j} style={{fontSize:9,fontWeight:600,color:C.amber,background:C.amberL,padding:"2px 6px",borderRadius:3}}>{g}</span>)}
-          </div>}
-        </div>})}
+        </div>
       </Card>
-      <div style={{padding:"16px 20px",background:`${C.green}06`,borderRadius:R.lg,border:`1px solid ${C.green}15`,fontSize:12,color:C.g600,lineHeight:1.6}}>
-        <strong style={{color:C.g800}}>Board-ready insight:</strong> Your facilities have generated {"$"}{facs.reduce((s,f)=>s+f.rev,0).toLocaleString()} this period at {util}% utilization. Filling the {totalGaps} open gaps at your average booking rate could add an estimated {"$"}{Math.round(totalGaps*185).toLocaleString()} in additional revenue.
-      </div>
-    </>}
-    {/* ===== OUTREACH ===== */}
-    {gTab===3&&<>
+      {/* Booking Page & Sharing */}
       <Card>
         <Sec icon={I.link(13,C.g500)}>Your Booking Page</Sec>
-        <div style={{fontSize:12,color:C.g500,lineHeight:1.5,marginBottom:12}}>This is the public link where community organizations can browse availability and request a booking. Share it anywhere you'd normally field a rental inquiry.</div>
         <div style={{display:"flex",alignItems:"center",gap:8,marginBottom:14}}>
-          <div style={{flex:1,padding:"10px 12px",background:C.g50,borderRadius:R.sm,border:`1px solid ${C.cardBorder}`,fontSize:12,color:C.g600,fontFamily:numFont,overflow:"hidden",textOverflow:"ellipsis",whiteSpace:"nowrap"}}>{ppUrl}</div>
-          <button onClick={doCopy} style={{...btnO,padding:"10px 14px",flexShrink:0,fontSize:12}}>{copied?<>{I.check(12,C.green)} Copied</>:<>{I.copy(12,C.g500)} Copy</>}</button>
-          <button onClick={()=>setShowShare(true)} style={{...btnP,padding:"10px 14px",flexShrink:0,fontSize:12}}>{I.share(12,"#fff")} Share</button>
+          <div style={{flex:1,padding:"10px 12px",background:C.g50,borderRadius:R.sm,border:"1px solid "+C.cardBorder,fontSize:12,color:C.g600,fontFamily:numFont,overflow:"hidden",textOverflow:"ellipsis",whiteSpace:"nowrap"}}>{ppUrl}</div>
+          <button onClick={doCopy} style={Object.assign({},btnO,{padding:"10px 14px",flexShrink:0,fontSize:12})}>{copied?<>{I.check(12,C.green)} Copied</>:<>{I.copy(12,C.g500)} Copy</>}</button>
+          <button onClick={function(){setShowShare(true)}} style={Object.assign({},btnP,{padding:"10px 14px",flexShrink:0,fontSize:12})}>{I.share(12,"#fff")} Share</button>
         </div>
         <div style={{display:"grid",gridTemplateColumns:"repeat(auto-fill,minmax(140px,1fr))",gap:8}}>
-          {[{label:"Social Media",icon:"\u{1F4F1}",desc:"Post to Facebook, X, or Nextdoor",action:()=>setShowShare(true)},{label:"Email Blast",icon:"\u2709\uFE0F",desc:"Send to local orgs and leagues",action:()=>{}},{label:"District Website",icon:"\u{1F517}",desc:"Embed widget or add a link",action:()=>{}},{label:"QR Code",icon:"\u{1F4F7}",desc:"Print for facility entrances",action:()=>{if(globalShowToast)globalShowToast({type:"success",title:"Downloaded",msg:"QR code saved",color:C.green})}}].map((a,i)=><button key={i} onClick={a.action} style={{padding:"14px 10px",background:C.g50,border:`1px solid ${C.cardBorder}`,borderRadius:R.sm,cursor:"pointer",fontFamily:font,textAlign:"center",transition:"all .12s"}} onMouseEnter={e=>e.currentTarget.style.borderColor=C.blue} onMouseLeave={e=>e.currentTarget.style.borderColor=C.cardBorder}>
+          {[{label:"Social Media",icon:"\u{1F4F1}",desc:"Facebook, X, Nextdoor"},{label:"Email Blast",icon:"\u2709\uFE0F",desc:"Local orgs and leagues"},{label:"District Website",icon:"\u{1F517}",desc:"Embed or link"},{label:"QR Code",icon:"\u{1F4F7}",desc:"Print for entrances"}].map(function(a,i){return <button key={i} onClick={function(){if(i===3&&globalShowToast)globalShowToast({type:"success",title:"Downloaded",msg:"QR code saved",color:C.green});else setShowShare(true)}} style={{padding:"14px 10px",background:C.g50,border:"1px solid "+C.cardBorder,borderRadius:R.sm,cursor:"pointer",fontFamily:font,textAlign:"center",transition:"all .12s"}} onMouseEnter={function(e){e.currentTarget.style.borderColor=C.blue}} onMouseLeave={function(e){e.currentTarget.style.borderColor=C.cardBorder}}>
             <div style={{fontSize:20,marginBottom:4}}>{a.icon}</div>
             <div style={{fontSize:11,fontWeight:600,color:C.g700}}>{a.label}</div>
             <div style={{fontSize:9,color:C.g400,marginTop:2}}>{a.desc}</div>
-          </button>)}
+          </button>})}
         </div>
       </Card>
-      <Card>
-        <Sec action={<button onClick={()=>{if(globalShowToast)globalShowToast({type:"success",title:"All Downloaded",msg:"Materials saved",color:C.green})}} style={{...btnO,fontSize:11,padding:"6px 14px"}}>{I.download(12,C.g500)} Download All</button>} icon={I.download(13,C.g500)}>Printable Materials</Sec>
-        <div style={{fontSize:12,color:C.g500,lineHeight:1.5,marginBottom:12}}>Ready-to-print materials for facility entrances, school board meetings, or community newsletters.</div>
-        <div style={{display:"grid",gridTemplateColumns:"repeat(auto-fill,minmax(220px,1fr))",gap:8}}>
-          {[{name:"Booking QR Code",type:"PNG",size:"42 KB",ic:"QR"},{name:"Facility Rental Flyer",type:"PDF",size:"1.2 MB",ic:"FL"},{name:"Rate Card Template",type:"DOCX",size:"245 KB",ic:"RC"},{name:"Parking Lot Signage",type:"PDF",size:"890 KB",ic:"SN"}].map((a,i)=><div key={i} style={{display:"flex",alignItems:"center",gap:10,padding:"10px 12px",background:C.g50,borderRadius:R.sm,border:`1px solid ${C.cardBorder}`,cursor:"pointer",transition:"all .12s"}} onMouseEnter={e=>e.currentTarget.style.borderColor=C.blue} onMouseLeave={e=>e.currentTarget.style.borderColor=C.cardBorder} onClick={()=>{if(globalShowToast)globalShowToast({type:"success",title:"Downloaded",msg:`${a.name} saved`,color:C.green})}}>
-            <div style={{width:32,height:32,borderRadius:6,background:C.blueL,display:"flex",alignItems:"center",justifyContent:"center",flexShrink:0}}><span style={{fontSize:8,fontWeight:800,color:C.blue}}>{a.ic}</span></div>
-            <div style={{flex:1,minWidth:0}}><div style={{fontSize:12,fontWeight:600,color:C.g700}}>{a.name}</div><div style={{fontSize:10,color:C.g400}}>{a.type} - {a.size}</div></div>
-            {I.download(12,C.g400)}
-          </div>)}
-        </div>
-      </Card>
-      <Card>{(()=>{const steps=[{t:"Add booking link to your district website",d:true},{t:"Share with local youth sports leagues",d:true},{t:"Post on community boards (Nextdoor, Facebook Groups)",d:false},{t:"Display QR code flyers at each facility",d:false},{t:"Respond to all inquiries within 24 hours",d:true}];const done=steps.filter(s=>s.d).length;return <>
-        <div style={{display:"flex",alignItems:"center",justifyContent:"space-between",marginBottom:12}}><Sec icon={I.check(13,C.green)}>Visibility Checklist</Sec><span style={{fontSize:11,fontWeight:600,color:C.green}}>{done}/{steps.length}</span></div>
-        <div style={{display:"flex",gap:3,marginBottom:14}}>{steps.map((s,i)=><div key={i} style={{flex:1,height:3,borderRadius:2,background:s.d?C.green:C.g200}}/>)}</div>
-        {steps.map((s,i)=><div key={i} style={{display:"flex",alignItems:"center",gap:10,padding:"8px 0",borderBottom:i<steps.length-1?`1px solid ${C.g100}`:"none"}}>
-          <div style={{width:20,height:20,borderRadius:5,background:s.d?C.green:C.g200,border:s.d?"none":`2px solid ${C.g300}`,display:"flex",alignItems:"center",justifyContent:"center",flexShrink:0,cursor:"pointer"}}>{s.d&&I.check(10,"#fff")}</div>
-          <span style={{fontSize:12,fontWeight:500,color:s.d?C.g400:C.g700,textDecoration:s.d?"line-through":"none"}}>{s.t}</span>
-        </div>)}
-      </>})()}</Card>
-      <div style={{display:"grid",gridTemplateColumns:"repeat(auto-fill,minmax(240px,1fr))",gap:10}}>
-        <div style={{background:`${C.blue}06`,borderRadius:R.lg,border:`1px solid ${C.blue}20`,padding:"18px 20px",cursor:"pointer"}} onClick={()=>globalShowReferral()}>
-          <div style={{fontSize:14,fontWeight:800,color:C.g800,marginBottom:6}}>Know another district?</div>
-          <div style={{fontSize:11,color:C.g500,lineHeight:1.5,marginBottom:10}}>If you know a facilities director still managing rentals by email and spreadsheet, we'd love an introduction. They start free.</div>
-          <span style={{fontSize:12,fontWeight:700,color:C.blue}}>Refer a District {"→"}</span>
-        </div>
-        <div style={{background:C.cardBg,borderRadius:R.lg,border:`1px solid ${C.cardBorder}`,padding:"18px 20px",cursor:"pointer",boxShadow:C.cardShadow}} onClick={()=>globalShowSuggest()}>
-          <div style={{fontSize:14,fontWeight:800,color:C.g800,marginBottom:6}}>Missing something?</div>
-          <div style={{fontSize:11,color:C.g500,lineHeight:1.5,marginBottom:10}}>We build based on what facility managers actually need. If there's a feature or report that would help - tell us.</div>
-          <span style={{fontSize:12,fontWeight:700,color:C.blue}}>Suggest a Feature {"→"}</span>
-        </div>
+      {/* Printable Materials + Checklist */}
+      <div style={{display:"flex",gap:16,flexWrap:"wrap"}}>
+        <Card style={{flex:1,minWidth:280}}>
+          <Sec icon={I.download(13,C.g500)}>Printable Materials</Sec>
+          {[{name:"Booking QR Code",type:"PNG",ic:"QR"},{name:"Facility Rental Flyer",type:"PDF",ic:"FL"},{name:"Rate Card",type:"DOCX",ic:"RC"},{name:"Signage Template",type:"PDF",ic:"SN"}].map(function(a,i){return <div key={i} style={{display:"flex",alignItems:"center",gap:10,padding:"8px 0",borderBottom:i<3?"1px solid "+C.g100:"none",cursor:"pointer"}} onClick={function(){if(globalShowToast)globalShowToast({type:"success",title:"Downloaded",msg:a.name,color:C.green})}}>
+            <div style={{width:28,height:28,borderRadius:6,background:C.blueL,display:"flex",alignItems:"center",justifyContent:"center",flexShrink:0}}><span style={{fontSize:8,fontWeight:800,color:C.blue}}>{a.ic}</span></div>
+            <span style={{flex:1,fontSize:12,fontWeight:600,color:C.g700}}>{a.name}</span>
+            <span style={{fontSize:10,color:C.g400}}>{a.type}</span>
+          </div>})}
+        </Card>
+        <Card style={{flex:1,minWidth:280}}>{(function(){var steps=[{t:"Add booking link to district website",d:true},{t:"Share with local youth sports leagues",d:true},{t:"Post on community boards",d:false},{t:"Display QR codes at each facility",d:false},{t:"Respond to inquiries within 24 hours",d:true}];var done=steps.filter(function(s){return s.d}).length;return <>
+          <div style={{display:"flex",alignItems:"center",justifyContent:"space-between",marginBottom:12}}><Sec icon={I.check(13,C.green)}>Visibility Checklist</Sec><span style={{fontSize:11,fontWeight:600,color:C.green}}>{done}/{steps.length}</span></div>
+          {steps.map(function(s,i){return <div key={i} style={{display:"flex",alignItems:"center",gap:10,padding:"8px 0",borderBottom:i<steps.length-1?"1px solid "+C.g100:"none"}}>
+            <div style={{width:20,height:20,borderRadius:5,border:s.d?"none":"2px solid "+C.g200,background:s.d?C.green:"transparent",display:"flex",alignItems:"center",justifyContent:"center",flexShrink:0}}>{s.d&&I.check(10,"#fff")}</div>
+            <span style={{fontSize:12,color:s.d?C.g400:C.g700,textDecoration:s.d?"line-through":"none"}}>{s.t}</span>
+          </div>})}
+        </>})()}</Card>
       </div>
     </>}
-    {/* Share Modal */}
-    {showShare&&<div style={{position:"fixed",inset:0,background:"rgba(15,23,42,0.5)",backdropFilter:"blur(6px)",zIndex:300,display:"flex",alignItems:"center",justifyContent:"center",padding:20}} onClick={()=>setShowShare(false)}>
-      <div onClick={e=>e.stopPropagation()} style={{background:C.cardBg,borderRadius:16,boxShadow:`0 24px 80px rgba(0,0,0,${C.bg==="#0F1318"?0.5:0.2})`,width:"100%",maxWidth:460,overflow:"hidden"}}>
-        <div style={{background:`linear-gradient(135deg, ${C.blue}, ${C.green})`,padding:"24px 28px 20px",position:"relative"}}>
-          <button onClick={()=>setShowShare(false)} style={{position:"absolute",top:14,right:14,background:"rgba(255,255,255,0.2)",border:"none",borderRadius:8,width:28,height:28,cursor:"pointer",display:"flex",alignItems:"center",justifyContent:"center"}}>{I.x(14,"#fff")}</button>
-          <div style={{fontSize:18,fontWeight:800,color:"#fff"}}>Share Your Booking Page</div>
-          <div style={{fontSize:12,color:"rgba(255,255,255,0.8)",marginTop:6}}>Let your community know they can reserve facilities online.</div>
-        </div>
-        <div style={{padding:"24px 28px"}}>
-          <div style={{display:"flex",gap:8,marginBottom:20}}>
-            <div style={{flex:1,padding:"10px 14px",background:C.g50,borderRadius:R.sm,border:`1px solid ${C.cardBorder}`,fontSize:12,color:C.g600,fontFamily:numFont,overflow:"hidden",textOverflow:"ellipsis",whiteSpace:"nowrap"}}>{ppUrl}</div>
-            <button onClick={doCopy} style={{...btnP,padding:"10px 14px",flexShrink:0,fontSize:12}}>{copied?"Copied!":"Copy"}</button>
-          </div>
-          <div style={{padding:"12px 14px",background:C.g50,borderRadius:R.sm,border:`1px solid ${C.cardBorder}`,fontSize:12,color:C.g600,marginBottom:20,lineHeight:1.6}}>Reserve Ascension Parish facilities on PracticePlan - gyms, fields, and auditoriums available for your team or organization. Book online instantly!</div>
-          <div style={{display:"grid",gridTemplateColumns:"repeat(3,1fr)",gap:8}}>
-            {[["X / Twitter","X","#000"],["Facebook","f","#1877F2"],["Instagram","IG","#E4405F"],["LinkedIn","in","#0A66C2"],["Email","@","#EA4335"],["Text / SMS","\u{1F4AC}","#25D366"]].map(([name,abbr,bg])=>
-              <button key={name} onClick={()=>{if(globalShowToast)globalShowToast({type:"success",title:`Shared on ${name}`,msg:"Your booking link has been shared",color:C.green});setShowShare(false)}} style={{display:"flex",flexDirection:"column",alignItems:"center",gap:6,padding:"14px 10px",background:C.g50,border:`1px solid ${C.cardBorder}`,borderRadius:R.sm,cursor:"pointer",fontFamily:font,transition:"all .12s"}} onMouseEnter={e=>{e.currentTarget.style.background=bg;e.currentTarget.style.borderColor=bg;e.currentTarget.querySelector(".sh-icon").style.background="#fff";e.currentTarget.querySelector(".sh-icon").style.color=bg;e.currentTarget.querySelector(".sh-lbl").style.color="#fff"}} onMouseLeave={e=>{e.currentTarget.style.background=C.g50;e.currentTarget.style.borderColor=C.cardBorder;e.currentTarget.querySelector(".sh-icon").style.background=bg;e.currentTarget.querySelector(".sh-icon").style.color="#fff";e.currentTarget.querySelector(".sh-lbl").style.color=C.g600}}>
-                <div className="sh-icon" style={{width:36,height:36,borderRadius:10,background:bg,color:"#fff",display:"flex",alignItems:"center",justifyContent:"center",fontSize:abbr.length>1?11:16,fontWeight:800,transition:"all .15s"}}>{abbr}</div>
-                <span className="sh-lbl" style={{fontSize:10,fontWeight:600,color:C.g600,transition:"color .15s"}}>{name}</span>
-              </button>)}
-          </div>
-          <div style={{padding:"12px 14px",background:`${C.blue}06`,borderRadius:8,border:`1px solid ${C.blue}15`,fontSize:11,color:C.g500,lineHeight:1.6,marginTop:16}}>
-            <strong style={{color:C.g700}}>Tip:</strong> Post on Nextdoor, local Facebook Groups, and your district's official social accounts for maximum reach.
-          </div>
-        </div>
+    {/* ===== PARTNERS TAB ===== */}
+    {gTab===1&&<>
+      <div style={{display:"grid",gridTemplateColumns:"repeat(auto-fit,minmax(130px,1fr))",gap:10}}>
+        {[{label:"Total Partners",val:""+topCustData.length,clr:C.blue},{label:"Active",val:""+activeOrgs,clr:C.green},{label:"Needs Attention",val:""+lapsedOrgs,clr:lapsedOrgs>0?C.red:C.green},{label:"Total Revenue",val:"$"+totalRev.toLocaleString(),clr:C.blue}].map(function(m,i){return <Card key={i} style={{padding:"12px 14px",textAlign:"center"}}>
+          <div style={{fontSize:9,fontWeight:700,color:C.g400,textTransform:"uppercase",letterSpacing:"0.06em",marginBottom:4}}>{m.label}</div>
+          <div style={{fontSize:18,fontWeight:800,color:m.clr,fontFamily:numFont}}>{m.val}</div>
+        </Card>})}
       </div>
-    </div>}
+      <Card>
+        <Sec action={<button onClick={function(){setShowAllPartners(!showAllPartners)}} style={Object.assign({},btnO,{fontSize:11,padding:"5px 14px"})}>{showAllPartners?"Show Less":"Show All"}</button>} icon={I.users(13,C.g500)}>Partner Directory</Sec>
+        <div style={{display:"flex",flexDirection:"column",gap:0}}>
+          {(showAllPartners?topCustData:topCustData.slice(0,5)).map(function(c,i){
+            var contact=partnerContacts.find(function(p){return p.org===c.n});
+            var reviews=ratingsData.filter(function(r){return r.user===c.n});
+            var avg=reviews.length?(reviews.reduce(function(s,r){return s+r.rating},0)/reviews.length).toFixed(1):"--";
+            var lastBook=c.hist[0];
+            var daysSince=lastBook?Math.max(1,Math.floor((new Date("2026-02-21")-new Date(lastBook.date.replace(/(\d+)\/(\d+)\/(\d+)/,"$3-$1-$2")))/(864e5))):999;
+            var isLapsed=daysSince>30;
+            var isExp=expandedPartner===i;
+            return <div key={c.n} style={{borderBottom:i<(showAllPartners?topCustData.length:5)-1?"1px solid "+C.g100:"none"}}>
+              <div onClick={function(){setExpandedPartner(isExp?null:i)}} style={{display:"flex",alignItems:"center",gap:10,padding:"12px 0",cursor:"pointer"}} className="pp-renter-row">
+                <div style={{width:36,height:36,borderRadius:10,background:"linear-gradient(135deg,"+[C.blue,"#4DA8D8",C.orange,C.green,C.g500][i%5]+","+[C.blueDk,C.blue,C.amber,C.blueDk,C.g600][i%5]+")",display:"flex",alignItems:"center",justifyContent:"center",color:"#fff",fontWeight:800,fontSize:12,flexShrink:0}}>{c.photo}</div>
+                <div style={{flex:1,minWidth:0}}>
+                  <div style={{display:"flex",alignItems:"center",gap:6,flexWrap:"wrap"}}>
+                    <span style={{fontSize:13,fontWeight:700,color:C.g800}}>{c.n}</span>
+                    <span style={{fontSize:10,fontWeight:600,color:isLapsed?C.orange:C.green,background:isLapsed?C.orangeL:C.greenL,padding:"2px 6px",borderRadius:4}}>{isLapsed?"Lapsed":"Active"}</span>
+                  </div>
+                  <div style={{fontSize:10,color:C.g400,marginTop:2}}>{c.b} bookings - ${c.s.toLocaleString()} - {c.fav}</div>
+                </div>
+                <div style={{display:"flex",gap:4,flexShrink:0}} className="pp-renter-actions">
+                  <button onClick={function(e){e.stopPropagation();openEmail(isLapsed?"invite":"thanks",c)}} style={Object.assign({},btnO,{padding:"5px 10px",fontSize:10})}>{I.mail(10,C.g500)}</button>
+                  <button onClick={function(e){e.stopPropagation();globalShowCust(i)}} style={Object.assign({},btnO,{padding:"5px 10px",fontSize:10})}>View</button>
+                </div>
+                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke={C.g400} strokeWidth="2" strokeLinecap="round" style={{transition:"transform .15s",transform:isExp?"rotate(180deg)":"rotate(0)"}}><path d="M6 9l6 6 6-6"/></svg>
+              </div>
+              {isExp&&<div style={{padding:"0 0 14px 46px",animation:"slideUp .2s ease"}}>
+                {/* Relationship Timeline */}
+                {contact&&<div style={{display:"flex",gap:8,marginBottom:10,flexWrap:"wrap"}}>
+                  <div style={{flex:1,minWidth:140,padding:"10px 14px",background:C.g50,borderRadius:R.sm,border:"1px solid "+C.cardBorder}}>
+                    <div style={{fontSize:9,fontWeight:700,color:C.g400,textTransform:"uppercase",letterSpacing:"0.06em",marginBottom:4}}>Contact</div>
+                    <div style={{fontSize:13,fontWeight:600,color:C.g800}}>{contact.contact}</div>
+                    <div style={{fontSize:11,color:C.g500}}>{contact.title}</div>
+                    <div style={{fontSize:11,color:C.blue,marginTop:3,fontWeight:600}}>{contact.email}</div>
+                    <div style={{fontSize:11,color:C.g500}}>{contact.phone}</div>
+                  </div>
+                  <div style={{flex:1,minWidth:140,padding:"10px 14px",background:C.g50,borderRadius:R.sm,border:"1px solid "+C.cardBorder}}>
+                    <div style={{fontSize:9,fontWeight:700,color:C.g400,textTransform:"uppercase",letterSpacing:"0.06em",marginBottom:4}}>Relationship Timeline</div>
+                    <div style={{display:"flex",flexDirection:"column",gap:6}}>
+                      <div style={{display:"flex",alignItems:"center",gap:6}}>
+                        <div style={{width:6,height:6,borderRadius:3,background:C.green,flexShrink:0}}/>
+                        <span style={{fontSize:11,color:C.g600}}>Last booking: <strong>{lastBook?lastBook.date:"None"}</strong> ({daysSince}d ago)</span>
+                      </div>
+                      <div style={{display:"flex",alignItems:"center",gap:6}}>
+                        <div style={{width:6,height:6,borderRadius:3,background:C.blue,flexShrink:0}}/>
+                        <span style={{fontSize:11,color:C.g600}}>Last email: <strong>{contact.lastEmail}</strong></span>
+                      </div>
+                      <div style={{display:"flex",alignItems:"center",gap:6}}>
+                        <div style={{width:6,height:6,borderRadius:3,background:contact.nextBook?C.amber:C.g300,flexShrink:0}}/>
+                        <span style={{fontSize:11,color:C.g600}}>Next booking: <strong>{contact.nextBook||"None scheduled"}</strong></span>
+                      </div>
+                      <div style={{display:"flex",alignItems:"center",gap:6}}>
+                        <div style={{width:6,height:6,borderRadius:3,background:C.g400,flexShrink:0}}/>
+                        <span style={{fontSize:11,color:C.g600}}>Rating: <span style={{color:C.amber}}>{"\u2605"} {avg}</span> ({reviews.length} reviews)</span>
+                      </div>
+                    </div>
+                  </div>
+                </div>}
+                {!contact&&<div style={{padding:"10px 14px",background:C.g50,borderRadius:R.sm,border:"1px solid "+C.cardBorder,marginBottom:10}}>
+                  <span style={{fontSize:12,color:C.g400}}>No contact on file - <span style={{color:C.blue,cursor:"pointer",fontWeight:600}}>Add contact info</span></span>
+                </div>}
+                <div style={{display:"flex",gap:6}}>
+                  <button onClick={function(){openEmail(isLapsed?"invite":"thanks",c)}} style={Object.assign({},btnO,{padding:"6px 12px",fontSize:11})}>{I.mail(11,C.g500)} {isLapsed?"Re-engage":"Send Thanks"}</button>
+                  <button onClick={function(){openEmail("offer",c)}} style={Object.assign({},btnO,{padding:"6px 12px",fontSize:11})}>{I.calendar(11,C.g500)} Send Offer</button>
+                  <button onClick={function(){globalShowCust(i)}} style={Object.assign({},btnO,{padding:"6px 12px",fontSize:11})}>Full Profile</button>
+                </div>
+              </div>}
+            </div>
+          })}
+        </div>
+      </Card>
+    </>}
+    {/* ===== WIN REPORT TAB ===== */}
+    {gTab===2&&<>
+      <Card style={{border:"1px solid "+C.green+"20",background:"linear-gradient(135deg, "+C.cardBg+" 0%, "+C.greenL+" 100%)"}}>
+        <div style={{display:"flex",alignItems:"center",justifyContent:"space-between",marginBottom:16}}>
+          <div>
+            <div style={{fontSize:16,fontWeight:800,color:C.g800}}>Monthly Win Report</div>
+            <div style={{fontSize:12,color:C.g500,marginTop:2}}>A summary you can share with your superintendent or school board</div>
+          </div>
+          <div style={{display:"flex",gap:6}}>
+            <select value={winMonth} onChange={function(e){setWinMonth(e.target.value)}} style={Object.assign({},sel,{})}>
+              <option>Feb 2026</option><option>Jan 2026</option><option>Dec 2025</option>
+            </select>
+            <button onClick={function(){if(globalShowToast)globalShowToast({type:"success",title:"Report Copied",msg:"Win report summary copied to clipboard - paste into any email",color:C.green})}} style={Object.assign({},btnP,{padding:"8px 16px",fontSize:12})}>{I.copy(12,"#fff")} Copy Report</button>
+          </div>
+        </div>
+        {/* Key metrics */}
+        <div style={{display:"grid",gridTemplateColumns:"repeat(auto-fit,minmax(150px,1fr))",gap:10,marginBottom:16}}>
+          {[
+            {label:"Revenue Generated",val:"$"+thisMonthRev.toLocaleString(),change:"+"+revChange+"%",up:true},
+            {label:"Bookings Completed",val:""+Math.round(topCustData.reduce(function(s,c){return s+c.b},0)*0.35),change:"+12%",up:true},
+            {label:"Active Partners",val:""+activeOrgs,change:activeOrgs>3?"+1":"No change",up:activeOrgs>3},
+            {label:"Facility Utilization",val:util+"%",change:util>45?"+5%":"-2%",up:util>45},
+          ].map(function(m,i){return <div key={i} style={{padding:"14px 16px",background:C.cardBg,borderRadius:R.md,border:"1px solid "+C.cardBorder}}>
+            <div style={{fontSize:9,fontWeight:700,color:C.g400,textTransform:"uppercase",letterSpacing:"0.06em"}}>{m.label}</div>
+            <div style={{fontSize:22,fontWeight:800,color:C.g800,fontFamily:numFont,marginTop:4}}>{m.val}</div>
+            <div style={{fontSize:11,fontWeight:600,color:m.up?C.green:C.amber,marginTop:2}}>{m.change} vs last month</div>
+          </div>})}
+        </div>
+        {/* Highlights */}
+        <div style={{marginBottom:16}}>
+          <div style={{fontSize:13,fontWeight:700,color:C.g800,marginBottom:8}}>Highlights to Share</div>
+          <div style={{display:"flex",flexDirection:"column",gap:6}}>
+            {[
+              "Bayou City Volleyball renewed for their 6th consecutive month - our most loyal partner",
+              "Dutchtown Gymnasium hit "+Math.round(22/32*100)+"% utilization, up from 58% last quarter",
+              "Generated $"+thisMonthRev.toLocaleString()+" in facility rental revenue with zero additional staff",
+              "On track to exceed annual revenue target by 15% if current pace holds",
+              activeOrgs+" community organizations are actively using district facilities",
+            ].map(function(h,i){return <div key={i} style={{display:"flex",alignItems:"flex-start",gap:8,padding:"8px 0"}}>
+              <div style={{width:6,height:6,borderRadius:3,background:C.green,flexShrink:0,marginTop:5}}/>
+              <span style={{fontSize:12,color:C.g700,lineHeight:1.5}}>{h}</span>
+            </div>})}
+          </div>
+        </div>
+        {/* Export options */}
+        <div style={{display:"flex",gap:8,paddingTop:12,borderTop:"1px solid "+C.g200}}>
+          <button onClick={function(){if(globalShowToast)globalShowToast({type:"success",title:"Copied to Clipboard",msg:"Paste into an email to your superintendent",color:C.green})}} style={Object.assign({},btnO,{fontSize:12,padding:"8px 16px"})}>{I.copy(12,C.g500)} Copy as Email</button>
+          <button onClick={function(){if(globalShowToast)globalShowToast({type:"success",title:"PDF Generated",msg:"One-page board summary ready to print",color:C.green})}} style={Object.assign({},btnO,{fontSize:12,padding:"8px 16px"})}>{I.download(12,C.g500)} Download PDF</button>
+          <button onClick={function(){if(globalShowToast)globalShowToast({type:"success",title:"Report Scheduled",msg:"Monthly win report will email to you on the 1st",color:C.blue})}} style={Object.assign({},btnO,{fontSize:12,padding:"8px 16px"})}>{I.calendar(12,C.g500)} Auto-Send Monthly</button>
+        </div>
+      </Card>
+      {/* Partner Testimonials from NPS */}
+      <Card>
+        <Sec icon={I.mail(13,C.g500)}>Partner Feedback</Sec>
+        <div style={{fontSize:12,color:C.g500,lineHeight:1.5,marginBottom:14}}>Recent feedback from your community partners. High scores and positive comments make great talking points in budget conversations.</div>
+        {[
+          {org:"Bayou City Volleyball",score:9,comment:"Booking process is so much easier than calling the front office. Our coaches love being able to see availability in real-time.",contact:"Sarah Mitchell"},
+          {org:"Ascension Elite Cheer",score:10,comment:"The facility is always ready when we arrive. Having a dedicated booking system makes our scheduling seamless.",contact:"Brittany Fontenot"},
+          {org:"Louisiana Tigers AAU",score:8,comment:"Great facilities at fair prices. Would love to see Saturday morning slots open up more.",contact:"DeShawn Brooks"},
+        ].map(function(fb,i){return <div key={i} style={{padding:"14px 0",borderBottom:i<2?"1px solid "+C.g100:"none"}}>
+          <div style={{display:"flex",alignItems:"center",justifyContent:"space-between",marginBottom:6}}>
+            <div style={{display:"flex",alignItems:"center",gap:8}}>
+              <span style={{fontSize:13,fontWeight:700,color:C.g800}}>{fb.org}</span>
+              <span style={{fontSize:10,color:C.amber,fontWeight:600}}>{"\u2605"} {fb.score}/10</span>
+            </div>
+            <button onClick={function(){if(globalShowToast)globalShowToast({type:"success",title:"Quote Copied",msg:"Testimonial ready to paste",color:C.green})}} style={{background:"none",border:"none",cursor:"pointer",fontSize:10,color:C.blue,fontWeight:600,fontFamily:font}}>Copy Quote</button>
+          </div>
+          <div style={{fontSize:12,color:C.g600,lineHeight:1.6,fontStyle:"italic",paddingLeft:12,borderLeft:"2px solid "+C.g200}}>{'"'+fb.comment+'"'}</div>
+          <div style={{fontSize:10,color:C.g400,marginTop:4,paddingLeft:12}}>- {fb.contact}</div>
+        </div>})}
+      </Card>
+    </>}
+    {/* ===== BENCHMARKING TAB ===== */}
+    {gTab===3&&<>
+      <Card>
+        <Sec icon={I.chart(13,C.g500)}>How Am I Doing?</Sec>
+        <div style={{fontSize:12,color:C.g500,lineHeight:1.6,marginBottom:14}}>See how your program compares to similar-sized districts in Louisiana. Use these benchmarks to set goals and make the case for resources.</div>
+        <div style={{padding:"14px",borderRadius:R.md,background:C.g50,border:"1px solid "+C.cardBorder,marginBottom:16}}>
+          {[
+            {metric:"Facility Utilization",yours:""+util+"%",avg:"61%",top:"78%",status:util>=61?"above":"below"},
+            {metric:"Revenue per Facility",yours:"$4,362",avg:"$5,100",top:"$7,200",status:"below"},
+            {metric:"Active Partners",yours:""+activeOrgs,avg:"8",top:"14",status:activeOrgs>=8?"above":"below"},
+            {metric:"Avg Booking Rate",yours:"$318",avg:"$290",top:"$385",status:"above"},
+            {metric:"Partner Retention",yours:"80%",avg:"72%",top:"91%",status:"above"},
+            {metric:"Weekday Morning Fill",yours:"22%",avg:"38%",top:"55%",status:"below"},
+          ].map(function(b,i,arr){return <div key={i} style={{display:"flex",alignItems:"center",gap:12,padding:"10px 0",borderBottom:i<arr.length-1?"1px solid "+C.g200:"none"}}>
+            <span style={{fontSize:12,fontWeight:600,color:C.g700,flex:1,minWidth:0}}>{b.metric}</span>
+            <span style={{fontSize:13,fontWeight:800,color:b.status==="above"?C.green:C.amber,fontFamily:numFont,width:60}}>{b.yours}</span>
+            <span style={{fontSize:11,color:C.g400,width:55}}>Avg: {b.avg}</span>
+            <span style={{fontSize:11,color:C.g400,width:55}}>Top: {b.top}</span>
+            <span style={{fontSize:9,fontWeight:700,color:b.status==="above"?C.green:C.amber,background:b.status==="above"?C.greenL:C.amberL,padding:"2px 6px",borderRadius:3,textTransform:"uppercase"}}>{b.status}</span>
+          </div>})}
+        </div>
+        <div style={{padding:"14px 16px",borderRadius:R.md,background:"linear-gradient(135deg, "+C.blueL+", "+C.greenL+")",border:"1px solid "+C.cardBorder}}>
+          <div style={{fontSize:12,fontWeight:700,color:C.g800,marginBottom:6}}>Your Biggest Opportunity</div>
+          <div style={{fontSize:12,color:C.g600,lineHeight:1.6}}>Weekday mornings are your biggest gap. Top districts fill these by partnering with homeschool co-ops, senior fitness groups, and corporate wellness programs. Closing the gap from 22% to the average of 38% could add ~$2,800/month.</div>
+        </div>
+      </Card>
+      {/* Facility breakdown */}
+      <Card>
+        <Sec icon={I.bar(13,C.g500)}>Facility Utilization</Sec>
+        {facs.map(function(f,i){var pct=Math.round(f.bk/f.cap*100);var clr=pct>=60?C.green:pct>=40?C.amber:C.red;return <div key={i} style={{padding:"14px 0",borderBottom:i<facs.length-1?"1px solid "+C.g100:"none"}}>
+          <div style={{display:"flex",justifyContent:"space-between",alignItems:"flex-start",marginBottom:6}}>
+            <div><div style={{fontSize:13,fontWeight:700,color:C.g800}}>{f.name}</div><div style={{fontSize:10,color:C.g400,marginTop:2}}>{f.campus} - Peak: {f.peak} - ${f.rev.toLocaleString()}</div></div>
+            <div style={{textAlign:"right",flexShrink:0}}><div style={{fontSize:18,fontWeight:800,color:clr,fontFamily:numFont}}>{pct}%</div></div>
+          </div>
+          <div style={{height:4,background:C.g200,borderRadius:2,overflow:"hidden",marginBottom:4}}><div style={{width:pct+"%",height:"100%",borderRadius:2,background:clr}}/></div>
+          <div style={{fontSize:10,color:C.g400}}>Open: {f.gaps.join(", ")}</div>
+        </div>})}
+      </Card>
+      {/* Seasonal Calendar */}
+      <Card>
+        <Sec icon={I.calendar(13,C.g500)}>Seasonal Planning</Sec>
+        <div style={{fontSize:12,color:C.g500,lineHeight:1.6,marginBottom:14}}>Key windows to get ahead of demand. Proactive outreach during these periods consistently outperforms reactive responses.</div>
+        {[
+          {season:"Spring Sports Registration",timeline:"Now - Mar 1",insight:"Youth baseball, softball, and track organizations are booking now. First-movers lock the best slots.",priority:"high"},
+          {season:"Summer Registration",timeline:"Opens Mar 15",insight:"Last year's summer bookers haven't re-registered yet. Early outreach locks in revenue.",priority:"medium"},
+          {season:"Back-to-School Rush",timeline:"Jul 15 - Aug 15",insight:"Cheer, dance, and volleyball book heavily here. Flexible evening hours see 2x demand.",priority:"low"},
+        ].map(function(s,i){return <div key={i} style={{padding:"12px 0",borderBottom:i<2?"1px solid "+C.g100:"none"}}>
+          <div style={{display:"flex",alignItems:"center",gap:8,marginBottom:4}}>
+            <span style={{fontSize:13,fontWeight:700,color:C.g800}}>{s.season}</span>
+            <span style={{fontSize:9,fontWeight:700,color:s.priority==="high"?C.red:s.priority==="medium"?C.amber:C.green,background:s.priority==="high"?C.redL:s.priority==="medium"?C.amberL:C.greenL,padding:"2px 6px",borderRadius:3}}>{s.timeline}</span>
+          </div>
+          <div style={{fontSize:11,color:C.g500,lineHeight:1.5}}>{s.insight}</div>
+        </div>})}
+      </Card>
+    </>}
+    {/* Default state - no tab selected, show brief overview cards */}
+    {gTab===-1&&<>
+      <div style={{display:"grid",gridTemplateColumns:"repeat(auto-fit,minmax(220px,1fr))",gap:12}}>
+        {[
+          {title:"Outreach Tools",desc:"Email templates, quick replies, booking page sharing, and printable materials",icon:I.mail(18,C.blue),clr:C.blue,tab:0,stat:quickReplies.length+" quick replies, 4 templates"},
+          {title:"Partner Directory",desc:"Contact info, relationship timelines, and booking history for all "+topCustData.length+" partners",icon:I.users(18,C.green),clr:C.green,tab:1,stat:activeOrgs+" active, "+lapsedOrgs+" need attention"},
+          {title:"Win Report",desc:"One-click summaries for your superintendent. Revenue, highlights, and testimonials",icon:I.star(18,C.amber),clr:C.amber,tab:2,stat:"$"+thisMonthRev.toLocaleString()+" this month"},
+          {title:"Benchmarking",desc:"How your program compares to peer districts plus facility utilization details",icon:I.chart(18,C.purple),clr:C.purple,tab:3,stat:util+"% utilization vs 61% avg"},
+        ].map(function(card,i){return <div key={i} onClick={function(){setGTab(card.tab)}} style={{padding:"20px",background:C.cardBg,borderRadius:R.lg,border:"1px solid "+C.cardBorder,cursor:"pointer",transition:"all .15s",boxShadow:C.cardShadow}} onMouseEnter={function(e){e.currentTarget.style.borderColor=card.clr;e.currentTarget.style.transform="translateY(-2px)";e.currentTarget.style.boxShadow="0 8px 24px "+card.clr+"15"}} onMouseLeave={function(e){e.currentTarget.style.borderColor=C.cardBorder;e.currentTarget.style.transform="none";e.currentTarget.style.boxShadow=C.cardShadow}}>
+          <div style={{width:40,height:40,borderRadius:10,background:card.clr+"12",display:"flex",alignItems:"center",justifyContent:"center",marginBottom:12}}>{card.icon}</div>
+          <div style={{fontSize:14,fontWeight:700,color:C.g800,marginBottom:4}}>{card.title}</div>
+          <div style={{fontSize:11,color:C.g500,lineHeight:1.5,marginBottom:8}}>{card.desc}</div>
+          <div style={{fontSize:10,fontWeight:600,color:card.clr}}>{card.stat}</div>
+        </div>})}
+      </div>
+    </>}
+    {/* Share modal */}
+    {showShare&&<div onClick={function(){setShowShare(false)}} style={{position:"fixed",inset:0,background:"rgba(15,23,42,0.35)",zIndex:199,display:"flex",alignItems:"center",justifyContent:"center"}}><div onClick={function(e){e.stopPropagation()}} style={{background:C.cardBg,borderRadius:R.lg,padding:"24px",width:360,maxWidth:"90vw",boxShadow:"0 20px 60px rgba(0,0,0,0.2)"}}>
+      <div style={{display:"flex",justifyContent:"space-between",alignItems:"center",marginBottom:16}}><span style={{fontSize:15,fontWeight:800,color:C.g800}}>Share Booking Page</span><button onClick={function(){setShowShare(false)}} style={{background:C.g100,border:"none",width:28,height:28,borderRadius:8,cursor:"pointer",display:"flex",alignItems:"center",justifyContent:"center"}}>{I.x(12,C.g500)}</button></div>
+      <div style={{padding:"10px 12px",background:C.g50,borderRadius:R.sm,border:"1px solid "+C.cardBorder,fontSize:12,color:C.g600,marginBottom:12,wordBreak:"break-all"}}>{ppUrl}</div>
+      <div style={{display:"grid",gridTemplateColumns:"1fr 1fr",gap:8}}>
+        {[{l:"Copy Link",fn:doCopy},{l:"Email",fn:function(){}},{l:"Facebook",fn:function(){}},{l:"X / Twitter",fn:function(){}}].map(function(b,i){return <button key={i} onClick={function(){b.fn();setShowShare(false)}} style={Object.assign({},btnO,{justifyContent:"center",padding:"10px"})}>
+          {b.l}
+        </button>})}
+      </div>
+    </div></div>}
   </div>
 }
 /* ======== APP SHELL ======== */
@@ -3985,6 +4130,7 @@ let globalShowToast=()=>{};
 let globalCreateRes=()=>{};
 let globalShowCust=()=>{};
 let globalShowPay=null;
+let globalNpsState="idle";let globalSetNpsState=null;let globalNpsScore=null;let globalSetNpsScore=null;let globalNpsFeedback="";let globalSetNpsFeedback=null;
 let globalSetShowPay=()=>{};
 let globalSetRt=()=>{};
 let globalShowReferral=()=>{};
@@ -4084,6 +4230,7 @@ export default function App(){
   globalApprovals=approvals;globalSetApprovals=setApprovals;globalPrompt=prompt;globalSetPrompt=setPrompt;
   globalRequireSiteAdmin=requireSiteAdmin;globalSetRequireSiteAdmin=setRequireSiteAdmin;globalAssignedAdmins=assignedAdmins;globalSetAssignedAdmins=setAssignedAdmins;
   globalNotifs=notifs;
+  globalNpsState=npsState;globalSetNpsState=setNpsState;globalNpsScore=npsScore;globalSetNpsScore=setNpsScore;globalNpsFeedback=npsFeedback;globalSetNpsFeedback=setNpsFeedback;
   /* Cmd+K listener */
   useEffect(()=>{
     const handler=(e)=>{if((e.metaKey||e.ctrlKey)&&e.key==="k"){e.preventDefault();setCmdOpen(o=>!o)}};
@@ -4189,7 +4336,7 @@ export default function App(){
       .pp-side-btn.active{background:${C.blueL};color:${C.blue};font-weight:700;box-shadow:inset 3px 0 0 ${C.green}}
       .pp-side-label{opacity:${sideOpen?1:0};width:${sideOpen?"auto":"0px"};overflow:hidden;transition:opacity .15s .05s,width .2s;font-size:13px}
       .pp-side-badge{
-        margin-left:auto;background:${C.blue};color:#fff;
+        margin-left:auto;background:${C.green};color:#fff;
         font-size:9px;font-weight:800;padding:2px 6px;border-radius:8px;
         opacity:${sideOpen?1:0};transition:opacity .15s;
       }
@@ -4666,6 +4813,45 @@ export default function App(){
           </div>
         </div>
       </div>
+      {/* NPS - full width gradient strip below topbar */}
+      {npsState!=="done"&&npsState!=="dismissed"&&<div style={{background:"linear-gradient(135deg, #2563EB 0%, #16A34A 100%)",borderBottom:"1px solid rgba(255,255,255,0.1)"}}>
+        <div style={{maxWidth:1200,margin:"0 auto",padding:"0 28px"}}>
+          {npsState==="idle"&&<div style={{display:"flex",alignItems:"center",justifyContent:"space-between",padding:"10px 0"}}>
+            <div style={{display:"flex",alignItems:"center",gap:10}}>
+              <div style={{width:24,height:24,borderRadius:6,background:"rgba(255,255,255,0.15)",display:"flex",alignItems:"center",justifyContent:"center"}}>{I.star(12,"#fff")}</div>
+              <span style={{fontSize:13,fontWeight:600,color:"#fff"}}>How's PracticePlan working for you?</span>
+              <span style={{fontSize:11,color:"rgba(255,255,255,0.65)"}}>Takes 10 seconds</span>
+            </div>
+            <div style={{display:"flex",gap:6,alignItems:"center"}}>
+              <button onClick={()=>setNpsState("ask")} style={{padding:"6px 16px",borderRadius:6,border:"1.5px solid rgba(255,255,255,0.3)",background:"rgba(255,255,255,0.12)",color:"#fff",fontSize:11,fontWeight:700,cursor:"pointer",fontFamily:font,transition:"all .15s",backdropFilter:"blur(4px)"}} onMouseEnter={e=>{e.currentTarget.style.background="rgba(255,255,255,0.25)"}} onMouseLeave={e=>{e.currentTarget.style.background="rgba(255,255,255,0.12)"}}>Share Feedback</button>
+              <button onClick={()=>setNpsState("dismissed")} style={{background:"none",border:"none",cursor:"pointer",padding:4,opacity:0.6}} onMouseEnter={e=>{e.currentTarget.style.opacity="1"}} onMouseLeave={e=>{e.currentTarget.style.opacity="0.6"}}>{I.x(13,"#fff")}</button>
+            </div>
+          </div>}
+          {npsState==="ask"&&<div style={{padding:"14px 0"}}>
+            <div style={{display:"flex",alignItems:"center",justifyContent:"space-between",marginBottom:10}}>
+              <span style={{fontSize:13,fontWeight:700,color:"#fff"}}>How likely are you to recommend PracticePlan to a colleague?</span>
+              <button onClick={()=>setNpsState("dismissed")} style={{background:"none",border:"none",cursor:"pointer",padding:2,opacity:0.6}} onMouseEnter={e=>{e.currentTarget.style.opacity="1"}} onMouseLeave={e=>{e.currentTarget.style.opacity="0.6"}}>{I.x(13,"#fff")}</button>
+            </div>
+            <div style={{display:"flex",gap:4,marginBottom:6}}>
+              {[0,1,2,3,4,5,6,7,8,9,10].map(function(n){var selected=npsScore===n;return <button key={n} onClick={()=>{setNpsScore(n);setNpsState("followup")}} style={{flex:1,padding:"9px 0",borderRadius:6,border:selected?"2px solid #fff":"1.5px solid rgba(255,255,255,0.25)",background:selected?"rgba(255,255,255,0.25)":"rgba(255,255,255,0.06)",color:"#fff",fontSize:13,fontWeight:selected?800:600,cursor:"pointer",fontFamily:font,transition:"all .12s",backdropFilter:"blur(4px)"}} onMouseEnter={e=>{if(!selected){e.currentTarget.style.background="rgba(255,255,255,0.15)";e.currentTarget.style.borderColor="rgba(255,255,255,0.4)"}}} onMouseLeave={e=>{if(!selected){e.currentTarget.style.background="rgba(255,255,255,0.06)";e.currentTarget.style.borderColor="rgba(255,255,255,0.25)"}}}>{n}</button>})}
+            </div>
+            <div style={{display:"flex",justifyContent:"space-between",fontSize:10,color:"rgba(255,255,255,0.5)"}}><span>Not likely</span><span>Extremely likely</span></div>
+          </div>}
+          {npsState==="followup"&&<div style={{padding:"14px 0"}}>
+            <div style={{display:"flex",alignItems:"center",justifyContent:"space-between",marginBottom:10}}>
+              <div style={{display:"flex",alignItems:"center",gap:8}}>
+                <div style={{width:32,height:32,borderRadius:8,background:"rgba(255,255,255,0.15)",display:"flex",alignItems:"center",justifyContent:"center"}}><span style={{fontSize:16,fontWeight:800,color:"#fff",fontFamily:numFont}}>{npsScore}</span></div>
+                <span style={{fontSize:13,fontWeight:700,color:"#fff"}}>{npsScore>=9?"Awesome! What do you love most?":npsScore>=7?"Thanks! What could be better?":"What should we improve?"}</span>
+              </div>
+              <button onClick={()=>setNpsState("dismissed")} style={{background:"none",border:"none",cursor:"pointer",padding:2,opacity:0.6}} onMouseEnter={e=>{e.currentTarget.style.opacity="1"}} onMouseLeave={e=>{e.currentTarget.style.opacity="0.6"}}>{I.x(13,"#fff")}</button>
+            </div>
+            <div style={{display:"flex",gap:10,alignItems:"flex-end"}}>
+              <textarea value={npsFeedback} onChange={e=>setNpsFeedback(e.target.value)} placeholder="Tell us what's on your mind..." rows={2} style={{flex:1,padding:"8px 12px",border:"1.5px solid rgba(255,255,255,0.2)",borderRadius:R.sm,fontSize:12,fontFamily:font,resize:"none",color:"#fff",boxSizing:"border-box",background:"rgba(255,255,255,0.08)",backdropFilter:"blur(4px)"}}/>
+              <button onClick={()=>{setNpsState("done");if(globalShowToast)globalShowToast({type:"success",title:"Thanks for your feedback!",msg:npsFeedback?"Your response has been recorded":"Score recorded",color:C.green})}} style={{padding:"9px 20px",borderRadius:6,border:"none",background:"#fff",color:"#2563EB",fontSize:12,fontWeight:700,cursor:"pointer",fontFamily:font,flexShrink:0}}>{npsFeedback?"Submit":"Skip"}</button>
+            </div>
+          </div>}
+        </div>
+      </div>}
       {/* Main content */}
       <main className="pp-main" onClick={()=>{showNotifs&&setShowNotifs(false)}}>
         <div key={pageKey} className="pp-page-enter">
@@ -4837,7 +5023,6 @@ export default function App(){
     <button onClick={()=>setHelpOpen(!helpOpen)} style={{position:"fixed",bottom:24,right:24,width:52,height:52,borderRadius:26,background:helpOpen?C.g600:C.blue,color:"#fff",border:"none",boxShadow:`0 4px 16px rgba(0,0,0,${dark?0.3:0.2})`,cursor:"pointer",display:"flex",alignItems:"center",justifyContent:"center",zIndex:250,transition:"all .2s"}} className="pp-help-fab">
       {helpOpen?I.x(22,"#fff"):<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#fff" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>}
     </button>
-    {/* NPS Survey - inline banner, not overlay */}
     {/* App-level panels (outside pp-main for mobile z-index) */}
     {appSelCust!==null&&<CustomerPanel cust={topCustData[appSelCust]} onClose={()=>setAppSelCust(null)}/>}
     {appSelFacility!==null&&<FacilityPanel selFacility={appSelFacility} setSelFacility={setAppSelFacility}/>}
