@@ -4333,7 +4333,7 @@ export default function App(){
         min-height:38px;
       }
       .pp-side-btn:hover{background:${C.g100};color:${C.g800}}
-      .pp-side-btn.active{background:${C.blueL};color:${C.blue};font-weight:700;box-shadow:inset 3px 0 0 ${C.green}}
+      .pp-side-btn.active{background:${C.blueL};color:${C.blue};font-weight:700}
       .pp-side-label{opacity:${sideOpen?1:0};width:${sideOpen?"auto":"0px"};overflow:hidden;transition:opacity .15s .05s,width .2s;font-size:13px}
       .pp-side-badge{
         margin-left:auto;background:${C.green};color:#fff;
@@ -4556,10 +4556,10 @@ export default function App(){
         transition:color .2s, border-color .25s cubic-bezier(.22,1,.36,1), font-weight .1s, background .15s !important;
       }
       /* ===== SIDEBAR ACTIVE GLOW ===== */
-      .pp-side-btn.active{position:relative}
+      .pp-side-btn.active{position:relative;overflow:hidden}
       .pp-side-btn.active::before{
-        content:'';position:absolute;left:0;top:50%;transform:translateY(-50%);
-        width:3px;height:20px;border-radius:0 3px 3px 0;background:${C.blue};
+        content:'';position:absolute;left:0;top:0;bottom:0;
+        width:3px;border-radius:3px;background:${C.green};
         animation:popIn .25s cubic-bezier(.22,1,.36,1) forwards;
       }
       /* ===== BADGE POP ===== */
