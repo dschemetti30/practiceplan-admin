@@ -1429,8 +1429,8 @@ function Rentals(){
       return <>
         {/* Summary metrics */}
         <div style={{display:"grid",gridTemplateColumns:"repeat(auto-fit,minmax(130px,1fr))",gap:10}}>
-          {[{label:"Active Promos",val:`${activePromos.length}`,clr:C.green},{label:"Total Redemptions",val:`${totalUsed}`,clr:C.blue},{label:"All Promos",val:`${promos.length}`,clr:C.g700}].map((m,i)=><Card key={i} style={{padding:"12px 14px",textAlign:"center"}}>
-            <div style={{fontSize:9,fontWeight:700,color:C.g400,textTransform:"uppercase",letterSpacing:"0.06em",marginBottom:4}}>{m.label}</div>
+          {[{label:"Active\nPromos",val:`${activePromos.length}`,clr:C.green},{label:"Total\nRedemptions",val:`${totalUsed}`,clr:C.blue},{label:"All\nPromos",val:`${promos.length}`,clr:C.g700}].map((m,i)=><Card key={i} style={{padding:"12px 14px",textAlign:"center",flex:"1 1 0",minWidth:0}}>
+            <div style={{fontSize:9,fontWeight:700,color:C.g400,textTransform:"uppercase",letterSpacing:"0.06em",marginBottom:4,whiteSpace:"pre-line",lineHeight:1.4}}>{m.label}</div>
             <div style={{fontSize:18,fontWeight:800,color:m.clr,fontFamily:numFont}}>{m.val}</div>
           </Card>)}
         </div>
