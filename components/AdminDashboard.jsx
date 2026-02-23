@@ -1072,7 +1072,7 @@ function Dashboard(){
     </Card>
     {/* Asset Performance + Recent Activity */}
     <Card><Sec action={<div style={{display:"flex",gap:4}}>{["day","week","month","year"].map(p=><button key={p} onClick={()=>setAssetRange(p)} style={pill(assetRange===p)}>{p.charAt(0).toUpperCase()+p.slice(1)}</button>)}</div>} icon={I.bar(13,C.g500)}>Asset Performance</Sec>
-      <div className="pp-table-wrap"><table style={{width:"100%",borderCollapse:"collapse",fontSize:13}}><thead><tr>{["Asset","Revenue","Bookings","Utilization"].map(h=><th key={h} style={_TH()}>{h}</th>)}</tr></thead><tbody>{ap.map((x,i)=><tr key={x.a} style={{background:i%2===0?C.g50:C.cardBg}}><td style={{..._TD(),fontWeight:600,color:C.g700}}>{x.a}</td><td style={{..._TD(),fontWeight:700,color:C.g800}}>${x.r.toFixed(2)}</td><td style={_TD()}>{x.b}</td><td style={_TD()}><div style={{display:"flex",alignItems:"center",gap:8}}><ProgressRing pct={x.u} size={32} stroke={3}/><span style={{fontSize:11,fontWeight:700,color:C.g600}}>{x.u}%</span></div></td></tr>)}</tbody></table></div>
+      <div className="pp-table-wrap pp-num-table"><table style={{width:"100%",borderCollapse:"collapse",fontSize:13}}><thead><tr>{["Asset","Revenue","Bookings","Utilization"].map(h=><th key={h} style={_TH()}>{h}</th>)}</tr></thead><tbody>{ap.map((x,i)=><tr key={x.a} style={{background:i%2===0?C.g50:C.cardBg}}><td style={{..._TD(),fontWeight:600,color:C.g700}}>{x.a}</td><td style={{..._TD(),fontWeight:700,color:C.g800}}>${x.r.toFixed(2)}</td><td style={_TD()}>{x.b}</td><td style={_TD()}><div style={{display:"flex",alignItems:"center",gap:8}}><ProgressRing pct={x.u} size={32} stroke={3}/><span style={{fontSize:11,fontWeight:700,color:C.g600}}>{x.u}%</span></div></td></tr>)}</tbody></table></div>
       <div style={{marginTop:14,padding:"10px 14px",background:C.g50,borderRadius:8,display:"flex",justifyContent:"space-between",fontSize:12}}><span style={{color:C.g400}}>Total ({assetRange})</span><span style={{fontWeight:800,color:C.g800}}>${ap.reduce((s,x)=>s+x.r,0).toFixed(2)}</span></div>
       <div style={{marginTop:16,borderTop:`1px solid ${C.g200}`,paddingTop:14}}>
         <div onClick={()=>setShowActivity(!showActivity)} style={{display:"flex",alignItems:"center",justifyContent:"space-between",cursor:"pointer"}}>
@@ -2842,7 +2842,7 @@ function Reporting(){
           <input type="text" placeholder="Search organization..." style={{padding:"8px 14px",border:`1px solid ${C.cardBorder}`,borderRadius:R.sm,fontSize:12,fontFamily:font,width:190,background:C.g50,color:C.g700,boxSizing:"border-box"}}/>
         </div>
         {/* Transactions table */}
-        <Card np><div className="pp-table-wrap"><table style={{width:"100%",borderCollapse:"collapse",fontSize:13}}><thead><tr>{["Date","Facility","Organization","Bookings","Amount","Status"].map(h=><th key={h} style={_TH()}>{h}</th>)}</tr></thead>
+        <Card np><div className="pp-table-wrap pp-num-table"><table style={{width:"100%",borderCollapse:"collapse",fontSize:13}}><thead><tr>{["Date","Facility","Organization","Bookings","Amount","Status"].map(h=><th key={h} style={_TH()}>{h}</th>)}</tr></thead>
           <tbody>{filtered.length===0?<tr><td colSpan={6}><Empty icon={I.wallet(22,C.g300)} title="No transactions found" desc="No bulk payments match the current filter." action="Show All" onAction={()=>setPayStatusFilt("all")}/></td></tr>:filtered.map((p,i)=><tr key={i} onClick={()=>globalSetShowPay(p)} style={{background:i%2===0?C.g50:C.cardBg,cursor:"pointer",transition:"background .12s"}} onMouseEnter={e=>e.currentTarget.style.background=C.blueL} onMouseLeave={e=>e.currentTarget.style.background=i%2===0?C.g50:C.cardBg}>
             <td style={{..._TD(),color:C.g500}}><div style={{fontWeight:600,color:C.g700}}>{p.date}</div><div style={{fontSize:11}}>{p.time}</div></td>
             <td style={{..._TD(),color:C.g500,fontSize:12}}>{p.fac}</td>
@@ -2995,7 +2995,7 @@ function RevByFacility(){
     <Div>Results</Div>
     <Card>
       <div className="pp-report-results-hdr" style={{display:"flex",justifyContent:"space-between",alignItems:"center",marginBottom:16,gap:8,flexWrap:"wrap"}}><div><span style={{fontSize:15,fontWeight:800,color:C.g800}}>Results Found: {filtered.length}</span></div></div>
-      <div className="pp-table-wrap"><table style={{width:"100%",borderCollapse:"collapse",fontSize:13,minWidth:700}}><thead><tr>{["Facility","Campus","Bookings","Revenue","Utilization","Avg Rate","Top Participant","% of Total",""].map(h=><th key={h} style={_TH()}>{h}</th>)}</tr></thead>
+      <div className="pp-table-wrap pp-num-table"><table style={{width:"100%",borderCollapse:"collapse",fontSize:13,minWidth:700}}><thead><tr>{["Facility","Campus","Bookings","Revenue","Utilization","Avg Rate","Top Participant","% of Total",""].map(h=><th key={h} style={_TH()}>{h}</th>)}</tr></thead>
         <tbody>{filtered.map((f,i)=><React.Fragment key={f.a}>
           <tr style={{background:i%2===0?C.g50:C.cardBg,cursor:"pointer"}} onClick={()=>setExpanded(expanded===f.a?null:f.a)}>
             <td style={{..._TD(),fontWeight:600,color:C.g700}}>{f.a}</td>
@@ -3061,7 +3061,7 @@ function RevByParticipant(){
           <span style={{fontSize:12,color:C.g400}}>{filtered.length} {filtered.length===1?"result":"results"}</span>
         </div>
       </div>
-      <div className="pp-table-wrap">
+      <div className="pp-table-wrap pp-num-table">
       <table style={{width:"100%",borderCollapse:"collapse",fontSize:13,minWidth:800}}>
         <thead><tr>
           {["Participant","Bookings","Total Revenue","Avg / Booking","Favorite Facility","Since","Trend",""].map(h=><th key={h} style={{..._TH(),padding:"10px 12px"}}>{h}</th>)}
@@ -3170,12 +3170,12 @@ function PayoutsReport(){
       </Card>
       <Card style={{padding:"20px 18px"}}>
         <div style={{fontSize:10,fontWeight:700,color:C.g400,textTransform:"uppercase",letterSpacing:"0.06em"}}>Net to District</div>
-        <div style={{fontSize:28,fontWeight:900,color:C.green,marginTop:6}}>${(successAmt*0.95).toLocaleString(undefined,{minimumFractionDigits:2,maximumFractionDigits:2})}</div>
+        <div style={{fontSize:28,fontWeight:900,color:C.green,marginTop:6,fontFamily:numFont}}>${(successAmt*0.95).toLocaleString(undefined,{minimumFractionDigits:2,maximumFractionDigits:2})}</div>
         <div style={{fontSize:11,color:C.g400,marginTop:4}}>After fees</div>
       </Card>
       {failedAmt>0&&<Card style={{padding:"20px 18px",border:`1px solid ${C.red}20`}}>
         <div style={{fontSize:10,fontWeight:700,color:C.red,textTransform:"uppercase",letterSpacing:"0.06em"}}>Failed / At Risk</div>
-        <div style={{fontSize:28,fontWeight:900,color:C.red,marginTop:6}}>${failedAmt.toLocaleString(undefined,{minimumFractionDigits:2,maximumFractionDigits:2})}</div>
+        <div style={{fontSize:28,fontWeight:900,color:C.red,marginTop:6,fontFamily:numFont}}>${failedAmt.toLocaleString(undefined,{minimumFractionDigits:2,maximumFractionDigits:2})}</div>
         <div style={{fontSize:11,color:C.g400,marginTop:4}}>Requires attention</div>
       </Card>}
     </div>
@@ -3183,7 +3183,7 @@ function PayoutsReport(){
     <Div>Monthly Payouts</Div>
     <Card>
       <Sec icon={I.wallet(13,C.g500)}>Monthly Payout Summary</Sec>
-      <div className="pp-table-wrap">
+      <div className="pp-table-wrap pp-num-table">
       <table style={{width:"100%",borderCollapse:"collapse",fontSize:13,minWidth:600}}>
         <thead><tr>{["Month","Gross Amount","Fee (5%)","Net Payout","Transactions","Status","Deposit Date"].map(h=><th key={h} style={{..._TH(),padding:"10px 12px"}}>{h}</th>)}</tr></thead>
         <tbody>{payoutsData.map((p,i)=>{const txnCount=[4,5,3,8,6][i]||0;const fee=p.total*0.05;const net=p.total-fee;
@@ -3215,7 +3215,7 @@ function PayoutsReport(){
           <span style={{fontSize:12,color:C.g400}}>{filtered.length} {filtered.length===1?"transaction":"transactions"}</span>
         </div>
       </div>
-      <div style={{overflowX:"auto"}}>
+      <div className="pp-num-table" style={{overflowX:"auto"}}>
         <table style={{width:"100%",borderCollapse:"collapse",fontSize:12,minWidth:900}}>
           <thead><tr>{["ID","Updated At","Res ID","Asset","Campus","Transfer Date","Amount","Discount","Status",""].map(h=><th key={h} style={{..._TH(),fontSize:9,padding:"8px 10px"}}>{h}</th>)}</tr></thead>
           <tbody>{shown.map((t,i)=><React.Fragment key={t.id}>
@@ -3407,7 +3407,7 @@ function Users(){
     </div>
     {/* Staff table */}
     <Card np>
-      <div className="pp-table-wrap">
+      <div className="pp-table-wrap pp-num-table">
       <table style={{width:"100%",borderCollapse:"collapse",fontSize:13,minWidth:700}}>
         <thead><tr>{["","Staff Member","Email","Role","Campus","Phone","Last Active",""].map(h=><th key={h} style={_TH()}>{h}</th>)}</tr></thead>
         <tbody>{filtered.length===0?<tr><td colSpan={8}><Empty icon={I.user(22,C.g300)} title="No staff members found" desc="Try adjusting your search or role filter." action="Clear Filters" onAction={()=>{setSearch("");setRoleFilter("all")}}/></td></tr>:filtered.map((u,i)=><tr key={u.name} style={{background:i%2===0?C.g50:C.cardBg}}>
@@ -4294,6 +4294,7 @@ export default function App(){
       *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
       .pp-num{font-family:'DM Sans','Montserrat',sans-serif;font-variant-numeric:tabular-nums}
       .pp-shell td{font-family:'Montserrat',sans-serif}
+      .pp-num-table td{font-family:'DM Sans','Montserrat',sans-serif;font-variant-numeric:tabular-nums}
       .pp-shell .pp-met{font-variant-numeric:tabular-nums}
       .pp-shell .pp-card [style*="fontWeight"]{font-variant-numeric:tabular-nums}
       .pp-shell{font-variant-numeric:tabular-nums}
