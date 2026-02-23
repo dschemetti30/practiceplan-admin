@@ -429,7 +429,7 @@ const I={
   layers:(s=14,c=C.g500)=><svg width={s} height={s} viewBox="0 0 24 24" fill="none" stroke={c} strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><polygon points="12 2 2 7 12 12 22 7 12 2"/><polyline points="2 17 12 22 22 17"/><polyline points="2 12 12 17 22 12"/></svg>,
   bar:(s=14,c=C.g500)=><svg width={s} height={s} viewBox="0 0 24 24" fill="none" stroke={c} strokeWidth="2" strokeLinecap="round"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg>,
 };
-const _TH=()=>({textAlign:"left",padding:"11px 16px",color:C.g500,fontWeight:700,fontSize:10,textTransform:"uppercase",letterSpacing:"0.08em",borderBottom:`2px solid ${C.g200}`,background:C.g50});
+const _TH=()=>({textAlign:"left",padding:"11px 16px",color:C.g500,fontWeight:700,fontSize:10,textTransform:"uppercase",letterSpacing:"0.08em",borderBottom:`2px solid ${C.g200}`,background:C.cardBg});
 const _TD=()=>({padding:"12px 16px",fontSize:13,borderBottom:`1px solid ${C.g100}`});
 const _sel=()=>({padding:"9px 34px 9px 12px",border:`1.5px solid ${C.cardBorder}`,borderRadius:R.sm,fontSize:13,color:C.g700,background:C.cardBg,appearance:"none",backgroundImage:`url("data:image/svg+xml,%3Csvg width='10' height='6' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M1 1l4 4 4-4' stroke='%2394A3B8' stroke-width='1.5' fill='none'/%3E%3C/svg%3E")`,backgroundRepeat:"no-repeat",backgroundPosition:"right 10px center",cursor:"pointer",fontWeight:600,fontFamily:font,transition:"border-color .2s, box-shadow .2s"});
 const _btnP=()=>({background:C.blue,color:"#fff",border:"none",borderRadius:R.sm,padding:"9px 18px",fontSize:13,fontWeight:700,cursor:"pointer",fontFamily:font,display:"inline-flex",alignItems:"center",gap:6,transition:"all .2s cubic-bezier(.22,1,.36,1)",whiteSpace:"nowrap",boxShadow:`0 1px 3px ${C.blue}25`});
@@ -440,7 +440,7 @@ const TD=new Proxy({},{get:(_,p)=>_TD()[p],ownKeys:()=>Object.keys(_TD()),getOwn
 const sel=new Proxy({},{get:(_,p)=>_sel()[p],ownKeys:()=>Object.keys(_sel()),getOwnPropertyDescriptor:(_,p)=>({value:_sel()[p],enumerable:true,configurable:true})});
 const btnP=new Proxy({},{get:(_,p)=>_btnP()[p],ownKeys:()=>Object.keys(_btnP()),getOwnPropertyDescriptor:(_,p)=>({value:_btnP()[p],enumerable:true,configurable:true})});
 const btnO=new Proxy({},{get:(_,p)=>_btnO()[p],ownKeys:()=>Object.keys(_btnO()),getOwnPropertyDescriptor:(_,p)=>({value:_btnO()[p],enumerable:true,configurable:true})});
-const pill=(a)=>({padding:"6px 14px",borderRadius:8,fontSize:11,fontWeight:700,cursor:"pointer",border:a?"none":`1.5px solid ${C.g200}`,fontFamily:font,background:a?C.g800:C.cardBg,color:a?"#fff":C.g500,transition:"all .2s cubic-bezier(.22,1,.36,1)",boxShadow:a?`0 2px 8px ${C.g800}25`:"none"});
+const pill=(a)=>({padding:"6px 14px",borderRadius:8,fontSize:11,fontWeight:700,cursor:"pointer",border:a?"none":`1.5px solid ${C.g200}`,fontFamily:font,background:a?C.blue:C.cardBg,color:a?"#fff":C.g500,transition:"all .2s cubic-bezier(.22,1,.36,1)",boxShadow:a?`0 2px 8px ${C.blue}25`:"none"});
 const statusBadge=(s)=>{const m={completed:{bg:C.greenL,c:C.green},failed:{bg:C.redL,c:C.red},pending:{bg:C.amberL,c:C.amber},processing:{bg:C.blueL,c:C.blue},paid:{bg:C.greenL,c:C.green}};const x=m[s]||m.pending;return{display:"inline-flex",alignItems:"center",gap:5,padding:"4px 10px",borderRadius:6,background:x.bg,color:x.c,fontSize:10,fontWeight:700,textTransform:"uppercase",letterSpacing:"0.04em"}};
 /* ======== COMPONENTS ======== */
 function Card({children,style={},np,className=""}){return <div className={`pp-card ${className}`} style={{background:C.cardBg,borderRadius:R.lg,border:`1px solid ${C.cardBorder}`,padding:np?0:20,boxShadow:C.cardShadow,transition:"box-shadow .2s ease, border-color .2s ease",...style}}>{children}</div>}
@@ -1070,7 +1070,7 @@ function Dashboard(){
     </Card>
     {/* Asset Performance + Recent Activity */}
     <Card><Sec action={<div style={{display:"flex",gap:4}}>{["day","week","month","year"].map(p=><button key={p} onClick={()=>setAssetRange(p)} style={pill(assetRange===p)}>{p.charAt(0).toUpperCase()+p.slice(1)}</button>)}</div>} icon={I.bar(13,C.g500)}>Asset Performance</Sec>
-      <div className="pp-table-wrap"><table style={{width:"100%",borderCollapse:"collapse",fontSize:13}}><thead><tr>{["Asset","Revenue","Bookings","Utilization"].map(h=><th key={h} style={TH}>{h}</th>)}</tr></thead><tbody>{ap.map((x,i)=><tr key={x.a} style={{background:i%2===0?C.g50:C.cardBg}}><td style={{...TD,fontWeight:600,color:C.g700}}>{x.a}</td><td style={{...TD,fontWeight:700,color:C.g800}}>${x.r.toFixed(2)}</td><td style={TD}>{x.b}</td><td style={TD}><div style={{display:"flex",alignItems:"center",gap:8}}><ProgressRing pct={x.u} size={32} stroke={3}/><span style={{fontSize:11,fontWeight:700,color:C.g600}}>{x.u}%</span></div></td></tr>)}</tbody></table></div>
+      <div className="pp-table-wrap"><table style={{width:"100%",borderCollapse:"collapse",fontSize:13}}><thead><tr>{["Asset","Revenue","Bookings","Utilization"].map(h=><th key={h} style={_TH()}>{h}</th>)}</tr></thead><tbody>{ap.map((x,i)=><tr key={x.a} style={{background:i%2===0?C.g50:C.cardBg}}><td style={{..._TD(),fontWeight:600,color:C.g700}}>{x.a}</td><td style={{..._TD(),fontWeight:700,color:C.g800}}>${x.r.toFixed(2)}</td><td style={_TD()}>{x.b}</td><td style={_TD()}><div style={{display:"flex",alignItems:"center",gap:8}}><ProgressRing pct={x.u} size={32} stroke={3}/><span style={{fontSize:11,fontWeight:700,color:C.g600}}>{x.u}%</span></div></td></tr>)}</tbody></table></div>
       <div style={{marginTop:14,padding:"10px 14px",background:C.g50,borderRadius:8,display:"flex",justifyContent:"space-between",fontSize:12}}><span style={{color:C.g400}}>Total ({assetRange})</span><span style={{fontWeight:800,color:C.g800}}>${ap.reduce((s,x)=>s+x.r,0).toFixed(2)}</span></div>
       <div style={{marginTop:16,borderTop:`1px solid ${C.g200}`,paddingTop:14}}>
         <div onClick={()=>setShowActivity(!showActivity)} style={{display:"flex",alignItems:"center",justifyContent:"space-between",cursor:"pointer"}}>
@@ -1182,6 +1182,7 @@ function FacilityPanel({selFacility,setSelFacility}){
 function Rentals(){
   const {dark}=useContext(ThemeCtx);
   const [subTab,setSubTab]=useState("approvals");
+  useEffect(()=>{window.scrollTo(0,0)},[subTab]);
   const [view,setView]=useState("cal");
   const [campusFilt,setCampusFilt]=useState("all");
   const [facilityFilt,setFacilityFilt]=useState("all");
@@ -1311,7 +1312,7 @@ function Rentals(){
       <Card>
         <Sec icon={I.wallet(13,C.g500)}>Recent Invoices</Sec>
         <div style={{overflowX:"auto"}}>
-        <table style={{width:"100%",borderCollapse:"collapse",fontSize:13}}><thead><tr>{["Invoice","Organization","Amount","Issued","Due","Status"].map(h=><th key={h} style={TH}>{h}</th>)}</tr></thead>
+        <table style={{width:"100%",borderCollapse:"collapse",fontSize:13}}><thead><tr>{["Invoice","Organization","Amount","Issued","Due","Status"].map(h=><th key={h} style={_TH()}>{h}</th>)}</tr></thead>
         <tbody>
           {[
             {id:"INV-0091",org:"Gonzales FC",amount:2125,issued:"02/01/2026",due:"02/15/2026",status:"paid",paidDate:"02/10/2026"},
@@ -1320,12 +1321,12 @@ function Rentals(){
             {id:"INV-0088",org:"Ascension Dance Academy",amount:1100,issued:"01/15/2026",due:"01/31/2026",status:"paid",paidDate:"01/28/2026"},
             {id:"INV-0087",org:"River Parish Runners",amount:570,issued:"01/15/2026",due:"01/31/2026",status:"overdue",paidDate:null},
           ].map((inv,i)=><tr key={inv.id} style={{borderBottom:`1px solid ${C.g100}`}}>
-            <td style={{...TD,fontFamily:"monospace",color:C.blue,fontWeight:600}}>{inv.id}</td>
-            <td style={{...TD,fontWeight:600,color:C.g700}}>{inv.org}</td>
-            <td style={{...TD,fontWeight:700,fontFamily:numFont}}>${inv.amount.toLocaleString()}</td>
-            <td style={{...TD,color:C.g500}}>{inv.issued}</td>
-            <td style={{...TD,color:C.g500}}>{inv.due}</td>
-            <td style={TD}>{(()=>{const m={paid:{bg:C.greenL,c:C.green},outstanding:{bg:C.amberL,c:C.amber},overdue:{bg:C.redL,c:C.red}};const s=m[inv.status];return <span style={{fontSize:9,fontWeight:700,color:s.c,background:s.bg,padding:"3px 8px",borderRadius:4,textTransform:"uppercase"}}>{inv.status}</span>})()}</td>
+            <td style={{..._TD(),fontFamily:"monospace",color:C.blue,fontWeight:600}}>{inv.id}</td>
+            <td style={{..._TD(),fontWeight:600,color:C.g700}}>{inv.org}</td>
+            <td style={{..._TD(),fontWeight:700,fontFamily:numFont}}>${inv.amount.toLocaleString()}</td>
+            <td style={{..._TD(),color:C.g500}}>{inv.issued}</td>
+            <td style={{..._TD(),color:C.g500}}>{inv.due}</td>
+            <td style={_TD()}>{(()=>{const m={paid:{bg:C.greenL,c:C.green},outstanding:{bg:C.amberL,c:C.amber},overdue:{bg:C.redL,c:C.red}};const s=m[inv.status];return <span style={{fontSize:9,fontWeight:700,color:s.c,background:s.bg,padding:"3px 8px",borderRadius:4,textTransform:"uppercase"}}>{inv.status}</span>})()}</td>
           </tr>)}
         </tbody></table>
         </div>
@@ -1362,15 +1363,15 @@ function Rentals(){
       </Card>}
       {locView==="list"&&<>
       <Card np className="pp-loc-card"><div className="pp-loc-desktop">
-        <table style={{width:"100%",borderCollapse:"collapse",fontSize:13}}><thead><tr>{["","Name","Assets","Status","Last Updated","Hourly Rate",""].map(h=><th key={h} style={TH}>{h}</th>)}</tr></thead>
+        <table style={{width:"100%",borderCollapse:"collapse",fontSize:13}}><thead><tr>{["","Name","Assets","Status","Last Updated","Hourly Rate",""].map(h=><th key={h} style={_TH()}>{h}</th>)}</tr></thead>
           <tbody>{campuses.map((c,i)=><tr key={c.id} style={{background:i%2===0?C.g50:C.cardBg}} onMouseEnter={e=>e.currentTarget.style.background=C.blueL} onMouseLeave={e=>e.currentTarget.style.background=i%2===0?C.g50:C.cardBg}>
-            <td style={{...TD,width:50}}><div style={{width:38,height:20,borderRadius:10,background:C.green,position:"relative",cursor:"pointer"}}><div style={{width:14,height:14,borderRadius:"50%",background:"#fff",position:"absolute",top:3,right:3,boxShadow:"0 1px 2px rgba(0,0,0,.2)"}}/></div></td>
-            <td style={{...TD,fontWeight:700,color:C.g700}}><div>{c.name}</div><div style={{fontSize:11,color:C.g400,fontWeight:400,marginTop:1}}>{c.city}, LA</div></td>
-            <td style={TD}><span style={{color:C.blue,fontWeight:700,cursor:"pointer"}}>{[3,3,2,2,2][i]} assets</span></td>
-            <td style={TD}><span style={{...statusBadge("completed"),fontSize:10}}><span style={{width:5,height:5,borderRadius:"50%",background:"currentColor"}}/>Published</span></td>
-            <td style={{...TD,color:C.g500,fontSize:12}}>02/04/2026</td>
-            <td style={{...TD,color:C.g500,fontSize:12}}><input type="text" defaultValue="$175/hr" style={{width:80,padding:"4px 8px",border:`1px solid ${C.cardBorder}`,borderRadius:4,fontSize:12,fontFamily:numFont,color:C.g700,background:C.g50,textAlign:"center"}} onFocus={e=>e.target.style.borderColor=C.blue} onBlur={e=>{e.target.style.borderColor=C.cardBorder;if(globalShowToast)globalShowToast({type:"success",title:"Rate Updated",msg:`${c.name} hourly rate saved`,color:C.green})}}/></td>
-            <td style={{...TD,textAlign:"right"}}><button onClick={()=>globalShowFacility(i)} style={{background:C.blue,color:"#fff",border:"none",borderRadius:R.sm,padding:"5px 12px",fontSize:11,fontWeight:700,cursor:"pointer",fontFamily:font}}>Manage</button></td>
+            <td style={{..._TD(),width:50}}><div style={{width:38,height:20,borderRadius:10,background:C.green,position:"relative",cursor:"pointer"}}><div style={{width:14,height:14,borderRadius:"50%",background:"#fff",position:"absolute",top:3,right:3,boxShadow:"0 1px 2px rgba(0,0,0,.2)"}}/></div></td>
+            <td style={{..._TD(),fontWeight:700,color:C.g700}}><div>{c.name}</div><div style={{fontSize:11,color:C.g400,fontWeight:400,marginTop:1}}>{c.city}, LA</div></td>
+            <td style={_TD()}><span style={{color:C.blue,fontWeight:700,cursor:"pointer"}}>{[3,3,2,2,2][i]} assets</span></td>
+            <td style={_TD()}><span style={{...statusBadge("completed"),fontSize:10}}><span style={{width:5,height:5,borderRadius:"50%",background:"currentColor"}}/>Published</span></td>
+            <td style={{..._TD(),color:C.g500,fontSize:12}}>02/04/2026</td>
+            <td style={{..._TD(),color:C.g500,fontSize:12}}><input type="text" defaultValue="$175/hr" style={{width:80,padding:"4px 8px",border:`1px solid ${C.cardBorder}`,borderRadius:4,fontSize:12,fontFamily:numFont,color:C.g700,background:C.g50,textAlign:"center"}} onFocus={e=>e.target.style.borderColor=C.blue} onBlur={e=>{e.target.style.borderColor=C.cardBorder;if(globalShowToast)globalShowToast({type:"success",title:"Rate Updated",msg:`${c.name} hourly rate saved`,color:C.green})}}/></td>
+            <td style={{..._TD(),textAlign:"right"}}><button onClick={()=>globalShowFacility(i)} style={{background:C.blue,color:"#fff",border:"none",borderRadius:R.sm,padding:"5px 12px",fontSize:11,fontWeight:700,cursor:"pointer",fontFamily:font}}>Manage</button></td>
           </tr>)}</tbody>
         </table>
       </div></Card></>}
@@ -1586,21 +1587,21 @@ function Rentals(){
         </div>:null})()}
       </div></Card>
       :<Card np><div style={{overflowX:"auto",WebkitOverflowScrolling:"touch"}}>
-        <table style={{width:"100%",borderCollapse:"collapse",fontSize:13,minWidth:700}}><thead><tr>{["","Res #","Asset","Campus","Customer","Date","Time","Revenue","Status",""].map(h=><th key={h} style={TH}>{h}</th>)}</tr></thead>
+        <table style={{width:"100%",borderCollapse:"collapse",fontSize:13,minWidth:700}}><thead><tr>{["","Res #","Asset","Campus","Customer","Date","Time","Revenue","Status",""].map(h=><th key={h} style={_TH()}>{h}</th>)}</tr></thead>
           <tbody>{upcoming.map((x,i)=>{
             const stMap={"confirmed":{bg:C.greenL,c:C.green,label:"Confirmed"},"pending":{bg:C.amberL,c:C.amber,label:"Pending"},"at-risk":{bg:C.redL,c:C.red,label:"At Risk"}};
             const st=stMap[x.status]||stMap.confirmed;
             return <tr key={x.id} style={{background:i%2===0?C.g50:C.cardBg}} onMouseEnter={e=>e.currentTarget.style.background=C.blueL} onMouseLeave={e=>e.currentTarget.style.background=i%2===0?C.g50:C.cardBg}>
-              <td style={{...TD,width:24}}>{I.dot(8,x.status==="at-risk"?C.red:C.green)}</td>
-              <td style={{...TD,fontWeight:700,color:C.blue,fontVariantNumeric:"tabular-nums"}}>{x.id}</td>
-              <td style={{...TD,fontWeight:600,color:C.g700}}>{x.a}</td>
-              <td style={{...TD,color:C.g500,fontSize:12}}>{x.fac}</td>
-              <td style={{...TD,color:C.g600}}>{x.c}</td>
-              <td style={{...TD,color:C.g600,whiteSpace:"nowrap"}}>{x.d}</td>
-              <td style={{...TD,color:C.g600,whiteSpace:"nowrap"}}>{x.t}</td>
-              <td style={{...TD,fontWeight:700,color:C.g800,fontVariantNumeric:"tabular-nums"}}>${x.r.toFixed(2)}</td>
-              <td style={TD}><span style={{display:"inline-flex",alignItems:"center",gap:4,padding:"3px 8px",borderRadius:20,background:st.bg,color:st.c,fontSize:10,fontWeight:700,textTransform:"uppercase"}}><span style={{width:4,height:4,borderRadius:"50%",background:"currentColor"}}/>{st.label}</span></td>
-              <td style={{...TD,textAlign:"right"}}><button onClick={()=>setSelRes(i)} style={{...btnO,padding:"5px 12px",fontSize:11}}>View</button></td>
+              <td style={{..._TD(),width:24}}>{I.dot(8,x.status==="at-risk"?C.red:C.green)}</td>
+              <td style={{..._TD(),fontWeight:700,color:C.blue,fontVariantNumeric:"tabular-nums"}}>{x.id}</td>
+              <td style={{..._TD(),fontWeight:600,color:C.g700}}>{x.a}</td>
+              <td style={{..._TD(),color:C.g500,fontSize:12}}>{x.fac}</td>
+              <td style={{..._TD(),color:C.g600}}>{x.c}</td>
+              <td style={{..._TD(),color:C.g600,whiteSpace:"nowrap"}}>{x.d}</td>
+              <td style={{..._TD(),color:C.g600,whiteSpace:"nowrap"}}>{x.t}</td>
+              <td style={{..._TD(),fontWeight:700,color:C.g800,fontVariantNumeric:"tabular-nums"}}>${x.r.toFixed(2)}</td>
+              <td style={_TD()}><span style={{display:"inline-flex",alignItems:"center",gap:4,padding:"3px 8px",borderRadius:20,background:st.bg,color:st.c,fontSize:10,fontWeight:700,textTransform:"uppercase"}}><span style={{width:4,height:4,borderRadius:"50%",background:"currentColor"}}/>{st.label}</span></td>
+              <td style={{..._TD(),textAlign:"right"}}><button onClick={()=>setSelRes(i)} style={{...btnO,padding:"5px 12px",fontSize:11}}>View</button></td>
             </tr>})}</tbody>
         </table>
       </div></Card>}
@@ -1850,26 +1851,147 @@ function Rentals(){
   </div>
 }
 /* ======== ORGANIZATION ======== */
+function ApprovalChain({chainFac,setChainFac,teamMembers}){
+  const facOptions=["All Facilities",...campuses.map(function(c){return c.name})];
+  const dc=[
+    {name:"Coach Tony Richard",initials:"TR",role:"Site Admin",color:C.green},
+    {name:"Claire Dupuis",initials:"CD",role:"Facility Manager",color:C.green},
+    {name:"Marcus Williams",initials:"MW",role:"District Admin",color:C.blue}
+  ];
+  const initChains={
+    "All Facilities":dc.slice(),
+    "Dutchtown High School":dc.slice(),
+    "St. Amant High School":[
+      {name:"Coach Ray Bourque",initials:"RB",role:"Site Admin",color:C.purple},
+      {name:"Marcus Williams",initials:"MW",role:"District Admin",color:C.blue}
+    ],
+    "East Ascension High School":[
+      {name:"Denise Landry",initials:"DL",role:"Site Admin",color:C.blueDk},
+      {name:"Marcus Williams",initials:"MW",role:"District Admin",color:C.blue}
+    ],
+    "Prairieville High School":[
+      {name:"Amy Melancon",initials:"AM",role:"Site Admin",color:C.blueDk},
+      {name:"Marcus Williams",initials:"MW",role:"District Admin",color:C.blue}
+    ]
+  };
+  const [chains,setChains]=useState(initChains);
+  const [insertAt,setInsertAt]=useState(null);
+  const chain=chains[chainFac]||dc;
+  var inChain={};
+  chain.forEach(function(c){inChain[c.name]=true});
+  var available=teamMembers.filter(function(p){return p.status!=="invited"&&!inChain[p.name]});
+  var move=function(idx,dir){
+    var c=chain.slice();var t=idx+dir;
+    if(t<0||t>=c.length)return;
+    var tmp=c[idx];c[idx]=c[t];c[t]=tmp;
+    var nd=Object.assign({},chains);nd[chainFac]=c;setChains(nd);
+  };
+  var remove=function(idx){
+    var nd=Object.assign({},chains);
+    nd[chainFac]=chain.filter(function(_,i){return i!==idx});
+    setChains(nd);
+  };
+  var insert=function(idx,person){
+    var c=chain.slice();
+    c.splice(idx,0,{name:person.name,initials:person.initials,role:person.role,color:person.color});
+    var nd=Object.assign({},chains);nd[chainFac]=c;setChains(nd);
+    setInsertAt(null);
+    if(globalShowToast)globalShowToast({type:"success",title:"Added",msg:person.name+" added at step "+(idx+1),color:C.green});
+  };
+  var insertZone=function(idx){
+    if(insertAt===idx)return <Card style={{margin:"4px 0",border:"1.5px solid "+C.blue,background:C.blue+"04"}}>
+      <div style={{display:"flex",alignItems:"center",justifyContent:"space-between",marginBottom:10}}>
+        <span style={{fontSize:12,fontWeight:700,color:C.g800}}>Select team member for step {idx+1}</span>
+        <button onClick={function(){setInsertAt(null)}} style={{background:C.g100,border:"none",width:24,height:24,borderRadius:6,cursor:"pointer",display:"flex",alignItems:"center",justifyContent:"center"}}>{I.x(10,C.g500)}</button>
+      </div>
+      {available.length===0?<div style={{fontSize:12,color:C.g400,padding:"10px 0"}}>All team members are already in this chain.</div>
+      :<div style={{display:"flex",flexDirection:"column",gap:4}}>
+        {available.map(function(p){return <div key={p.name} onClick={function(){insert(idx,p)}} style={{display:"flex",alignItems:"center",gap:10,padding:"8px 12px",borderRadius:R.sm,border:"1px solid "+C.cardBorder,cursor:"pointer",transition:"all .12s"}} onMouseEnter={function(e){e.currentTarget.style.background=C.blueL;e.currentTarget.style.borderColor=C.blue}} onMouseLeave={function(e){e.currentTarget.style.background="transparent";e.currentTarget.style.borderColor=C.cardBorder}}>
+          <div style={{width:30,height:30,borderRadius:8,background:p.color,display:"flex",alignItems:"center",justifyContent:"center",color:"#fff",fontWeight:800,fontSize:10}}>{p.initials}</div>
+          <div><div style={{fontSize:12,fontWeight:600,color:C.g800}}>{p.name}</div><div style={{fontSize:10,color:C.g400}}>{p.role}{p.campus?" - "+p.campus:""}</div></div>
+        </div>})}
+      </div>}
+    </Card>;
+    return <div onClick={function(){setInsertAt(idx)}} style={{display:"flex",alignItems:"center",justifyContent:"center",gap:6,padding:"8px",margin:"0 20px 4px",borderRadius:6,border:"2px dashed "+C.g200,cursor:"pointer",transition:"all .15s"}} onMouseEnter={function(e){e.currentTarget.style.borderColor=C.blue;e.currentTarget.style.background=C.blue+"06"}} onMouseLeave={function(e){e.currentTarget.style.borderColor=C.g200;e.currentTarget.style.background="transparent"}}>
+      <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke={C.g400} strokeWidth="2" strokeLinecap="round"><path d="M12 5v14M5 12h14"/></svg>
+      <span style={{fontSize:10,color:C.g400,fontWeight:600}}>Insert reviewer</span>
+    </div>;
+  };
+  return <>
+    <div style={{display:"flex",justifyContent:"space-between",alignItems:"center",marginBottom:16}}>
+      <div style={{fontSize:14,fontWeight:700,color:C.g800}}>Approval Chain of Command</div>
+      <select value={chainFac} onChange={function(e){setChainFac(e.target.value)}} style={sel}>{facOptions.map(function(f){return <option key={f} value={f}>{f}</option>})}</select>
+    </div>
+    <div style={{padding:"12px 16px",background:"linear-gradient(135deg, "+C.blueL+", "+C.greenL+")",borderRadius:R.lg,marginBottom:16,fontSize:12,color:C.g600,lineHeight:1.6}}>
+      When a reservation request comes in, it moves through this approval sequence. Each reviewer can approve to pass it forward or deny to stop the process. The final decision maker has the last word.
+    </div>
+    {insertZone(0)}
+    <div style={{display:"flex",flexDirection:"column",gap:0}}>
+      {chain.map(function(p,i){
+        var isFinal=i===chain.length-1;
+        var isOnly=chain.length===1;
+        return <React.Fragment key={p.name+i}>
+          <Card style={{margin:"4px 0",border:isFinal?"1.5px solid "+C.amber+"40":"1px solid "+C.cardBorder,background:isFinal?C.amberL:C.cardBg,position:"relative",overflow:"visible"}}>
+            <div style={{position:"absolute",left:-12,top:"50%",transform:"translateY(-50%)",width:24,height:24,borderRadius:12,background:isFinal?"linear-gradient(135deg, #F59E0B, #D97706)":C.blue,display:"flex",alignItems:"center",justifyContent:"center",boxShadow:"0 2px 8px "+(isFinal?"rgba(245,158,11,0.3)":"rgba(0,118,187,0.3)"),zIndex:2}}>
+              {isFinal?<svg width="12" height="12" viewBox="0 0 24 24" fill="none"><path d="M2 20h20l-3-12-5 5-4-8-4 8-5-5z" fill="#fff"/></svg>:<span style={{fontSize:10,fontWeight:900,color:"#fff"}}>{i+1}</span>}
+            </div>
+            <div style={{display:"flex",alignItems:"center",gap:12,paddingLeft:16}}>
+              <div style={{width:40,height:40,borderRadius:10,background:p.color,display:"flex",alignItems:"center",justifyContent:"center",color:"#fff",fontWeight:800,fontSize:12,flexShrink:0}}>{p.initials}</div>
+              <div style={{flex:1,minWidth:0}}>
+                <div style={{display:"flex",alignItems:"center",gap:6,flexWrap:"wrap"}}>
+                  <span style={{fontSize:14,fontWeight:700,color:C.g800}}>{p.name}</span>
+                  <span style={{fontSize:10,fontWeight:600,color:C.g400,background:C.g100,padding:"2px 8px",borderRadius:4}}>{p.role}</span>
+                  {isFinal&&<span style={{fontSize:8,fontWeight:800,color:C.amber,background:C.amberL,padding:"2px 8px",borderRadius:4,letterSpacing:"0.04em"}}>FINAL DECISION</span>}
+                </div>
+                <div style={{fontSize:11,color:C.g500,marginTop:3}}>
+                  {isFinal?"Has final authority to approve or deny all requests":"Reviews request and passes to next approver in sequence"}
+                </div>
+              </div>
+              <div style={{display:"flex",flexDirection:"column",gap:2,flexShrink:0}}>
+                <button onClick={function(){move(i,-1)}} disabled={i===0} style={{background:i===0?C.g50:C.g100,border:"none",width:30,height:26,borderRadius:"6px 6px 2px 2px",cursor:i===0?"default":"pointer",display:"flex",alignItems:"center",justifyContent:"center",opacity:i===0?0.3:1,transition:"all .1s"}} title="Move up">
+                  <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke={C.g500} strokeWidth="2.5" strokeLinecap="round"><path d="M18 15l-6-6-6 6"/></svg>
+                </button>
+                <button onClick={function(){move(i,1)}} disabled={isFinal} style={{background:isFinal?C.g50:C.g100,border:"none",width:30,height:26,borderRadius:"2px 2px 6px 6px",cursor:isFinal?"default":"pointer",display:"flex",alignItems:"center",justifyContent:"center",opacity:isFinal?0.3:1,transition:"all .1s"}} title="Move down">
+                  <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke={C.g500} strokeWidth="2.5" strokeLinecap="round"><path d="M6 9l6 6 6-6"/></svg>
+                </button>
+              </div>
+              {!isOnly&&<button onClick={function(){remove(i);if(globalShowToast)globalShowToast({type:"success",title:"Removed",msg:p.name+" removed from chain",color:C.green})}} style={{background:"none",border:"none",width:28,height:28,borderRadius:6,cursor:"pointer",display:"flex",alignItems:"center",justifyContent:"center",opacity:0.4,transition:"opacity .15s"}} onMouseEnter={function(e){e.currentTarget.style.opacity=1}} onMouseLeave={function(e){e.currentTarget.style.opacity=0.4}} title="Remove from chain">
+                {I.x(12,C.red)}
+              </button>}
+            </div>
+          </Card>
+          {!isFinal&&<div style={{display:"flex",alignItems:"center",gap:0,margin:"0 20px"}}>
+            <div style={{flex:1,height:1,background:C.g200}}/>
+            {insertZone(i+1)}
+            <div style={{flex:1,height:1,background:C.g200}}/>
+          </div>}
+        </React.Fragment>})}
+    </div>
+    {insertZone(chain.length)}
+    <div style={{display:"flex",alignItems:"center",justifyContent:"space-between",padding:"12px 16px",background:C.g50,borderRadius:R.sm,border:"1px solid "+C.cardBorder,marginTop:4}}>
+      <div style={{display:"flex",alignItems:"center",gap:12}}>
+        <div style={{display:"flex"}}>
+          {chain.slice(0,4).map(function(p,i){return <div key={i} style={{width:24,height:24,borderRadius:12,background:p.color,border:"2px solid "+C.cardBg,display:"flex",alignItems:"center",justifyContent:"center",color:"#fff",fontSize:8,fontWeight:800,marginLeft:i>0?-6:0,zIndex:4-i}}>{p.initials}</div>})}
+        </div>
+        <span style={{fontSize:12,fontWeight:600,color:C.g700}}>{chain.length} step{chain.length!==1?"s":""} in chain</span>
+      </div>
+      <div style={{display:"flex",alignItems:"center",gap:6}}>
+        <div style={{width:6,height:6,borderRadius:3,background:C.green}}/>
+        <span style={{fontSize:11,color:C.g500}}>Final approver: <strong style={{color:C.g700}}>{chain[chain.length-1]?chain[chain.length-1].name:"None"}</strong></span>
+      </div>
+    </div>
+  </>;
+}
 function Org(){
   const {dark}=useContext(ThemeCtx);
   const [orgTab,setOrgTab]=useState("overview");
+  useEffect(()=>{window.scrollTo(0,0)},[orgTab]);
   const [editMode,setEditMode]=useState(false);
-  const orgTabs=[["overview","Overview"],["amenities","Amenities"],["documents","Documents"],["blackouts","Blackouts"],["pricing","Pricing"],["integrations","Integrations"],["team","Team"],["approvals","Approval Chain"],["activity","Activity Log"]];
+  const orgTabs=[["overview","Overview"],["amenities","Amenities"],["blackouts","Blackouts"],["pricing","Pricing"],["integrations","Integrations"],["team","Team"],["approvals","Approval Chain"],["activity","Activity Log"]];
   const [amenSearch,setAmenSearch]=useState("");
-  const [docPartnerFilt,setDocPartnerFilt]=useState("all");
   const [blackoutMonth,setBlackoutMonth]=useState(1);
   const [priceFac,setPriceFac]=useState("Dutchtown Gymnasium");
   const [chainFac,setChainFac]=useState("All Facilities");
-  const [expandedFolder,setExpandedFolder]=useState(null);
-  const defaultChains={"All Facilities":[{name:"Coach Tony Richard",initials:"TR",role:"Site Admin",color:C.green,type:"reviewer"},{name:"Claire Dupuis",initials:"CD",role:"Facility Manager",color:C.green,type:"reviewer"},{name:"Marcus Williams",initials:"MW",role:"District Admin",color:C.blue,type:"final"}],"Dutchtown High School":[{name:"Coach Tony Richard",initials:"TR",role:"Site Admin",color:C.green,type:"reviewer"},{name:"Claire Dupuis",initials:"CD",role:"Facility Manager",color:C.green,type:"reviewer"},{name:"Marcus Williams",initials:"MW",role:"District Admin",color:C.blue,type:"final"}],"St. Amant High School":[{name:"Coach Ray Bourque",initials:"RB",role:"Site Admin",color:C.purple,type:"reviewer"},{name:"Marcus Williams",initials:"MW",role:"District Admin",color:C.blue,type:"final"}],"East Ascension High School":[{name:"Denise Landry",initials:"DL",role:"Site Admin",color:C.blueDk,type:"reviewer"},{name:"Marcus Williams",initials:"MW",role:"District Admin",color:C.blue,type:"final"}],"Prairieville High School":[{name:"Amy Melancon",initials:"AM",role:"Site Admin",color:C.blueDk,type:"reviewer"},{name:"Marcus Williams",initials:"MW",role:"District Admin",color:C.blue,type:"final"}]};
-  const [chainData,setChainData]=useState(defaultChains);
-  const [chainInsertIdx,setChainInsertIdx]=useState(null);
-  const chain=chainData[chainFac]||[];
-  const moveChain=(idx,dir)=>{const c=[...chain];const target=idx+dir;if(target<0||target>=c.length)return;const tmp=c[idx];c[idx]=c[target];c[target]=tmp;setChainData(d=>({...d,[chainFac]:c}))};
-  const removeFromChain=(idx)=>{setChainData(d=>({...d,[chainFac]:chain.filter((_,i)=>i!==idx)}))};
-  const insertIntoChain=(idx,person)=>{const c=[...chain];c.splice(idx,0,{name:person.name,initials:person.initials,role:person.role,color:person.color,type:"reviewer"});setChainData(d=>({...d,[chainFac]:c}));setChainInsertIdx(null);if(globalShowToast)globalShowToast({type:"success",title:"Reviewer Added",msg:`${person.name} added to approval chain at step ${idx+1}`,color:C.green})};
-  const chainNames=new Set(chain.map(c=>c.name));
-  const [amenCat,setAmenCat]=useState("All");
   const [amenView,setAmenView]=useState("library");
   const [enabledAmens,setEnabledAmens]=useState(()=>new Set(defaultEnabled));
   const [venueAssign,setVenueAssign]=useState(()=>({...defaultVenueAssign}));
@@ -1891,19 +2013,19 @@ function Org(){
     {name:"Robert Guidry",email:"r.guidry@ascension.k12.la.us",role:"Finance Director",campus:"All Campuses",status:"active",lastActive:"2d ago",initials:"RG",color:C.amber},
     {name:"Lisa Breaux",email:"l.breaux@ascension.k12.la.us",role:"Approver",campus:"St. Amant HS, Prairieville HS",status:"invited",lastActive:"Pending",initials:"LB",color:C.g400},
   ];
-  const availableForChain=teamMembers.filter(p=>p.status!=="invited"&&!chainNames.has(p.name));
   const activityLog=[
     {action:"Reservation Approved",detail:"APR-0042 - Bayou City Volleyball - Dutchtown Gymnasium",user:"Marcus Williams",time:"35 min ago",icon:I.check(12,C.green),color:C.greenL},
     {action:"Payment Received",detail:"$475.00 - Gonzales FC - Prairieville Athletic Complex",user:"System",time:"2h ago",icon:I.wallet(12,C.green),color:C.greenL},
     {action:"Insurance Alert",detail:"Gonzales FC COI expired - 2 upcoming bookings flagged",user:"System",time:"3h ago",icon:I.alert(12,C.orange),color:C.orangeL},
     {action:"New Reservation",detail:"Ascension YMCA - East Ascension Gymnasium - 2/12",user:"System",time:"5h ago",icon:I.calendar(12,C.blue),color:C.blueL},
     {action:"Calendar Synced",detail:"RankOne - 3 new events imported for February",user:"System",time:"6h ago",icon:I.sync(12,C.blue),color:C.blueL},
-    {action:"Role Updated",detail:'Lisa Breaux invited as Approver for St. Amant HS',user:"Marcus Williams",time:"1d ago",icon:I.user(12,C.blue),color:C.blueL},
+    {action:"Role Updated",detail:"Lisa Breaux invited as Approver for St. Amant HS",user:"Marcus Williams",time:"1d ago",icon:I.user(12,C.blue),color:C.blueL},
     {action:"Reservation Denied",detail:"APR-0038 - River Parish Runners - track resurfacing conflict",user:"Marcus Williams",time:"1d ago",icon:I.x(12,C.red),color:C.redL},
     {action:"Payout Processed",detail:"February payout - $8,761.25 deposited to district account",user:"System",time:"1d ago",icon:I.wallet(12,C.green),color:C.greenL},
     {action:"Settings Updated",detail:"Tax rate updated from 0% to 0% (no change)",user:"David Chen",time:"3d ago",icon:I.edit(12,C.g500),color:C.g100},
     {action:"New Customer",detail:"Louisiana Tigers AAU completed onboarding and uploaded COI",user:"System",time:"3d ago",icon:I.user(12,C.green),color:C.greenL},
   ];
+  const [amenCat,setAmenCat]=useState("All");
   return <div style={{display:"flex",flexDirection:"column",gap:20}}>
     {/* Sub-tabs */}
     <div className="pp-sub-tabs" style={{display:"flex",gap:0,borderBottom:`1px solid ${C.cardBorder}`,overflowX:"auto"}}>
@@ -2116,16 +2238,16 @@ function Org(){
           <div style={{overflowX:"auto",WebkitOverflowScrolling:"touch"}}>
             <table style={{width:"100%",borderCollapse:"collapse",fontSize:12,minWidth:600}}>
               <thead><tr>
-                <th style={{...TH,position:"sticky",left:0,background:C.g50,zIndex:1}}>Venue</th>
-                {amenityLib.filter(a=>enabledAmens.has(a.id)).map(a=><th key={a.id} style={{...TH,textAlign:"center",padding:"8px 6px",fontSize:8,lineHeight:1.2,minWidth:36}} title={a.n}>{a.n.split(" ")[0].slice(0,5)}</th>)}
-                <th style={TH}>Total</th>
+                <th style={{..._TH(),position:"sticky",left:0,background:C.g50,zIndex:1}}>Venue</th>
+                {amenityLib.filter(a=>enabledAmens.has(a.id)).map(a=><th key={a.id} style={{..._TH(),textAlign:"center",padding:"8px 6px",fontSize:8,lineHeight:1.2,minWidth:36}} title={a.n}>{a.n.split(" ")[0].slice(0,5)}</th>)}
+                <th style={_TH()}>Total</th>
               </tr></thead>
               <tbody>{Object.entries(venueAssign).map(([venue,ids],vi)=>{
                 const venueEnabled=ids.filter(id=>enabledAmens.has(id));
                 return <tr key={venue} style={{background:vi%2===0?C.g50:C.cardBg,cursor:"pointer"}} onClick={()=>{setAmenVenue(venue)}} onMouseEnter={e=>e.currentTarget.style.background=C.blueL} onMouseLeave={e=>e.currentTarget.style.background=vi%2===0?C.g50:C.cardBg}>
-                  <td style={{...TD,fontWeight:600,color:venue===amenVenue?C.blue:C.g700,fontSize:11,position:"sticky",left:0,background:"inherit",whiteSpace:"nowrap"}}>{venue}</td>
-                  {amenityLib.filter(a=>enabledAmens.has(a.id)).map(a=><td key={a.id} style={{...TD,textAlign:"center",padding:"8px 4px"}}>{venueEnabled.includes(a.id)?<span style={{color:C.green,fontSize:14}}>●</span>:<span style={{color:C.g200}}>-</span>}</td>)}
-                  <td style={{...TD,fontWeight:700,color:C.g800,textAlign:"center"}}>{venueEnabled.length}</td>
+                  <td style={{..._TD(),fontWeight:600,color:venue===amenVenue?C.blue:C.g700,fontSize:11,position:"sticky",left:0,background:"inherit",whiteSpace:"nowrap"}}>{venue}</td>
+                  {amenityLib.filter(a=>enabledAmens.has(a.id)).map(a=><td key={a.id} style={{..._TD(),textAlign:"center",padding:"8px 4px"}}>{venueEnabled.includes(a.id)?<span style={{color:C.green,fontSize:14}}>●</span>:<span style={{color:C.g200}}>-</span>}</td>)}
+                  <td style={{..._TD(),fontWeight:700,color:C.g800,textAlign:"center"}}>{venueEnabled.length}</td>
                 </tr>
               })}</tbody>
             </table>
@@ -2282,17 +2404,17 @@ function Org(){
       <Card>
         <Sec action={<button onClick={()=>{if(globalShowToast)globalShowToast({type:"success",title:"Invitation Sent",msg:"New team member invited via email",color:C.green})}} style={btnP}><span style={{fontSize:15}}>+</span> Invite Member</button>} icon={I.users(13,C.g500)}>Team Members ({teamMembers.length})</Sec>
         <table style={{width:"100%",borderCollapse:"collapse",fontSize:13}}>
-          <thead><tr>{["Member","Role","Campus Access","Status","Last Active",""].map(h=><th key={h} style={TH}>{h}</th>)}</tr></thead>
+          <thead><tr>{["Member","Role","Campus Access","Status","Last Active",""].map(h=><th key={h} style={_TH()}>{h}</th>)}</tr></thead>
           <tbody>{teamMembers.map((m,i)=><tr key={m.name} style={{background:i%2===0?C.g50:C.cardBg}}>
-            <td style={TD}><div style={{display:"flex",alignItems:"center",gap:10}}>
+            <td style={_TD()}><div style={{display:"flex",alignItems:"center",gap:10}}>
               <div style={{width:34,height:34,borderRadius:10,background:m.color,display:"flex",alignItems:"center",justifyContent:"center",color:"#fff",fontWeight:800,fontSize:11,flexShrink:0}}>{m.initials}</div>
               <div><span style={{fontWeight:700,color:C.g700,display:"block"}}>{m.name}</span><span style={{fontSize:11,color:C.g400}}>{m.email}</span></div>
             </div></td>
-            <td style={{...TD,fontWeight:600,color:C.g700}}>{m.role}</td>
-            <td style={{...TD,color:C.g500,fontSize:12}}>{m.campus}</td>
-            <td style={TD}><span style={statusBadge(m.status==="active"?"completed":"pending")}><span style={{width:5,height:5,borderRadius:"50%",background:"currentColor"}}/>{m.status==="active"?"Active":"Invited"}</span></td>
-            <td style={{...TD,color:C.g400,fontSize:12}}>{m.lastActive}</td>
-            <td style={TD}><div style={{display:"flex",gap:4}}>
+            <td style={{..._TD(),fontWeight:600,color:C.g700}}>{m.role}</td>
+            <td style={{..._TD(),color:C.g500,fontSize:12}}>{m.campus}</td>
+            <td style={_TD()}><span style={statusBadge(m.status==="active"?"completed":"pending")}><span style={{width:5,height:5,borderRadius:"50%",background:"currentColor"}}/>{m.status==="active"?"Active":"Invited"}</span></td>
+            <td style={{..._TD(),color:C.g400,fontSize:12}}>{m.lastActive}</td>
+            <td style={_TD()}><div style={{display:"flex",gap:4}}>
               <button style={{...btnO,padding:"4px 10px",fontSize:11}}>Edit</button>
               {m.name!=="Marcus Williams"&&<button style={{...btnO,padding:"4px 10px",fontSize:11,color:C.red,borderColor:`${C.red}25`}}>Remove</button>}
             </div></td>
@@ -2301,83 +2423,6 @@ function Org(){
       </Card>
     </>}
     {/* DOCUMENTS TAB */}
-    {orgTab==="documents"&&<>
-      <div style={{display:"flex",justifyContent:"space-between",alignItems:"center",marginBottom:16}}>
-        <div style={{fontSize:14,fontWeight:700,color:C.g800}}>Document Vault</div>
-        <button onClick={()=>{if(globalShowToast)globalShowToast({type:"success",title:"Upload",msg:"File upload dialog opened",color:C.blue})}} style={btnP}>{I.download(12,"#fff")} Upload Document</button>
-      </div>
-      {/* Breadcrumb */}
-      <div style={{display:"flex",alignItems:"center",gap:6,marginBottom:14,fontSize:12}}>
-        <button onClick={()=>setExpandedFolder(null)} style={{background:"none",border:"none",color:expandedFolder?C.blue:C.g800,fontWeight:700,cursor:"pointer",fontFamily:font,padding:0}}>All Partners</button>
-        {expandedFolder!==null&&<><span style={{color:C.g300}}>/</span><span style={{fontWeight:700,color:C.g800}}>{topCustData[expandedFolder]?.n}</span></>}
-      </div>
-      {/* Folder grid or file list */}
-      {expandedFolder===null?<div style={{display:"grid",gridTemplateColumns:"repeat(auto-fill,minmax(180px,1fr))",gap:10}}>
-        {topCustData.slice(0,5).map((org,oi)=>{
-          const hasExpired=org.n.includes("Gonzales");
-          const docCount=org.n.includes("Bayou")?3:2;
-          return <div key={oi} onClick={()=>setExpandedFolder(oi)} style={{padding:"16px",borderRadius:R.md,border:`1px solid ${hasExpired?`${C.red}25`:C.cardBorder}`,background:hasExpired?`${C.red}03`:C.cardBg,cursor:"pointer",transition:"all .15s",position:"relative"}} onMouseEnter={e=>{e.currentTarget.style.boxShadow=`0 4px 16px ${C.blue}12`;e.currentTarget.style.borderColor=C.blue}} onMouseLeave={e=>{e.currentTarget.style.boxShadow="none";e.currentTarget.style.borderColor=hasExpired?`${C.red}25`:C.cardBorder}}>
-            {hasExpired&&<div style={{position:"absolute",top:8,right:8,width:8,height:8,borderRadius:4,background:C.red}}/>}
-            <div style={{width:40,height:36,borderRadius:6,background:C.blueL,display:"flex",alignItems:"center",justifyContent:"center",marginBottom:10}}>
-              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke={C.blue} strokeWidth="1.5" strokeLinecap="round"><path d="M22 19a2 2 0 01-2 2H4a2 2 0 01-2-2V5a2 2 0 012-2h5l2 3h9a2 2 0 012 2z"/></svg>
-            </div>
-            <div style={{fontSize:13,fontWeight:700,color:C.g800,marginBottom:2,whiteSpace:"nowrap",overflow:"hidden",textOverflow:"ellipsis"}}>{org.n}</div>
-            <div style={{fontSize:11,color:C.g400}}>{docCount} documents</div>
-            {hasExpired&&<div style={{fontSize:9,fontWeight:700,color:C.red,marginTop:4}}>1 EXPIRED</div>}
-          </div>})}
-        {/* Add new folder */}
-        <div onClick={()=>{if(globalShowToast)globalShowToast({type:"info",title:"New Folder",msg:"Create a folder for a new partner organization",color:C.blue})}} style={{padding:"16px",borderRadius:R.md,border:`2px dashed ${C.g200}`,background:C.g50,cursor:"pointer",display:"flex",flexDirection:"column",alignItems:"center",justifyContent:"center",minHeight:110,transition:"all .15s"}} onMouseEnter={e=>e.currentTarget.style.borderColor=C.blue} onMouseLeave={e=>e.currentTarget.style.borderColor=C.g200}>
-          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke={C.g400} strokeWidth="1.5" strokeLinecap="round"><path d="M12 5v14M5 12h14"/></svg>
-          <span style={{fontSize:11,color:C.g400,marginTop:6,fontWeight:600}}>New Partner Folder</span>
-        </div>
-      </div>
-      :<>
-        {/* File list inside folder */}
-        {(()=>{
-          const org=topCustData[expandedFolder];
-          const docs=[
-            {type:"COI",name:"Certificate of Insurance",file:"COI_"+org.n.replace(/\s/g,"_")+"_2026.pdf",size:"245 KB",uploaded:"Jan 10, 2026",expiry:"03/01/2026",status:org.n.includes("Gonzales")?"expired":"active",icon:"shield"},
-            {type:"AGR",name:"Facility Use Agreement",file:"FUA_"+org.n.replace(/\s/g,"_")+"_2026.pdf",size:"128 KB",uploaded:"Jan 2, 2026",expiry:"12/31/2026",status:"active",icon:"file"},
-            ...(org.n.includes("Bayou")?[{type:"W9",name:"W-9 Tax Form",file:"W9_BayouCityVB.pdf",size:"89 KB",uploaded:"Dec 15, 2025",expiry:null,status:"active",icon:"file"}]:[]),
-          ];
-          return <Card np>
-            {/* File header */}
-            <div style={{display:"flex",padding:"10px 16px",borderBottom:`1px solid ${C.g100}`,fontSize:10,fontWeight:700,color:C.g400,textTransform:"uppercase",letterSpacing:"0.06em"}}>
-              <span style={{flex:1}}>Name</span>
-              <span style={{width:90,textAlign:"center"}}>Type</span>
-              <span style={{width:90,textAlign:"center"}}>Size</span>
-              <span style={{width:110,textAlign:"center"}}>Uploaded</span>
-              <span style={{width:100,textAlign:"center"}}>Expires</span>
-              <span style={{width:80}}/>
-            </div>
-            {docs.map((d,di)=><div key={di} style={{display:"flex",alignItems:"center",padding:"12px 16px",borderBottom:di<docs.length-1?`1px solid ${C.g100}`:"none",background:d.status==="expired"?`${C.red}03`:di%2===0?C.g50:"transparent",transition:"background .1s"}} onMouseEnter={e=>e.currentTarget.style.background=C.blueL} onMouseLeave={e=>e.currentTarget.style.background=d.status==="expired"?`${C.red}03`:di%2===0?C.g50:"transparent"}>
-              <div style={{flex:1,display:"flex",alignItems:"center",gap:10,minWidth:0}}>
-                <div style={{width:30,height:34,borderRadius:4,background:d.status==="expired"?C.redL:d.type==="COI"?`${C.green}12`:C.blueL,display:"flex",alignItems:"center",justifyContent:"center",flexShrink:0}}>
-                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke={d.status==="expired"?C.red:d.type==="COI"?C.green:C.blue} strokeWidth="2" strokeLinecap="round"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><path d="M14 2v6h6"/></svg>
-                </div>
-                <div style={{minWidth:0}}>
-                  <div style={{fontSize:13,fontWeight:600,color:C.g800,whiteSpace:"nowrap",overflow:"hidden",textOverflow:"ellipsis"}}>{d.name}</div>
-                  <div style={{fontSize:10,color:C.g400}}>{d.file}</div>
-                </div>
-              </div>
-              <span style={{width:90,textAlign:"center",fontSize:10,fontWeight:700,color:d.type==="COI"?C.green:C.blue}}>{d.type}</span>
-              <span style={{width:90,textAlign:"center",fontSize:11,color:C.g400,fontFamily:numFont}}>{d.size}</span>
-              <span style={{width:110,textAlign:"center",fontSize:11,color:C.g500}}>{d.uploaded}</span>
-              <span style={{width:100,textAlign:"center"}}>
-                {d.expiry?<span style={{fontSize:11,fontWeight:d.status==="expired"?700:500,color:d.status==="expired"?C.red:C.g400}}>{d.expiry}{d.status==="expired"&&<div style={{fontSize:8,fontWeight:800,color:C.red}}>EXPIRED</div>}</span>:<span style={{fontSize:10,color:C.g300}}>--</span>}
-              </span>
-              <div style={{width:80,display:"flex",gap:4,justifyContent:"flex-end"}}>
-                <button style={{background:C.g100,border:"none",width:28,height:28,borderRadius:6,cursor:"pointer",display:"flex",alignItems:"center",justifyContent:"center"}} title="Download">{I.download(12,C.g500)}</button>
-                <button style={{background:C.g100,border:"none",width:28,height:28,borderRadius:6,cursor:"pointer",display:"flex",alignItems:"center",justifyContent:"center"}} title="Delete">{I.x(10,C.g400)}</button>
-              </div>
-            </div>)}
-            {/* Upload to this folder */}
-            <div style={{padding:"14px 16px",borderTop:`1px solid ${C.g100}`,display:"flex",gap:10}}>
-              <button onClick={()=>{if(globalShowToast)globalShowToast({type:"success",title:"Upload",msg:`Upload a document to ${org.n}'s folder`,color:C.blue})}} style={{...btnO,fontSize:11,padding:"8px 14px"}}>{I.download(11,C.g500)} Upload to Folder</button>
-            </div>
-          </Card>})()}
-      </>}
-    </>}
     {/* BLACKOUT CALENDAR TAB */}
     {orgTab==="blackouts"&&<>
       <div style={{display:"flex",justifyContent:"space-between",alignItems:"center",marginBottom:16}}>
@@ -2447,17 +2492,17 @@ function Org(){
         {/* Rate grid */}
         <div style={{overflowX:"auto"}}>
         <table style={{width:"100%",borderCollapse:"collapse",fontSize:12}}><thead><tr>
-          <th style={{...TH,width:90}}>Day</th>
-          <th style={TH}>Morning</th>
-          <th style={TH}>Afternoon</th>
-          <th style={TH}>Evening</th>
+          <th style={{..._TH(),width:90}}>Day</th>
+          <th style={_TH()}>Morning</th>
+          <th style={_TH()}>Afternoon</th>
+          <th style={_TH()}>Evening</th>
         </tr></thead><tbody>
         {["Monday","Tuesday","Wednesday","Thursday","Friday","Saturday","Sunday"].map((day,di)=>{
           const isWeekend=di>=5;
           const rates=isWeekend?[175,175,200]:[125,150,175];
           return <tr key={day} style={{background:isWeekend?`${C.amber}06`:di%2===0?C.g50:C.cardBg}}>
-            <td style={{...TD,fontWeight:700,color:C.g800}}>{day}{isWeekend&&<div style={{fontSize:8,fontWeight:700,color:C.amber}}>WEEKEND</div>}</td>
-            {rates.map((r,ri)=><td key={ri} style={{...TD,padding:"8px 10px"}}>
+            <td style={{..._TD(),fontWeight:700,color:C.g800}}>{day}{isWeekend&&<div style={{fontSize:8,fontWeight:700,color:C.amber}}>WEEKEND</div>}</td>
+            {rates.map((r,ri)=><td key={ri} style={{..._TD(),padding:"8px 10px"}}>
               <div style={{display:"flex",alignItems:"center",gap:4}}>
                 <span style={{fontSize:11,color:C.g400}}>$</span>
                 <input type="number" defaultValue={r} style={{width:50,padding:"5px 6px",border:`1px solid ${C.cardBorder}`,borderRadius:4,fontSize:12,fontFamily:numFont,fontWeight:700,color:isWeekend&&ri===2?C.amber:C.g700,background:C.cardBg,textAlign:"center"}} onBlur={e=>{if(globalShowToast)globalShowToast({type:"success",title:"Rate Saved",msg:`${day} ${["morning","afternoon","evening"][ri]}: $${e.target.value}/hr`,color:C.green})}}/>
@@ -2474,134 +2519,7 @@ function Org(){
       </Card>
     </>}
     {/* APPROVAL CHAIN TAB */}
-    {orgTab==="approvals"&&<>
-      <div style={{display:"flex",justifyContent:"space-between",alignItems:"center",marginBottom:16}}>
-        <div style={{fontSize:14,fontWeight:700,color:C.g800}}>Approval Chain of Command</div>
-        <select value={chainFac} onChange={e=>setChainFac(e.target.value)} style={sel}>{["All Facilities",...campuses.map(c=>c.name)].map(f=><option key={f} value={f}>{f}</option>)}</select>
-      </div>
-      <div style={{padding:"12px 16px",background:`linear-gradient(135deg, ${C.blueL}, ${C.greenL})`,borderRadius:R.lg,marginBottom:16,fontSize:12,color:C.g600,lineHeight:1.6}}>
-        When a reservation request comes in, it flows through this sequence. Reviewers can approve (pass forward) or deny (stop). The last person is the final decision maker. Drag people up or down, or insert new reviewers at any point.
-      </div>
-
-      {/* Insert at top zone */}
-      {chainInsertIdx===0?<Card style={{margin:"0 0 4px",border:`1.5px solid ${C.blue}`,background:`${C.blue}04`}}>
-        <div style={{display:"flex",alignItems:"center",justifyContent:"space-between",marginBottom:10}}>
-          <span style={{fontSize:12,fontWeight:700,color:C.g800}}>Select a team member to insert at step 1</span>
-          <button onClick={()=>setChainInsertIdx(null)} style={{background:C.g100,border:"none",width:24,height:24,borderRadius:6,cursor:"pointer",display:"flex",alignItems:"center",justifyContent:"center"}}>{I.x(10,C.g500)}</button>
-        </div>
-        {availableForChain.length===0?<div style={{fontSize:12,color:C.g400,padding:"10px 0"}}>All team members are already in this chain.</div>
-        :<div style={{display:"flex",flexDirection:"column",gap:4}}>
-          {availableForChain.map(p=><div key={p.name} onClick={()=>insertIntoChain(0,p)} style={{display:"flex",alignItems:"center",gap:10,padding:"8px 12px",borderRadius:R.sm,border:`1px solid ${C.cardBorder}`,cursor:"pointer",transition:"all .12s"}} onMouseEnter={e=>{e.currentTarget.style.background=C.blueL;e.currentTarget.style.borderColor=C.blue}} onMouseLeave={e=>{e.currentTarget.style.background="transparent";e.currentTarget.style.borderColor=C.cardBorder}}>
-            <div style={{width:30,height:30,borderRadius:8,background:p.color,display:"flex",alignItems:"center",justifyContent:"center",color:"#fff",fontWeight:800,fontSize:10,flexShrink:0}}>{p.initials}</div>
-            <div style={{flex:1}}><div style={{fontSize:12,fontWeight:600,color:C.g800}}>{p.name}</div><div style={{fontSize:10,color:C.g400}}>{p.role}{p.campus?` - ${p.campus}`:""}</div></div>
-          </div>)}
-        </div>}
-      </Card>
-      :<div onClick={()=>{setChainInsertIdx(0)}} style={{display:"flex",alignItems:"center",justifyContent:"center",gap:6,padding:"8px",margin:"0 20px 4px",borderRadius:6,border:`2px dashed ${C.g200}`,cursor:"pointer",transition:"all .15s"}} onMouseEnter={e=>{e.currentTarget.style.borderColor=C.blue;e.currentTarget.style.background=`${C.blue}06`}} onMouseLeave={e=>{e.currentTarget.style.borderColor=C.g200;e.currentTarget.style.background="transparent"}}>
-        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke={C.g400} strokeWidth="2" strokeLinecap="round"><path d="M12 5v14M5 12h14"/></svg>
-        <span style={{fontSize:10,color:C.g400,fontWeight:600}}>Insert reviewer at start</span>
-      </div>}
-
-      {/* Chain steps */}
-      <div style={{display:"flex",flexDirection:"column",gap:0}}>
-        {chain.map((p,i)=>{
-          const isFinal=i===chain.length-1;
-          const isOnly=chain.length===1;
-          return <React.Fragment key={p.name+i}>
-            <Card style={{margin:"4px 0",border:isFinal?`1.5px solid #F59E0B40`:`1px solid ${C.cardBorder}`,background:isFinal?`linear-gradient(135deg, #FFFBEB, #FEF9E8)`:C.cardBg,position:"relative",overflow:"visible"}}>
-              {/* Step badge */}
-              <div style={{position:"absolute",left:-12,top:"50%",transform:"translateY(-50%)",width:24,height:24,borderRadius:12,background:isFinal?`linear-gradient(135deg, #F59E0B, #D97706)`:C.blue,display:"flex",alignItems:"center",justifyContent:"center",boxShadow:`0 2px 8px ${isFinal?"rgba(245,158,11,0.3)":"rgba(0,118,187,0.3)"}`,zIndex:2}}>
-                {isFinal?<svg width="12" height="12" viewBox="0 0 24 24" fill="none"><path d="M2 20h20l-3-12-5 5-4-8-4 8-5-5z" fill="#fff"/></svg>:<span style={{fontSize:10,fontWeight:900,color:"#fff"}}>{i+1}</span>}
-              </div>
-              <div style={{display:"flex",alignItems:"center",gap:12,paddingLeft:16}}>
-                {/* Avatar */}
-                <div style={{width:40,height:40,borderRadius:10,background:p.color,display:"flex",alignItems:"center",justifyContent:"center",color:"#fff",fontWeight:800,fontSize:12,flexShrink:0}}>{p.initials}</div>
-                {/* Info */}
-                <div style={{flex:1,minWidth:0}}>
-                  <div style={{display:"flex",alignItems:"center",gap:6,flexWrap:"wrap"}}>
-                    <span style={{fontSize:14,fontWeight:700,color:C.g800}}>{p.name}</span>
-                    <span style={{fontSize:10,fontWeight:600,color:C.g400,background:C.g100,padding:"2px 8px",borderRadius:4}}>{p.role}</span>
-                    {isFinal&&<span style={{fontSize:8,fontWeight:800,color:"#92400E",background:"#FDE68A",padding:"2px 8px",borderRadius:4,letterSpacing:"0.04em"}}>FINAL DECISION</span>}
-                  </div>
-                  <div style={{fontSize:11,color:C.g500,marginTop:3}}>
-                    {isFinal?"Has final authority to approve or deny all requests":"Reviews request and passes to next approver in sequence"}
-                  </div>
-                </div>
-                {/* Controls */}
-                <div style={{display:"flex",flexDirection:"column",gap:2,flexShrink:0}}>
-                  <button onClick={()=>moveChain(i,-1)} disabled={i===0} style={{background:i===0?C.g50:C.g100,border:"none",width:30,height:26,borderRadius:"6px 6px 2px 2px",cursor:i===0?"default":"pointer",display:"flex",alignItems:"center",justifyContent:"center",opacity:i===0?0.3:1,transition:"all .1s"}} onMouseEnter={e=>{if(i>0){e.currentTarget.style.background=C.blue;e.currentTarget.querySelector("svg").style.stroke="#fff"}}} onMouseLeave={e=>{e.currentTarget.style.background=C.g100;const sv=e.currentTarget.querySelector("svg");if(sv)sv.style.stroke=C.g500}} title="Move up">
-                    <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke={C.g500} strokeWidth="2.5" strokeLinecap="round"><path d="M18 15l-6-6-6 6"/></svg>
-                  </button>
-                  <button onClick={()=>moveChain(i,1)} disabled={isFinal} style={{background:isFinal?C.g50:C.g100,border:"none",width:30,height:26,borderRadius:"2px 2px 6px 6px",cursor:isFinal?"default":"pointer",display:"flex",alignItems:"center",justifyContent:"center",opacity:isFinal?0.3:1,transition:"all .1s"}} onMouseEnter={e=>{if(!isFinal){e.currentTarget.style.background=C.blue;e.currentTarget.querySelector("svg").style.stroke="#fff"}}} onMouseLeave={e=>{e.currentTarget.style.background=C.g100;const sv=e.currentTarget.querySelector("svg");if(sv)sv.style.stroke=C.g500}} title="Move down">
-                    <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke={C.g500} strokeWidth="2.5" strokeLinecap="round"><path d="M6 9l6 6 6-6"/></svg>
-                  </button>
-                </div>
-                {/* Remove */}
-                {!isOnly&&<button onClick={()=>{removeFromChain(i);if(globalShowToast)globalShowToast({type:"success",title:"Removed",msg:`${p.name} removed from chain`,color:C.green})}} style={{background:"none",border:"none",width:28,height:28,borderRadius:6,cursor:"pointer",display:"flex",alignItems:"center",justifyContent:"center",opacity:0.4,transition:"opacity .15s"}} onMouseEnter={e=>e.currentTarget.style.opacity=1} onMouseLeave={e=>e.currentTarget.style.opacity=0.4} title="Remove from chain">
-                  {I.x(12,C.red)}
-                </button>}
-              </div>
-            </Card>
-            {/* Insert between zone */}
-            {!isFinal&&<>
-              {chainInsertIdx===i+1?<Card style={{margin:"4px 0",border:`1.5px solid ${C.blue}`,background:`${C.blue}04`}}>
-                <div style={{display:"flex",alignItems:"center",justifyContent:"space-between",marginBottom:10}}>
-                  <span style={{fontSize:12,fontWeight:700,color:C.g800}}>Select a team member to insert at step {i+2}</span>
-                  <button onClick={()=>setChainInsertIdx(null)} style={{background:C.g100,border:"none",width:24,height:24,borderRadius:6,cursor:"pointer",display:"flex",alignItems:"center",justifyContent:"center"}}>{I.x(10,C.g500)}</button>
-                </div>
-                {availableForChain.length===0?<div style={{fontSize:12,color:C.g400,padding:"10px 0"}}>All team members are already in this chain.</div>
-                :<div style={{display:"flex",flexDirection:"column",gap:4}}>
-                  {availableForChain.map(p=><div key={p.name} onClick={()=>insertIntoChain(i+1,p)} style={{display:"flex",alignItems:"center",gap:10,padding:"8px 12px",borderRadius:R.sm,border:`1px solid ${C.cardBorder}`,cursor:"pointer",transition:"all .12s"}} onMouseEnter={e=>{e.currentTarget.style.background=C.blueL;e.currentTarget.style.borderColor=C.blue}} onMouseLeave={e=>{e.currentTarget.style.background="transparent";e.currentTarget.style.borderColor=C.cardBorder}}>
-                    <div style={{width:30,height:30,borderRadius:8,background:p.color,display:"flex",alignItems:"center",justifyContent:"center",color:"#fff",fontWeight:800,fontSize:10,flexShrink:0}}>{p.initials}</div>
-                    <div style={{flex:1}}><div style={{fontSize:12,fontWeight:600,color:C.g800}}>{p.name}</div><div style={{fontSize:10,color:C.g400}}>{p.role}{p.campus?` - ${p.campus}`:""}</div></div>
-                  </div>)}
-                </div>
-              </Card>
-              :<div style={{display:"flex",alignItems:"center",gap:0,margin:"0 20px"}}>
-                <div style={{flex:1,height:1,background:C.g200}}/>
-                <div onClick={()=>{setChainInsertIdx(i+1)}} style={{display:"flex",alignItems:"center",gap:4,padding:"4px 12px",borderRadius:20,border:`1.5px dashed ${C.g200}`,cursor:"pointer",transition:"all .15s",background:"transparent"}} onMouseEnter={e=>{e.currentTarget.style.borderColor=C.blue;e.currentTarget.style.background=`${C.blue}08`}} onMouseLeave={e=>{e.currentTarget.style.borderColor=C.g200;e.currentTarget.style.background="transparent"}}>
-                  <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke={C.g400} strokeWidth="2.5" strokeLinecap="round"><path d="M12 5v14M5 12h14"/></svg>
-                  <span style={{fontSize:9,fontWeight:600,color:C.g400}}>Insert</span>
-                </div>
-                <div style={{flex:1,height:1,background:C.g200}}/>
-              </div>}
-            </>}
-          </React.Fragment>})}
-      </div>
-
-      {/* Add at end */}
-      {chainInsertIdx===chain.length?<Card style={{margin:"8px 0",border:`1.5px solid ${C.blue}`,background:`${C.blue}04`}}>
-        <div style={{display:"flex",alignItems:"center",justifyContent:"space-between",marginBottom:10}}>
-          <span style={{fontSize:12,fontWeight:700,color:C.g800}}>Select a team member to add at end (step {chain.length+1})</span>
-          <button onClick={()=>setChainInsertIdx(null)} style={{background:C.g100,border:"none",width:24,height:24,borderRadius:6,cursor:"pointer",display:"flex",alignItems:"center",justifyContent:"center"}}>{I.x(10,C.g500)}</button>
-        </div>
-        {availableForChain.length===0?<div style={{fontSize:12,color:C.g400,padding:"10px 0"}}>All team members are already in this chain.</div>
-        :<div style={{display:"flex",flexDirection:"column",gap:4}}>
-          {availableForChain.map(p=><div key={p.name} onClick={()=>insertIntoChain(chain.length,p)} style={{display:"flex",alignItems:"center",gap:10,padding:"8px 12px",borderRadius:R.sm,border:`1px solid ${C.cardBorder}`,cursor:"pointer",transition:"all .12s"}} onMouseEnter={e=>{e.currentTarget.style.background=C.blueL;e.currentTarget.style.borderColor=C.blue}} onMouseLeave={e=>{e.currentTarget.style.background="transparent";e.currentTarget.style.borderColor=C.cardBorder}}>
-            <div style={{width:30,height:30,borderRadius:8,background:p.color,display:"flex",alignItems:"center",justifyContent:"center",color:"#fff",fontWeight:800,fontSize:10,flexShrink:0}}>{p.initials}</div>
-            <div style={{flex:1}}><div style={{fontSize:12,fontWeight:600,color:C.g800}}>{p.name}</div><div style={{fontSize:10,color:C.g400}}>{p.role}{p.campus?` - ${p.campus}`:""}</div></div>
-          </div>)}
-        </div>
-      </Card>
-      :<div onClick={()=>{setChainInsertIdx(chain.length)}} style={{display:"flex",alignItems:"center",justifyContent:"center",gap:6,padding:"12px",margin:"8px 0",borderRadius:R.sm,border:`2px dashed ${C.g200}`,cursor:"pointer",transition:"all .15s"}} onMouseEnter={e=>{e.currentTarget.style.borderColor=C.blue;e.currentTarget.style.background=`${C.blue}06`}} onMouseLeave={e=>{e.currentTarget.style.borderColor=C.g200;e.currentTarget.style.background="transparent"}}>
-        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke={C.g400} strokeWidth="2" strokeLinecap="round"><path d="M12 5v14M5 12h14"/></svg>
-        <span style={{fontSize:11,color:C.g400,fontWeight:600}}>Add reviewer at end</span>
-      </div>}
-
-      {/* Summary */}
-      <div style={{display:"flex",alignItems:"center",justifyContent:"space-between",padding:"12px 16px",background:C.g50,borderRadius:R.sm,border:`1px solid ${C.cardBorder}`,marginTop:4}}>
-        <div style={{display:"flex",alignItems:"center",gap:12}}>
-          <div style={{display:"flex"}}>
-            {chain.slice(0,4).map((p,i)=><div key={i} style={{width:24,height:24,borderRadius:12,background:p.color,border:`2px solid ${C.cardBg}`,display:"flex",alignItems:"center",justifyContent:"center",color:"#fff",fontSize:8,fontWeight:800,marginLeft:i>0?-6:0,zIndex:4-i}}>{p.initials}</div>)}
-          </div>
-          <span style={{fontSize:12,fontWeight:600,color:C.g700}}>{chain.length} step{chain.length!==1?"s":""} in chain</span>
-        </div>
-        <div style={{display:"flex",alignItems:"center",gap:6}}>
-          <div style={{width:6,height:6,borderRadius:3,background:C.green}}/>
-          <span style={{fontSize:11,color:C.g500}}>Final approver: <strong style={{color:C.g700}}>{chain[chain.length-1]?.name||"None"}</strong></span>
-        </div>
-      </div>
-    </>}
+    {orgTab==="approvals"&&<ApprovalChain chainFac={chainFac} setChainFac={setChainFac} teamMembers={teamMembers}/>}
     {/* ACTIVITY LOG TAB */}
     {orgTab==="activity"&&<Card>
       <Sec action={<div style={{display:"flex",gap:8,alignItems:"center"}}><select style={sel}><option>All Activity</option><option>Reservations</option><option>Payments</option><option>System</option><option>User Actions</option></select><ExportBtns/></div>} icon={I.clock(13,C.g500)}>Activity Log</Sec>
@@ -2642,6 +2560,7 @@ const sentimentColors={positive:C.blue,mixed:C.g400,negative:C.red};
 function Reporting(){
   const [rt,setRt]=useState(0);
   globalSetRt=setRt;
+  useEffect(()=>{window.scrollTo(0,0)},[rt]);
   const [ratingsView,setRatingsView]=useState("overview");
   const [ratingsCampus,setRatingsCampus]=useState("all");
   const [ratingSentiment,setRatingSentiment]=useState("all");
@@ -2773,18 +2692,18 @@ function Reporting(){
           </div>})}
       </Card>
         <Sec action={<select value={ratingsCampus} onChange={e=>setRatingsCampus(e.target.value)} style={sel}><option value="all">All Campuses</option>{campuses.map(c=><option key={c.id} value={c.name}>{c.short}</option>)}</select>} icon={I.building(13,C.g500)}>Ratings by Campus</Sec>
-        <table style={{width:"100%",borderCollapse:"collapse",fontSize:13}}><thead><tr>{["Campus","Total Reviews","Avg Rating","Trend (3mo)","Positive","Needs Attn",""].map(h=><th key={h} style={TH}>{h}</th>)}</tr></thead>
+        <table style={{width:"100%",borderCollapse:"collapse",fontSize:13}}><thead><tr>{["Campus","Total Reviews","Avg Rating","Trend (3mo)","Positive","Needs Attn",""].map(h=><th key={h} style={_TH()}>{h}</th>)}</tr></thead>
           <tbody>{campuses.map((c,i)=>{
             const cr=ratingsData.filter(r=>r.campus===c.name);const cAvg=cr.length?(cr.reduce((s,r)=>s+r.rating,0)/cr.length).toFixed(1):"--";
             const pos=cr.filter(r=>r.sentiment==="positive").length;const neg=cr.filter(r=>r.sentiment==="negative").length;
             return <tr key={c.id} style={{background:i%2===0?C.g50:C.cardBg}}>
-              <td style={{...TD,fontWeight:600,color:C.g700}}>{c.name}</td>
-              <td style={TD}>{cr.length}</td>
-              <td style={TD}><div style={{display:"flex",alignItems:"center",gap:6}}><span style={{fontWeight:800,color:parseFloat(cAvg)>=4?C.green:parseFloat(cAvg)>=3?C.orange:C.red}}>{cAvg}</span>{Array(5).fill(0).map((_,j)=><span key={j} style={{color:j<Math.round(parseFloat(cAvg)||0)?"#FBBF24":C.g300,fontSize:12}}>★</span>)}</div></td>
-              <td style={TD}><span style={{fontSize:12,fontWeight:700,color:[C.green,C.green,C.green,C.orange,C.orange][i]}}>{["↑ +0.3","↑ +0.1","↑ +0.2","- 0.0","↓ -0.1"][i]}</span></td>
-              <td style={TD}><span style={{background:C.greenL,color:C.green,padding:"3px 10px",borderRadius:6,fontSize:11,fontWeight:700}}>{pos}</span></td>
-              <td style={TD}>{neg>0?<span style={{background:C.redL,color:C.red,padding:"3px 10px",borderRadius:6,fontSize:11,fontWeight:700}}>{neg}</span>:<span style={{color:C.g300}}>--</span>}</td>
-              <td style={TD}><button onClick={()=>{setRatingsCampus(c.name);setRatingsView("reviews")}} style={{...btnO,padding:"4px 10px",fontSize:11,color:C.blue,borderColor:`${C.blue}40`}}>View Reviews</button></td>
+              <td style={{..._TD(),fontWeight:600,color:C.g700}}>{c.name}</td>
+              <td style={_TD()}>{cr.length}</td>
+              <td style={_TD()}><div style={{display:"flex",alignItems:"center",gap:6}}><span style={{fontWeight:800,color:parseFloat(cAvg)>=4?C.green:parseFloat(cAvg)>=3?C.orange:C.red}}>{cAvg}</span>{Array(5).fill(0).map((_,j)=><span key={j} style={{color:j<Math.round(parseFloat(cAvg)||0)?"#FBBF24":C.g300,fontSize:12}}>★</span>)}</div></td>
+              <td style={_TD()}><span style={{fontSize:12,fontWeight:700,color:[C.green,C.green,C.green,C.orange,C.orange][i]}}>{["↑ +0.3","↑ +0.1","↑ +0.2","- 0.0","↓ -0.1"][i]}</span></td>
+              <td style={_TD()}><span style={{background:C.greenL,color:C.green,padding:"3px 10px",borderRadius:6,fontSize:11,fontWeight:700}}>{pos}</span></td>
+              <td style={_TD()}>{neg>0?<span style={{background:C.redL,color:C.red,padding:"3px 10px",borderRadius:6,fontSize:11,fontWeight:700}}>{neg}</span>:<span style={{color:C.g300}}>--</span>}</td>
+              <td style={_TD()}><button onClick={()=>{setRatingsCampus(c.name);setRatingsView("reviews")}} style={{...btnO,padding:"4px 10px",fontSize:11,color:C.blue,borderColor:`${C.blue}40`}}>View Reviews</button></td>
             </tr>})}</tbody>
         </table>
       </Card>
@@ -2905,14 +2824,14 @@ function Reporting(){
           <input type="text" placeholder="Search organization..." style={{padding:"8px 14px",border:`1px solid ${C.cardBorder}`,borderRadius:R.sm,fontSize:12,fontFamily:font,width:190,background:C.g50,color:C.g700,boxSizing:"border-box"}}/>
         </div>
         {/* Transactions table */}
-        <Card np><div className="pp-table-wrap"><table style={{width:"100%",borderCollapse:"collapse",fontSize:13}}><thead><tr>{["Date","Facility","Organization","Bookings","Amount","Status"].map(h=><th key={h} style={TH}>{h}</th>)}</tr></thead>
+        <Card np><div className="pp-table-wrap"><table style={{width:"100%",borderCollapse:"collapse",fontSize:13}}><thead><tr>{["Date","Facility","Organization","Bookings","Amount","Status"].map(h=><th key={h} style={_TH()}>{h}</th>)}</tr></thead>
           <tbody>{filtered.length===0?<tr><td colSpan={6}><Empty icon={I.wallet(22,C.g300)} title="No transactions found" desc="No bulk payments match the current filter." action="Show All" onAction={()=>setPayStatusFilt("all")}/></td></tr>:filtered.map((p,i)=><tr key={i} onClick={()=>globalSetShowPay(p)} style={{background:i%2===0?C.g50:C.cardBg,cursor:"pointer",transition:"background .12s"}} onMouseEnter={e=>e.currentTarget.style.background=C.blueL} onMouseLeave={e=>e.currentTarget.style.background=i%2===0?C.g50:C.cardBg}>
-            <td style={{...TD,color:C.g500}}><div style={{fontWeight:600,color:C.g700}}>{p.date}</div><div style={{fontSize:11}}>{p.time}</div></td>
-            <td style={{...TD,color:C.g500,fontSize:12}}>{p.fac}</td>
-            <td style={{...TD,fontWeight:600,color:C.g700}}>{p.user}</td>
-            <td style={{...TD,color:C.g600,fontFamily:numFont}}>{p.count} ({p.dur})</td>
-            <td style={{...TD,fontWeight:700,fontFamily:numFont}}>${p.rev.toFixed(2)}</td>
-            <td style={TD}><span style={statusBadge(p.status)}><span style={{width:6,height:6,borderRadius:"50%",background:"currentColor"}}/>{p.status}</span></td>
+            <td style={{..._TD(),color:C.g500}}><div style={{fontWeight:600,color:C.g700}}>{p.date}</div><div style={{fontSize:11}}>{p.time}</div></td>
+            <td style={{..._TD(),color:C.g500,fontSize:12}}>{p.fac}</td>
+            <td style={{..._TD(),fontWeight:600,color:C.g700}}>{p.user}</td>
+            <td style={{..._TD(),color:C.g600,fontFamily:numFont}}>{p.count} ({p.dur})</td>
+            <td style={{..._TD(),fontWeight:700,fontFamily:numFont}}>${p.rev.toFixed(2)}</td>
+            <td style={_TD()}><span style={statusBadge(p.status)}><span style={{width:6,height:6,borderRadius:"50%",background:"currentColor"}}/>{p.status}</span></td>
           </tr>)}</tbody>
         </table></div></Card>
       </>
@@ -2995,19 +2914,19 @@ function RevByCampus(){
     </Card>
     <Div>Campus Detail</Div>
     <Card><Sec icon={I.building(13,C.g500)}>Campus Detail</Sec>
-      <table style={{width:"100%",borderCollapse:"collapse",fontSize:13}}><thead><tr>{["","Campus","Revenue","Bookings","Assets","Utilization","Avg Rate","Top Asset","Trend",""].map(h=><th key={h} style={TH}>{h}</th>)}</tr></thead>
+      <table style={{width:"100%",borderCollapse:"collapse",fontSize:13}}><thead><tr>{["","Campus","Revenue","Bookings","Assets","Utilization","Avg Rate","Top Asset","Trend",""].map(h=><th key={h} style={_TH()}>{h}</th>)}</tr></thead>
         <tbody>{campusRevDetail.map((c,i)=><React.Fragment key={c.id}>
           <tr style={{background:i%2===0?C.g50:C.cardBg,cursor:"pointer"}} onClick={()=>setExpanded(expanded===c.id?null:c.id)}>
-            <td style={{...TD,width:14}}><span style={{width:10,height:10,borderRadius:5,background:c.color,display:"inline-block"}}/></td>
-            <td style={{...TD,fontWeight:700,color:C.g700}}>{c.name}</td>
-            <td style={{...TD,fontWeight:800}}>${c.rev.toLocaleString()}</td>
-            <td style={TD}>{c.bookings}</td>
-            <td style={TD}>{c.assets}</td>
-            <td style={TD}><div style={{display:"flex",alignItems:"center",gap:6}}><div style={{width:50,height:6,background:C.g200,borderRadius:3,overflow:"hidden"}}><div style={{width:`${c.util}%`,height:"100%",background:c.util>=60?C.green:c.util>=40?C.orange:C.red,borderRadius:3}}/></div><span style={{fontSize:11,fontWeight:700}}>{c.util}%</span></div></td>
-            <td style={TD}>${c.avgRate}</td>
-            <td style={{...TD,fontSize:12,color:C.g500}}>{c.topAsset}</td>
-            <td style={TD}><span style={{fontSize:12,fontWeight:700,color:C.g800}}>{c.trend==="up"?"↑":"↓"} {c.trendPct}</span></td>
-            <td style={{...TD,padding:"10px 8px"}}><div style={{width:28,height:28,borderRadius:8,background:expanded===c.id?C.blue:C.g100,color:expanded===c.id?"#fff":C.g400,display:"flex",alignItems:"center",justifyContent:"center",fontSize:12,fontWeight:800,transition:"all .15s"}}>{expanded===c.id?"−":"+"}</div></td>
+            <td style={{..._TD(),width:14}}><span style={{width:10,height:10,borderRadius:5,background:c.color,display:"inline-block"}}/></td>
+            <td style={{..._TD(),fontWeight:700,color:C.g700}}>{c.name}</td>
+            <td style={{..._TD(),fontWeight:800}}>${c.rev.toLocaleString()}</td>
+            <td style={_TD()}>{c.bookings}</td>
+            <td style={_TD()}>{c.assets}</td>
+            <td style={_TD()}><div style={{display:"flex",alignItems:"center",gap:6}}><div style={{width:50,height:6,background:C.g200,borderRadius:3,overflow:"hidden"}}><div style={{width:`${c.util}%`,height:"100%",background:c.util>=60?C.green:c.util>=40?C.orange:C.red,borderRadius:3}}/></div><span style={{fontSize:11,fontWeight:700}}>{c.util}%</span></div></td>
+            <td style={_TD()}>${c.avgRate}</td>
+            <td style={{..._TD(),fontSize:12,color:C.g500}}>{c.topAsset}</td>
+            <td style={_TD()}><span style={{fontSize:12,fontWeight:700,color:C.g800}}>{c.trend==="up"?"↑":"↓"} {c.trendPct}</span></td>
+            <td style={{..._TD(),padding:"10px 8px"}}><div style={{width:28,height:28,borderRadius:8,background:expanded===c.id?C.blue:C.g100,color:expanded===c.id?"#fff":C.g400,display:"flex",alignItems:"center",justifyContent:"center",fontSize:12,fontWeight:800,transition:"all .15s"}}>{expanded===c.id?"−":"+"}</div></td>
           </tr>
           {expanded===c.id&&<tr><td colSpan={10} style={{padding:"0 14px 14px",background:C.blueL+"30"}}>
             <div style={{padding:"16px 20px",background:C.cardBg,borderRadius:10,border:`1px solid ${C.cardBorder}`}}>
@@ -3058,18 +2977,18 @@ function RevByFacility(){
     <Div>Results</Div>
     <Card>
       <div className="pp-report-results-hdr" style={{display:"flex",justifyContent:"space-between",alignItems:"center",marginBottom:16,gap:8,flexWrap:"wrap"}}><div><span style={{fontSize:15,fontWeight:800,color:C.g800}}>Results Found: {filtered.length}</span></div></div>
-      <div className="pp-table-wrap"><table style={{width:"100%",borderCollapse:"collapse",fontSize:13,minWidth:700}}><thead><tr>{["Facility","Campus","Bookings","Revenue","Utilization","Avg Rate","Top Participant","% of Total",""].map(h=><th key={h} style={TH}>{h}</th>)}</tr></thead>
+      <div className="pp-table-wrap"><table style={{width:"100%",borderCollapse:"collapse",fontSize:13,minWidth:700}}><thead><tr>{["Facility","Campus","Bookings","Revenue","Utilization","Avg Rate","Top Participant","% of Total",""].map(h=><th key={h} style={_TH()}>{h}</th>)}</tr></thead>
         <tbody>{filtered.map((f,i)=><React.Fragment key={f.a}>
           <tr style={{background:i%2===0?C.g50:C.cardBg,cursor:"pointer"}} onClick={()=>setExpanded(expanded===f.a?null:f.a)}>
-            <td style={{...TD,fontWeight:600,color:C.g700}}>{f.a}</td>
-            <td style={{...TD,color:C.g500,fontSize:12}}>{f.c}</td>
-            <td style={{...TD,fontWeight:700}}>{f.bookings}</td>
-            <td style={{...TD,fontWeight:800}}>${f.rev.toLocaleString()}</td>
-            <td style={TD}><div style={{display:"flex",alignItems:"center",gap:6}}><div style={{width:50,height:6,background:C.g200,borderRadius:3,overflow:"hidden"}}><div style={{width:`${f.util}%`,height:"100%",background:f.util>=60?C.green:f.util>=40?C.orange:C.red,borderRadius:3}}/></div><span style={{fontSize:11,fontWeight:700}}>{f.util}%</span></div></td>
-            <td style={TD}>${f.avgRate}</td>
-            <td style={{...TD,fontSize:12,color:C.g500}}>{f.topParticipant}</td>
-            <td style={TD}><div style={{display:"flex",alignItems:"center",gap:6}}><div style={{width:60,height:6,background:C.g200,borderRadius:3,overflow:"hidden"}}><div style={{width:`${f.pct}%`,height:"100%",background:f.color,borderRadius:3}}/></div><span style={{fontSize:11,fontWeight:700,color:C.g600}}>{f.pct}%</span></div></td>
-            <td style={{...TD,padding:"10px 8px"}}><div style={{width:28,height:28,borderRadius:8,background:expanded===f.a?C.blue:C.g100,color:expanded===f.a?"#fff":C.g400,display:"flex",alignItems:"center",justifyContent:"center",fontSize:12,fontWeight:800,transition:"all .15s"}}>{expanded===f.a?"−":"+"}</div></td>
+            <td style={{..._TD(),fontWeight:600,color:C.g700}}>{f.a}</td>
+            <td style={{..._TD(),color:C.g500,fontSize:12}}>{f.c}</td>
+            <td style={{..._TD(),fontWeight:700}}>{f.bookings}</td>
+            <td style={{..._TD(),fontWeight:800}}>${f.rev.toLocaleString()}</td>
+            <td style={_TD()}><div style={{display:"flex",alignItems:"center",gap:6}}><div style={{width:50,height:6,background:C.g200,borderRadius:3,overflow:"hidden"}}><div style={{width:`${f.util}%`,height:"100%",background:f.util>=60?C.green:f.util>=40?C.orange:C.red,borderRadius:3}}/></div><span style={{fontSize:11,fontWeight:700}}>{f.util}%</span></div></td>
+            <td style={_TD()}>${f.avgRate}</td>
+            <td style={{..._TD(),fontSize:12,color:C.g500}}>{f.topParticipant}</td>
+            <td style={_TD()}><div style={{display:"flex",alignItems:"center",gap:6}}><div style={{width:60,height:6,background:C.g200,borderRadius:3,overflow:"hidden"}}><div style={{width:`${f.pct}%`,height:"100%",background:f.color,borderRadius:3}}/></div><span style={{fontSize:11,fontWeight:700,color:C.g600}}>{f.pct}%</span></div></td>
+            <td style={{..._TD(),padding:"10px 8px"}}><div style={{width:28,height:28,borderRadius:8,background:expanded===f.a?C.blue:C.g100,color:expanded===f.a?"#fff":C.g400,display:"flex",alignItems:"center",justifyContent:"center",fontSize:12,fontWeight:800,transition:"all .15s"}}>{expanded===f.a?"−":"+"}</div></td>
           </tr>
           {expanded===f.a&&<tr><td colSpan={9} style={{padding:"0 14px 14px",background:C.blueL+"30"}}>
             <div style={{padding:"16px 20px",background:C.cardBg,borderRadius:10,border:`1px solid ${C.cardBorder}`}}>
@@ -3127,11 +3046,11 @@ function RevByParticipant(){
       <div className="pp-table-wrap">
       <table style={{width:"100%",borderCollapse:"collapse",fontSize:13,minWidth:800}}>
         <thead><tr>
-          {["Participant","Bookings","Total Revenue","Avg / Booking","Favorite Facility","Since","Trend",""].map(h=><th key={h} style={{...TH,padding:"10px 12px"}}>{h}</th>)}
+          {["Participant","Bookings","Total Revenue","Avg / Booking","Favorite Facility","Since","Trend",""].map(h=><th key={h} style={{..._TH(),padding:"10px 12px"}}>{h}</th>)}
         </tr></thead>
         <tbody>{filtered.map((c,i)=>{const pClr=partColors[i%partColors.length];return <React.Fragment key={c.n}>
           <tr style={{background:i%2===0?C.g50:C.cardBg,cursor:"pointer",transition:"background .12s"}} onClick={()=>setExpanded(expanded===c.n?null:c.n)} onMouseEnter={e=>e.currentTarget.style.background=C.blueL} onMouseLeave={e=>e.currentTarget.style.background=i%2===0?C.g50:C.cardBg}>
-            <td style={{...TD,padding:"12px"}}>
+            <td style={{..._TD(),padding:"12px"}}>
               <div style={{display:"flex",alignItems:"center",gap:10}}>
                 <div style={{width:34,height:34,borderRadius:10,background:pClr,display:"flex",alignItems:"center",justifyContent:"center",color:"#fff",fontWeight:800,fontSize:11,flexShrink:0}}>{c.photo}</div>
                 <div>
@@ -3140,13 +3059,13 @@ function RevByParticipant(){
                 </div>
               </div>
             </td>
-            <td style={{...TD,padding:"12px"}}><span style={{fontWeight:700,fontSize:14}}>{c.b}</span></td>
-            <td style={{...TD,padding:"12px"}}><span style={{fontWeight:800,fontSize:14,color:C.g800}}>${c.s.toLocaleString()}</span></td>
-            <td style={{...TD,padding:"12px",color:C.g600}}>${Math.round(c.s/c.b)}</td>
-            <td style={{...TD,padding:"12px",fontSize:12,color:C.g500}}>{c.fav}</td>
-            <td style={{...TD,padding:"12px",fontSize:12,color:C.g500}}>{c.since}</td>
-            <td style={{...TD,padding:"12px"}}>{c.t==="up"?<span style={{display:"inline-flex",alignItems:"center",gap:4,fontSize:11,fontWeight:700,color:C.green,background:`${C.green}12`,padding:"3px 8px",borderRadius:6}}>↑ Growing</span>:c.t==="down"?<span style={{display:"inline-flex",alignItems:"center",gap:4,fontSize:11,fontWeight:700,color:C.red,background:`${C.red}10`,padding:"3px 8px",borderRadius:6}}>↓ Declining</span>:<span style={{display:"inline-flex",alignItems:"center",gap:4,fontSize:11,fontWeight:700,color:C.g400,background:C.g100,padding:"3px 8px",borderRadius:6}}>- Stable</span>}</td>
-            <td style={{...TD,padding:"12px 10px"}}><div style={{width:28,height:28,borderRadius:8,background:expanded===c.n?pClr:C.g100,color:expanded===c.n?"#fff":C.g400,display:"flex",alignItems:"center",justifyContent:"center",fontSize:12,fontWeight:800,transition:"all .15s"}}>{expanded===c.n?"−":"+"}</div></td>
+            <td style={{..._TD(),padding:"12px"}}><span style={{fontWeight:700,fontSize:14}}>{c.b}</span></td>
+            <td style={{..._TD(),padding:"12px"}}><span style={{fontWeight:800,fontSize:14,color:C.g800}}>${c.s.toLocaleString()}</span></td>
+            <td style={{..._TD(),padding:"12px",color:C.g600}}>${Math.round(c.s/c.b)}</td>
+            <td style={{..._TD(),padding:"12px",fontSize:12,color:C.g500}}>{c.fav}</td>
+            <td style={{..._TD(),padding:"12px",fontSize:12,color:C.g500}}>{c.since}</td>
+            <td style={{..._TD(),padding:"12px"}}>{c.t==="up"?<span style={{display:"inline-flex",alignItems:"center",gap:4,fontSize:11,fontWeight:700,color:C.green,background:`${C.green}12`,padding:"3px 8px",borderRadius:6}}>↑ Growing</span>:c.t==="down"?<span style={{display:"inline-flex",alignItems:"center",gap:4,fontSize:11,fontWeight:700,color:C.red,background:`${C.red}10`,padding:"3px 8px",borderRadius:6}}>↓ Declining</span>:<span style={{display:"inline-flex",alignItems:"center",gap:4,fontSize:11,fontWeight:700,color:C.g400,background:C.g100,padding:"3px 8px",borderRadius:6}}>- Stable</span>}</td>
+            <td style={{..._TD(),padding:"12px 10px"}}><div style={{width:28,height:28,borderRadius:8,background:expanded===c.n?pClr:C.g100,color:expanded===c.n?"#fff":C.g400,display:"flex",alignItems:"center",justifyContent:"center",fontSize:12,fontWeight:800,transition:"all .15s"}}>{expanded===c.n?"−":"+"}</div></td>
           </tr>
           {expanded===c.n&&<tr><td colSpan={8} style={{padding:"0 12px 14px",background:`${pClr}08`}}>
             <div style={{padding:"18px 22px",background:C.cardBg,borderRadius:12,border:`1px solid ${C.cardBorder}`,boxShadow:`0 2px 8px rgba(0,0,0,${C.bg==="#0F1318"?0.15:0.04})`}}>
@@ -3160,13 +3079,13 @@ function RevByParticipant(){
               </div>
               {/* Booking table */}
               <table style={{width:"100%",borderCollapse:"collapse",fontSize:12,marginBottom:16}}>
-                <thead><tr>{["Res ID","Asset","Date","Time","Revenue"].map(h=><th key={h} style={{...TH,fontSize:9,padding:"8px 10px"}}>{h}</th>)}</tr></thead>
+                <thead><tr>{["Res ID","Asset","Date","Time","Revenue"].map(h=><th key={h} style={{..._TH(),fontSize:9,padding:"8px 10px"}}>{h}</th>)}</tr></thead>
                 <tbody>{c.hist.map((h,hi)=><tr key={h.id} style={{background:hi%2===0?C.g50:C.cardBg}}>
-                  <td style={{...TD,padding:"8px 10px",fontFamily:"monospace",fontSize:10,color:pClr,fontWeight:700}}>{h.id}</td>
-                  <td style={{...TD,padding:"8px 10px",fontWeight:600,color:C.g700}}>{h.asset}</td>
-                  <td style={{...TD,padding:"8px 10px",color:C.g500}}>{h.date}</td>
-                  <td style={{...TD,padding:"8px 10px",color:C.g500}}>{h.time}</td>
-                  <td style={{...TD,padding:"8px 10px",fontWeight:700}}>${h.rev}</td>
+                  <td style={{..._TD(),padding:"8px 10px",fontFamily:"monospace",fontSize:10,color:pClr,fontWeight:700}}>{h.id}</td>
+                  <td style={{..._TD(),padding:"8px 10px",fontWeight:600,color:C.g700}}>{h.asset}</td>
+                  <td style={{..._TD(),padding:"8px 10px",color:C.g500}}>{h.date}</td>
+                  <td style={{..._TD(),padding:"8px 10px",color:C.g500}}>{h.time}</td>
+                  <td style={{..._TD(),padding:"8px 10px",fontWeight:700}}>${h.rev}</td>
                 </tr>)}</tbody>
               </table>
               {/* Contact details grid */}
@@ -3248,23 +3167,23 @@ function PayoutsReport(){
       <Sec icon={I.wallet(13,C.g500)}>Monthly Payout Summary</Sec>
       <div className="pp-table-wrap">
       <table style={{width:"100%",borderCollapse:"collapse",fontSize:13,minWidth:600}}>
-        <thead><tr>{["Month","Gross Amount","Fee (5%)","Net Payout","Transactions","Status","Deposit Date"].map(h=><th key={h} style={{...TH,padding:"10px 12px"}}>{h}</th>)}</tr></thead>
+        <thead><tr>{["Month","Gross Amount","Fee (5%)","Net Payout","Transactions","Status","Deposit Date"].map(h=><th key={h} style={{..._TH(),padding:"10px 12px"}}>{h}</th>)}</tr></thead>
         <tbody>{payoutsData.map((p,i)=>{const txnCount=[4,5,3,8,6][i]||0;const fee=p.total*0.05;const net=p.total-fee;
           return <tr key={p.month} style={{background:i%2===0?C.g50:C.cardBg}}>
-          <td style={{...TD,padding:"12px",fontWeight:700,color:C.g800}}>{p.month}</td>
-          <td style={{...TD,padding:"12px",fontWeight:600}}>${p.total.toLocaleString()}</td>
-          <td style={{...TD,padding:"12px",color:C.g400,fontSize:12}}>-${fee.toLocaleString(undefined,{minimumFractionDigits:2,maximumFractionDigits:2})}</td>
-          <td style={{...TD,padding:"12px",fontWeight:800,color:C.green}}>${net.toLocaleString(undefined,{minimumFractionDigits:2,maximumFractionDigits:2})}</td>
-          <td style={{...TD,padding:"12px",textAlign:"center"}}>{txnCount}</td>
-          <td style={{...TD,padding:"12px"}}><span style={{...statusBadge(p.status==="paid"?"completed":p.status),fontSize:10}}><span style={{width:5,height:5,borderRadius:"50%",background:"currentColor"}}/>{p.status==="paid"?"Deposited":p.status}</span></td>
-          <td style={{...TD,padding:"12px",color:C.g500,fontSize:12}}>{p.date}</td>
+          <td style={{..._TD(),padding:"12px",fontWeight:700,color:C.g800}}>{p.month}</td>
+          <td style={{..._TD(),padding:"12px",fontWeight:600}}>${p.total.toLocaleString()}</td>
+          <td style={{..._TD(),padding:"12px",color:C.g400,fontSize:12}}>-${fee.toLocaleString(undefined,{minimumFractionDigits:2,maximumFractionDigits:2})}</td>
+          <td style={{..._TD(),padding:"12px",fontWeight:800,color:C.green}}>${net.toLocaleString(undefined,{minimumFractionDigits:2,maximumFractionDigits:2})}</td>
+          <td style={{..._TD(),padding:"12px",textAlign:"center"}}>{txnCount}</td>
+          <td style={{..._TD(),padding:"12px"}}><span style={{...statusBadge(p.status==="paid"?"completed":p.status),fontSize:10}}><span style={{width:5,height:5,borderRadius:"50%",background:"currentColor"}}/>{p.status==="paid"?"Deposited":p.status}</span></td>
+          <td style={{..._TD(),padding:"12px",color:C.g500,fontSize:12}}>{p.date}</td>
         </tr>})}</tbody>
         <tfoot><tr style={{background:C.g50,borderTop:`2px solid ${C.g200}`}}>
-          <td style={{...TD,padding:"12px",fontWeight:800,color:C.g800}}>Total</td>
-          <td style={{...TD,padding:"12px",fontWeight:800}}>${payoutsData.reduce((s,p)=>s+p.total,0).toLocaleString()}</td>
-          <td style={{...TD,padding:"12px",fontWeight:600,color:C.g400}}>-${(payoutsData.reduce((s,p)=>s+p.total,0)*0.05).toLocaleString(undefined,{minimumFractionDigits:2,maximumFractionDigits:2})}</td>
-          <td style={{...TD,padding:"12px",fontWeight:800,color:C.green}}>${(payoutsData.reduce((s,p)=>s+p.total,0)*0.95).toLocaleString(undefined,{minimumFractionDigits:2,maximumFractionDigits:2})}</td>
-          <td style={{...TD,padding:"12px",textAlign:"center",fontWeight:700}}>{[4,5,3,8,6].reduce((a,b)=>a+b,0)}</td>
+          <td style={{..._TD(),padding:"12px",fontWeight:800,color:C.g800}}>Total</td>
+          <td style={{..._TD(),padding:"12px",fontWeight:800}}>${payoutsData.reduce((s,p)=>s+p.total,0).toLocaleString()}</td>
+          <td style={{..._TD(),padding:"12px",fontWeight:600,color:C.g400}}>-${(payoutsData.reduce((s,p)=>s+p.total,0)*0.05).toLocaleString(undefined,{minimumFractionDigits:2,maximumFractionDigits:2})}</td>
+          <td style={{..._TD(),padding:"12px",fontWeight:800,color:C.green}}>${(payoutsData.reduce((s,p)=>s+p.total,0)*0.95).toLocaleString(undefined,{minimumFractionDigits:2,maximumFractionDigits:2})}</td>
+          <td style={{..._TD(),padding:"12px",textAlign:"center",fontWeight:700}}>{[4,5,3,8,6].reduce((a,b)=>a+b,0)}</td>
           <td colSpan={2}/>
         </tr></tfoot>
       </table>
@@ -3280,19 +3199,19 @@ function PayoutsReport(){
       </div>
       <div style={{overflowX:"auto"}}>
         <table style={{width:"100%",borderCollapse:"collapse",fontSize:12,minWidth:900}}>
-          <thead><tr>{["ID","Updated At","Res ID","Asset","Campus","Transfer Date","Amount","Discount","Status",""].map(h=><th key={h} style={{...TH,fontSize:9,padding:"8px 10px"}}>{h}</th>)}</tr></thead>
+          <thead><tr>{["ID","Updated At","Res ID","Asset","Campus","Transfer Date","Amount","Discount","Status",""].map(h=><th key={h} style={{..._TH(),fontSize:9,padding:"8px 10px"}}>{h}</th>)}</tr></thead>
           <tbody>{shown.map((t,i)=><React.Fragment key={t.id}>
             <tr key={t.id} style={{background:t.status==="failed"?`${C.red}06`:i%2===0?C.g50:C.cardBg,cursor:"pointer"}} onClick={()=>setExpandedTxn(expandedTxn===t.id?null:t.id)}>
-              <td style={{...TD,padding:"10px",fontWeight:700,color:C.blue,fontFamily:"monospace",fontSize:11}}>{t.id}</td>
-              <td style={{...TD,padding:"10px",color:C.g500,fontSize:11}}>{t.updatedAt}</td>
-              <td style={{...TD,padding:"10px",fontFamily:"monospace",fontSize:10,color:C.g500}}>{t.resId}</td>
-              <td style={{...TD,padding:"10px",fontWeight:600,color:C.g700}}>{t.asset}</td>
-              <td style={{...TD,padding:"10px",color:C.g500,fontSize:11}}>{t.facility}</td>
-              <td style={{...TD,padding:"10px",color:C.g500,fontSize:11}}>{t.transferDate}</td>
-              <td style={{...TD,padding:"10px",fontWeight:700,color:t.status==="failed"?C.red:C.g800}}>${t.amount.toFixed(2)}</td>
-              <td style={{...TD,padding:"10px",color:t.discount!=="N/A"?C.blue:C.g400,fontSize:11,fontWeight:t.discount!=="N/A"?700:400}}>{t.discount}</td>
-              <td style={{...TD,padding:"10px"}}><span style={{...statusBadge(t.status==="success"?"completed":"failed"),fontSize:10,padding:"2px 8px"}}><span style={{width:5,height:5,borderRadius:"50%",background:"currentColor"}}/>{t.status}</span></td>
-              <td style={{...TD,padding:"10px 8px"}}><div style={{width:28,height:28,borderRadius:8,background:expandedTxn===t.id?C.blue:C.g100,color:expandedTxn===t.id?"#fff":C.g400,display:"flex",alignItems:"center",justifyContent:"center",fontSize:12,fontWeight:800,transition:"all .15s"}}>{expandedTxn===t.id?"−":"+"}</div></td>
+              <td style={{..._TD(),padding:"10px",fontWeight:700,color:C.blue,fontFamily:"monospace",fontSize:11}}>{t.id}</td>
+              <td style={{..._TD(),padding:"10px",color:C.g500,fontSize:11}}>{t.updatedAt}</td>
+              <td style={{..._TD(),padding:"10px",fontFamily:"monospace",fontSize:10,color:C.g500}}>{t.resId}</td>
+              <td style={{..._TD(),padding:"10px",fontWeight:600,color:C.g700}}>{t.asset}</td>
+              <td style={{..._TD(),padding:"10px",color:C.g500,fontSize:11}}>{t.facility}</td>
+              <td style={{..._TD(),padding:"10px",color:C.g500,fontSize:11}}>{t.transferDate}</td>
+              <td style={{..._TD(),padding:"10px",fontWeight:700,color:t.status==="failed"?C.red:C.g800}}>${t.amount.toFixed(2)}</td>
+              <td style={{..._TD(),padding:"10px",color:t.discount!=="N/A"?C.blue:C.g400,fontSize:11,fontWeight:t.discount!=="N/A"?700:400}}>{t.discount}</td>
+              <td style={{..._TD(),padding:"10px"}}><span style={{...statusBadge(t.status==="success"?"completed":"failed"),fontSize:10,padding:"2px 8px"}}><span style={{width:5,height:5,borderRadius:"50%",background:"currentColor"}}/>{t.status}</span></td>
+              <td style={{..._TD(),padding:"10px 8px"}}><div style={{width:28,height:28,borderRadius:8,background:expandedTxn===t.id?C.blue:C.g100,color:expandedTxn===t.id?"#fff":C.g400,display:"flex",alignItems:"center",justifyContent:"center",fontSize:12,fontWeight:800,transition:"all .15s"}}>{expandedTxn===t.id?"−":"+"}</div></td>
             </tr>
             {expandedTxn===t.id&&<tr key={t.id+"exp"}><td colSpan={10} style={{padding:"0 10px 12px",background:C.blueL+"40"}}>
               <div style={{padding:"14px 18px",borderRadius:10,background:C.cardBg,border:`1px solid ${C.cardBorder}`,display:"grid",gridTemplateColumns:"1fr 1fr 1fr",gap:12}}>
@@ -3472,16 +3391,16 @@ function Users(){
     <Card np>
       <div className="pp-table-wrap">
       <table style={{width:"100%",borderCollapse:"collapse",fontSize:13,minWidth:700}}>
-        <thead><tr>{["","Staff Member","Email","Role","Campus","Phone","Last Active",""].map(h=><th key={h} style={TH}>{h}</th>)}</tr></thead>
+        <thead><tr>{["","Staff Member","Email","Role","Campus","Phone","Last Active",""].map(h=><th key={h} style={_TH()}>{h}</th>)}</tr></thead>
         <tbody>{filtered.length===0?<tr><td colSpan={8}><Empty icon={I.user(22,C.g300)} title="No staff members found" desc="Try adjusting your search or role filter." action="Clear Filters" onAction={()=>{setSearch("");setRoleFilter("all")}}/></td></tr>:filtered.map((u,i)=><tr key={u.name} style={{background:i%2===0?C.g50:C.cardBg}}>
-          <td style={TD}><div style={{width:38,height:20,borderRadius:10,background:u.status?C.green:C.g300,position:"relative",cursor:"pointer"}}><div style={{width:14,height:14,borderRadius:"50%",background:"#fff",position:"absolute",top:3,...(u.status?{right:3}:{left:3}),boxShadow:"0 1px 2px rgba(0,0,0,.2)",transition:"all .15s"}}/></div></td>
-          <td style={TD}><div style={{display:"flex",alignItems:"center",gap:10}}><div style={{width:32,height:32,borderRadius:8,background:u.color,display:"flex",alignItems:"center",justifyContent:"center",color:"#fff",fontWeight:800,fontSize:10}}>{u.initials}</div><div><span style={{fontWeight:700,color:C.g700,display:"block"}}>{u.name}</span><span style={{fontSize:11,color:C.g400}}>{campusLabel(u.campus)}</span></div></div></td>
-          <td style={{...TD,color:C.g500,fontSize:12}}>{u.email}</td>
-          <td style={TD}><span style={roleBadge(u.role)}>{u.role}</span></td>
-          <td style={{...TD,color:C.g600,fontSize:12}}>{u.loc}</td>
-          <td style={{...TD,color:C.g500,fontSize:12}}>{u.phone}</td>
-          <td style={{...TD,color:C.g400,fontSize:12}}>{u.updated}</td>
-          <td style={TD}><button style={{...btnO,padding:"4px 12px",fontSize:12,color:C.blue,borderColor:`${C.blue}40`}}>Edit</button></td>
+          <td style={_TD()}><div style={{width:38,height:20,borderRadius:10,background:u.status?C.green:C.g300,position:"relative",cursor:"pointer"}}><div style={{width:14,height:14,borderRadius:"50%",background:"#fff",position:"absolute",top:3,...(u.status?{right:3}:{left:3}),boxShadow:"0 1px 2px rgba(0,0,0,.2)",transition:"all .15s"}}/></div></td>
+          <td style={_TD()}><div style={{display:"flex",alignItems:"center",gap:10}}><div style={{width:32,height:32,borderRadius:8,background:u.color,display:"flex",alignItems:"center",justifyContent:"center",color:"#fff",fontWeight:800,fontSize:10}}>{u.initials}</div><div><span style={{fontWeight:700,color:C.g700,display:"block"}}>{u.name}</span><span style={{fontSize:11,color:C.g400}}>{campusLabel(u.campus)}</span></div></div></td>
+          <td style={{..._TD(),color:C.g500,fontSize:12}}>{u.email}</td>
+          <td style={_TD()}><span style={roleBadge(u.role)}>{u.role}</span></td>
+          <td style={{..._TD(),color:C.g600,fontSize:12}}>{u.loc}</td>
+          <td style={{..._TD(),color:C.g500,fontSize:12}}>{u.phone}</td>
+          <td style={{..._TD(),color:C.g400,fontSize:12}}>{u.updated}</td>
+          <td style={_TD()}><button style={{...btnO,padding:"4px 12px",fontSize:12,color:C.blue,borderColor:`${C.blue}40`}}>Edit</button></td>
         </tr>)}</tbody>
       </table>
       </div>
@@ -3972,7 +3891,7 @@ function AIInsights(){
       onClick={()=>setMode("loading")}
       onMouseEnter={()=>setBtnHover(true)}
       onMouseLeave={()=>setBtnHover(false)}
-      style={{padding:"8px 20px",borderRadius:8,background:btnHover?C.blue:C.g800,color:"#fff",border:"none",fontSize:12,fontWeight:700,cursor:"pointer",fontFamily:font,whiteSpace:"nowrap",flexShrink:0,transition:"all .2s",transform:btnHover?"translateY(-1px)":"none",boxShadow:btnHover?`0 4px 12px ${C.blue}40`:"none",display:"flex",alignItems:"center",gap:6}}>
+      style={{padding:"8px 20px",borderRadius:8,background:C.blue,color:"#fff",border:"none",fontSize:12,fontWeight:700,cursor:"pointer",fontFamily:font,whiteSpace:"nowrap",flexShrink:0,transition:"all .2s",transform:btnHover?"translateY(-1px)":"none",boxShadow:btnHover?`0 4px 12px ${C.blue}40`:"none",display:"flex",alignItems:"center",gap:6}}>
       {I.bulb(12,"#fff")} Generate
     </button>
   </div>
@@ -4130,6 +4049,8 @@ export default function App(){
     if(t===tab)return;
     setLoading(true);setTab(t);setPageKey(k=>k+1);
     setTimeout(()=>setLoading(false),350);
+    window.scrollTo(0,0);
+    setShowNotifs(false);
   };
   globalSetTab=switchTab;
   const [showNotifs,setShowNotifs]=useState(false);
@@ -4716,8 +4637,8 @@ export default function App(){
             <button onClick={()=>setShowNotifs(!showNotifs)} style={{background:showNotifs?C.blueL:C.cardBg,border:`1px solid ${showNotifs?`${C.blue}20`:C.cardBorder}`,borderRadius:R.sm,width:36,height:36,cursor:"pointer",display:"flex",alignItems:"center",justifyContent:"center",position:"relative"}}>{I.bell(16,C.g600)}
               {unread>0&&<span style={{position:"absolute",top:-3,right:-3,width:16,height:16,borderRadius:8,background:C.red,color:"#fff",fontSize:9,fontWeight:800,display:"flex",alignItems:"center",justifyContent:"center",border:`2px solid ${C.cardBg}`}}>{unread}</span>}
             </button>
-            {showNotifs&&<div className="pp-notif-panel" style={{position:"absolute",top:44,background:C.cardBg,borderRadius:R.lg,border:`1px solid ${C.cardBorder}`,boxShadow:`0 12px 40px rgba(0,0,0,${dark?0.3:0.12}), 0 2px 8px rgba(0,0,0,${dark?0.15:0.04})`,zIndex:150,overflow:"hidden"}}>
-              <div style={{padding:"14px 18px",borderBottom:`1px solid ${C.g200}`,display:"flex",justifyContent:"space-between",alignItems:"center"}}><span style={{fontSize:14,fontWeight:800,color:C.g800}}>Notifications</span><div style={{display:"flex",gap:8,alignItems:"center"}}>{pendingApprovals.length>0&&<span style={{background:C.g800,color:"#fff",padding:"2px 8px",borderRadius:5,fontSize:10,fontWeight:800}}>{pendingApprovals.length} pending</span>}<span style={{fontSize:11,color:C.g400}}>{unread} unread</span></div></div>
+            {showNotifs&&<><div onClick={()=>setShowNotifs(false)} style={{position:"fixed",inset:0,zIndex:149}}/><div className="pp-notif-panel" style={{position:"absolute",top:44,background:C.cardBg,borderRadius:R.lg,border:`1px solid ${C.cardBorder}`,boxShadow:`0 12px 40px rgba(0,0,0,${dark?0.3:0.12}), 0 2px 8px rgba(0,0,0,${dark?0.15:0.04})`,zIndex:150,overflow:"hidden"}}>
+              <div style={{padding:"14px 18px",borderBottom:`1px solid ${C.g200}`,display:"flex",justifyContent:"space-between",alignItems:"center"}}><span style={{fontSize:14,fontWeight:800,color:C.g800}}>Notifications</span><div style={{display:"flex",gap:8,alignItems:"center"}}>{pendingApprovals.length>0&&<span style={{background:C.blue,color:"#fff",padding:"2px 8px",borderRadius:5,fontSize:10,fontWeight:800}}>{pendingApprovals.length} pending</span>}<span style={{fontSize:11,color:C.g400}}>{unread} unread</span></div></div>
               <div style={{maxHeight:400,overflow:"auto"}}>
                 {notifs.map((n,i)=><div key={i} style={{padding:"12px 18px",borderBottom:`1px solid ${C.g100}`,background:n.read?"transparent":n.type==="approval"?`${C.orange}08`:C.blueL+"60",display:"flex",gap:10,alignItems:"flex-start",cursor:"pointer",transition:"background .12s"}} onMouseEnter={e=>{if(n.read)e.currentTarget.style.background=C.g50}} onMouseLeave={e=>{if(n.read)e.currentTarget.style.background="transparent"}} onClick={()=>{
                   setNotifs(ns=>ns.map((x,j)=>j===i?{...x,read:true}:x));
@@ -4741,7 +4662,7 @@ export default function App(){
                 <button onClick={()=>{setNotifs(ns=>ns.map(n=>({...n,read:true})));if(globalShowToast)globalShowToast({type:"success",title:"All Read",msg:"All notifications marked as read",color:C.green});setShowNotifs(false)}} style={{background:"none",border:"none",color:C.blue,fontSize:12,fontWeight:700,cursor:"pointer",fontFamily:font}}>Mark all as read</button>
                 <button onClick={()=>setShowNotifs(false)} style={{background:"none",border:"none",color:C.g400,fontSize:11,fontWeight:600,cursor:"pointer",fontFamily:font}}>Dismiss</button>
               </div>
-            </div>}
+            </div></>}
           </div>
         </div>
       </div>
