@@ -3156,51 +3156,24 @@ function PayoutsReport(){
         <button style={{...btnP,height:38,width:"100%"}}>Search</button>
       </div>
     </Card>
-    <Div>Summary</Div>
-    <div style={{display:"grid",gridTemplateColumns:"repeat(auto-fit,minmax(180px,1fr))",gap:12}}>
-      <Card style={{padding:"20px 18px",background:`linear-gradient(135deg,${C.blue}08,${C.cardBg})`}}>
-        <div style={{fontSize:10,fontWeight:700,color:C.g400,textTransform:"uppercase",letterSpacing:"0.06em"}}>Total Transactions</div>
-        <div style={{fontSize:28,fontWeight:900,color:C.g800,marginTop:6,fontFamily:numFont}}>{filtered.length}</div>
-        <div style={{fontSize:11,color:C.g400,marginTop:4}}>{filtered.filter(t=>t.status==="success").length} successful</div>
-      </Card>
-      <Card style={{padding:"20px 18px",background:`linear-gradient(135deg,${C.green}06,${C.cardBg})`}}>
-        <div style={{fontSize:10,fontWeight:700,color:C.g400,textTransform:"uppercase",letterSpacing:"0.06em"}}>Gross Revenue</div>
-        <div style={{fontSize:28,fontWeight:900,color:C.g800,marginTop:6,fontFamily:numFont}}>${totalAmt.toLocaleString(undefined,{minimumFractionDigits:2,maximumFractionDigits:2})}</div>
-        <div style={{fontSize:11,color:C.green,fontWeight:600,marginTop:4}}>5% transaction fee</div>
-      </Card>
-      <Card style={{padding:"20px 18px"}}>
-        <div style={{fontSize:10,fontWeight:700,color:C.g400,textTransform:"uppercase",letterSpacing:"0.06em"}}>Net to District</div>
-        <div style={{fontSize:28,fontWeight:900,color:C.green,marginTop:6,fontFamily:numFont}}>${(successAmt*0.95).toLocaleString(undefined,{minimumFractionDigits:2,maximumFractionDigits:2})}</div>
-        <div style={{fontSize:11,color:C.g400,marginTop:4}}>After fees</div>
-      </Card>
-      {failedAmt>0&&<Card style={{padding:"20px 18px",border:`1px solid ${C.red}20`}}>
-        <div style={{fontSize:10,fontWeight:700,color:C.red,textTransform:"uppercase",letterSpacing:"0.06em"}}>Failed / At Risk</div>
-        <div style={{fontSize:28,fontWeight:900,color:C.red,marginTop:6,fontFamily:numFont}}>${failedAmt.toLocaleString(undefined,{minimumFractionDigits:2,maximumFractionDigits:2})}</div>
-        <div style={{fontSize:11,color:C.g400,marginTop:4}}>Requires attention</div>
-      </Card>}
-    </div>
     {/* Monthly payout summary */}
     <Div>Monthly Payouts</Div>
     <Card>
       <Sec icon={I.wallet(13,C.g500)}>Monthly Payout Summary</Sec>
       <div className="pp-table-wrap pp-num-table">
       <table style={{width:"100%",borderCollapse:"collapse",fontSize:13,minWidth:600}}>
-        <thead><tr>{["Month","Gross Amount","Fee (5%)","Net Payout","Transactions","Status","Deposit Date"].map(h=><th key={h} style={{..._TH(),padding:"10px 12px"}}>{h}</th>)}</tr></thead>
-        <tbody>{payoutsData.map((p,i)=>{const txnCount=[4,5,3,8,6][i]||0;const fee=p.total*0.05;const net=p.total-fee;
+        <thead><tr>{["Month","Payout","Transactions","Status","Deposit Date"].map(h=><th key={h} style={{..._TH(),padding:"10px 12px"}}>{h}</th>)}</tr></thead>
+        <tbody>{payoutsData.map((p,i)=>{const txnCount=[4,5,3,8,6][i]||0;const net=p.total*0.95;
           return <tr key={p.month} style={{background:i%2===0?C.g50:C.cardBg}}>
           <td style={{..._TD(),padding:"12px",fontWeight:700,color:C.g800}}>{p.month}</td>
-          <td style={{..._TD(),padding:"12px",fontWeight:600}}>${p.total.toLocaleString()}</td>
-          <td style={{..._TD(),padding:"12px",color:C.g400,fontSize:12}}>-${fee.toLocaleString(undefined,{minimumFractionDigits:2,maximumFractionDigits:2})}</td>
-          <td style={{..._TD(),padding:"12px",fontWeight:800,color:C.green}}>${net.toLocaleString(undefined,{minimumFractionDigits:2,maximumFractionDigits:2})}</td>
+          <td style={{..._TD(),padding:"12px",fontWeight:800,color:C.g800}}>${net.toLocaleString(undefined,{minimumFractionDigits:2,maximumFractionDigits:2})}</td>
           <td style={{..._TD(),padding:"12px",textAlign:"center"}}>{txnCount}</td>
           <td style={{..._TD(),padding:"12px"}}><span style={{...statusBadge(p.status==="paid"?"completed":p.status),fontSize:10}}><span style={{width:5,height:5,borderRadius:"50%",background:"currentColor"}}/>{p.status==="paid"?"Deposited":p.status}</span></td>
           <td style={{..._TD(),padding:"12px",color:C.g500,fontSize:12}}>{p.date}</td>
         </tr>})}</tbody>
         <tfoot><tr style={{background:C.g50,borderTop:`2px solid ${C.g200}`}}>
           <td style={{..._TD(),padding:"12px",fontWeight:800,color:C.g800}}>Total</td>
-          <td style={{..._TD(),padding:"12px",fontWeight:800}}>${payoutsData.reduce((s,p)=>s+p.total,0).toLocaleString()}</td>
-          <td style={{..._TD(),padding:"12px",fontWeight:600,color:C.g400}}>-${(payoutsData.reduce((s,p)=>s+p.total,0)*0.05).toLocaleString(undefined,{minimumFractionDigits:2,maximumFractionDigits:2})}</td>
-          <td style={{..._TD(),padding:"12px",fontWeight:800,color:C.green}}>${(payoutsData.reduce((s,p)=>s+p.total,0)*0.95).toLocaleString(undefined,{minimumFractionDigits:2,maximumFractionDigits:2})}</td>
+          <td style={{..._TD(),padding:"12px",fontWeight:800,color:C.g800}}>${(payoutsData.reduce((s,p)=>s+p.total,0)*0.95).toLocaleString(undefined,{minimumFractionDigits:2,maximumFractionDigits:2})}</td>
           <td style={{..._TD(),padding:"12px",textAlign:"center",fontWeight:700}}>{[4,5,3,8,6].reduce((a,b)=>a+b,0)}</td>
           <td colSpan={2}/>
         </tr></tfoot>
